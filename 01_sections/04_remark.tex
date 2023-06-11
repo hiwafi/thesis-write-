@@ -1,0 +1,54 @@
+\section{Result and Discussion} \label{result}
+
+The result of the research is discussed in this chapter. 
+This comprises model validation and how different statistical metrics are used to analyze the model's performance. 
+
+\subsection{Model Evaluation}
+
+The model are tested against four metrics, namely:
+
+\begin{itemize}
+    \item $R^2$ : Indicate model fit. Best Score = 1
+    \item Explained Variance \verb|EV| : Indicate amount of variance in model. Best Score = 1
+    \item Mean Absolute Error \verb|MAE| : Indicate how much error a model makes in its prediction. Best Score = 0
+    \item Root Mean Square Error \verb|RMSE| : Same as MAE, more sensitive to outlier. Best Score = 0
+    \item Median Absolute Error \verb|MAD| : Check robustness against outlier. Best Score = 1
+\end{itemize}
+
+The result is summarized in the following table
+
+\begin{table}[ht]
+    % \small
+    \centering
+    \resizebox {\textwidth}{!}{\begin{tabular}{cccc}
+    \hline
+    Model & RFR & DTR & LR\\
+    \hline
+    $R^2$ & 0.9328181446941499    &0.8526085810220092 &1\\
+    EV &   0.932872958708872  &0.8526260247615258 &2 \\
+    MAE &0.5546347329650284 &0.8108982427834758 &3\\
+    RMSE  &0.7095480848510665 &1.5566896535262504&4\\
+    MAD    &0.38484635910000087 & 0.5475717149999983&5\\
+    \hline
+    \end{tabular}}
+\caption{Model performance}\label{table1}
+\end{table}
+ 
+\begin{table}[!ht]
+    \centering
+    \begin{adjustbox}{width=.7\textwidth}
+    \footnotesize
+    \begin{tabular}{cccc}
+    \hline
+    Model & RFR & DTR & LR\\
+    \hline
+    $R^2$ & 0.9328181446941499    &0.8526085810220092&1\\
+    EV &   0.932872958708872  &0.8526260247615258 &2 \\
+    MAE &0.5546347329650284 &0.8108982427834758 &3\\
+    RMSE  &0.7095480848510665 &1.5566896535262504&4\\
+    MAD    &0.38484635910000087 & 0.5475717149999983&5\\
+    \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Model performance}\label{table2}
+\end{table}
