@@ -4,17 +4,21 @@ This chapter deals with the past and present research in the relevant area which
 the significance of precise modelling of the ship's speed and its subsequent use in forecasting the ship's operation.
 The theoretical background of Random Forest Regression will be discussed in this chapter 
 
-\subsection{Literature Review}
+\subsection{Literature Review}\label{litreview}
 
-This section provides 
+The research to estimate ship fuel consumption is an active field of research. The summary of previous research compiled by Kim et al. \cite{Kim.2021} gives a good overview of the methodology used to estimate Fuel Oil Consumption (FOC). For example, {Be{\c{s}}ik{\c{c}}i} et al. \cite{BalBesikci.2016}, Jeon et al. \cite{Jeon.2018} and Kim et al. \cite{Kim.2021} utilised ANN to estimate FOC and reported good results by comparing ANN model's performance against Multiple Linear Regression model. It will be also sensible to compare the performance of ANN model against other machine learning models. \\
 
-This section provides an overview on the scientific papers relating to this thesis. There have been considerable amount of research on machine learning approach to predict ship Fuel Oil Consumption (FOC). Gkerekos \cite{Gkerekos.2019} and Abebe \cite{Abebe.2020} compares the performance of different machine learning methods to predict FOC. Besicki \cite{BalBesikci.2016} used Artificial Neural Network (ANN) to predict FOC. These papers demonstrate the capability of machine learning method to predict vessel's FOC with different scores and errors in their respective model. Worth noting that each of these scientific papers used different type of data and data source to make their prediction. Gkerekos \cite{Gkerekos.2019} use both the noon- and AIS data from ???. Besicki \cite{BalBesikci.2016} exclusively use noon data from ?? while \cite{Abebe.2020} performs fusion on both the noon- and AIS data from ??
+The research by Gkerekos et al. \cite{Gkerekos.2019} showcased the performance of different machine learning models to predict ship's (FOC) using both noon data and automated data logging and monitoring (ADLM) system. This research concludes that Decision Tree Regressor (DTR) based model, namely Random Forest Regressor, (RFR), and Extra Tree Regressor, (ETR), displayed good prediction performance. Gkerekos et al. \cite{Gkerekos.2019} also suggested that automatic sensor based data have the potential to increase the model accuracy score, $R^2$, by $5-7\%$.\\
 
-Findings from Gkerekos \cite{Gkerekos.2019}, Li \cite{Li.2022} and \cite{Abebe.2020} shows that Random Forest model is able to make better prediction compared simpler machine learning model such as linear regression. 
+Li et al. \cite{Li.2022} performed a more extensive research on the effects of data fusions between meteorological data, ship voyage data and AIS data on different machine learning models to predict the ship's FOC. This research highlighted the advantage of fusing meteorological data and ship voyage data. The evaluation on different model performance indicated that RFR are among preferable model candidate to be used in commercial scale due to its good prediction capability and robustness against different datasets.\\
 
-The findings from this paper shows the ability of machine learning method to make accurate prediction of the vessel's FOC. This paper also conclude that using automatic data logger sensor based data could potentially increase the model performance. 
-\subsection{Random Forest Regression (RFR)}
+The research presented by Gkerekos et al. \cite{Gkerekos.2019} and Li et al. \cite{Li.2022} both used machine learning method to estimate the ship's FOC. Abebe et al. \cite{Abebe.2020} used different approach in their research by predicting the ship's Speed Over Ground (SOG) instead of FOC. Abebe et al. \cite{Abebe.2020} fused AIS satellite data and noon-report weather data for the SOG prediction. The evaluation from this research shows that machine learning methods can also be applied to predict SOG. Findings from this research also show good prediction performance of RFR.\\
 
+This literature review indicated the capability of Random Forest Regressor to predict SOG and FOC. However, the difference of the data source as well as the data type used for modelling will result different result in model performance. From the literature review, good prediction performance from RFR can be expected. With that, this thesis will present the strength and limitations of RFR and provide general suggestions to improve the prediction performance of random forest model.\\
+
+\subsection{Random Forest Regressor (RFR)}\label{rfrtheo}
+
+% {Bal Be{\c{s}}ik{\c{c}}i}
 
 \begin{figure}[h]
 \centering

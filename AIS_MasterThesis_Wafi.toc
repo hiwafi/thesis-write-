@@ -1,7 +1,7 @@
 \contentsline {section}{\numberline {1}Introduction}{5}{section.4}%
 \contentsline {section}{\numberline {2}Theoretical Background}{6}{section.5}%
 \contentsline {subsection}{\numberline {2.1}Literature Review}{6}{subsection.6}%
-\contentsline {subsection}{\numberline {2.2}Random Forest Regression (RFR)}{6}{subsection.7}%
+\contentsline {subsection}{\numberline {2.2}Random Forest Regressor (RFR)}{7}{subsection.7}%
 \contentsline {subsection}{\numberline {2.3}Ship speed}{7}{subsection.9}%
 \contentsline {subsection}{\numberline {2.4}Modelling}{7}{subsection.10}%
 \contentsline {section}{\numberline {3}Research Methodology}{8}{section.11}%
