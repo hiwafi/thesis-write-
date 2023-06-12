@@ -1,14 +1,15 @@
 \contentsline {section}{\numberline {1}Introduction}{5}{section.4}%
 \contentsline {section}{\numberline {2}Theoretical Background}{6}{section.5}%
-\contentsline {subsection}{\numberline {2.1}Random Forest Regression (RFR)}{6}{subsection.6}%
-\contentsline {subsection}{\numberline {2.2}Ship speed}{7}{subsection.8}%
-\contentsline {subsection}{\numberline {2.3}Modelling}{7}{subsection.9}%
-\contentsline {section}{\numberline {3}Research Methodology}{8}{section.10}%
-\contentsline {subsection}{\numberline {3.1}Data Preprocessing}{8}{subsection.11}%
-\contentsline {subsection}{\numberline {3.2}Data Analysis}{8}{subsection.12}%
-\contentsline {subsection}{\numberline {3.3}Modelling}{11}{subsection.15}%
-\contentsline {subsection}{\numberline {3.4}Predicting STW}{12}{subsection.16}%
-\contentsline {section}{\numberline {4}Result and Discussion}{14}{section.54}%
-\contentsline {subsection}{\numberline {4.1}Model Evaluation}{14}{subsection.55}%
-\contentsline {section}{\numberline {5}Summary and Outlook}{16}{section.58}%
-\contentsline {section}{References}{17}{section.58}%
+\contentsline {subsection}{\numberline {2.1}Literature Review}{6}{subsection.6}%
+\contentsline {subsection}{\numberline {2.2}Random Forest Regression (RFR)}{6}{subsection.7}%
+\contentsline {subsection}{\numberline {2.3}Ship speed}{7}{subsection.9}%
+\contentsline {subsection}{\numberline {2.4}Modelling}{7}{subsection.10}%
+\contentsline {section}{\numberline {3}Research Methodology}{8}{section.11}%
+\contentsline {subsection}{\numberline {3.1}Data Preprocessing}{8}{subsection.12}%
+\contentsline {subsection}{\numberline {3.2}Data Analysis}{8}{subsection.13}%
+\contentsline {subsection}{\numberline {3.3}Modelling}{11}{subsection.16}%
+\contentsline {subsection}{\numberline {3.4}Predicting STW}{12}{subsection.17}%
+\contentsline {section}{\numberline {4}Result and Discussion}{14}{section.55}%
+\contentsline {subsection}{\numberline {4.1}Model Evaluation}{14}{subsection.56}%
+\contentsline {section}{\numberline {5}Summary and Outlook}{16}{section.59}%
+\contentsline {section}{References}{17}{section.59}%

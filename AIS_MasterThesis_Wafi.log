@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.4.6)  11 JUN 2023 10:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.4.6)  12 JUN 2023 07:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -896,7 +896,7 @@ Package: inputenc 2020/08/01 v1.3d Input encoding file
 \inpenc@prehook=\toks44
 \inpenc@posthook=\toks45
 )
-LaTeX Font Info:    Trying to load font information for T1+txtt on input line 61.
+LaTeX Font Info:    Trying to load font information for T1+txtt on input line 62.
  (c:/texlive/2021/texmf-dist/tex/latex/txfonts/t1txtt.fd
 File: t1txtt.fd 2000/12/15 v3.1
 ) (c:/texlive/2021/texmf-dist/tex/latex/graphics/rotating.sty
@@ -1155,9 +1155,9 @@ File: hpdftex.def 2021-02-27 v7.00k Hyperref driver for pdfTeX
 \c@bookmark@seq@number=\count369
 \Hy@SectionHShift=\skip87
 )
-Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 225.
-Package hyperref Info: Option `bookmarksopen' set `true' on input line 225.
-Package hyperref Info: Option `colorlinks' set `true' on input line 225.
+Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 234.
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 234.
+Package hyperref Info: Option `colorlinks' set `true' on input line 234.
  (c:/texlive/2021/texmf-dist/tex/latex/oberdiek/hypcap.sty
 Package: hypcap 2016/05/16 v1.12 Adjusting the anchors of captions (HO)
 ) (c:/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
@@ -1344,7 +1344,7 @@ LaTeX Info: Redefining \nameref on input line 10.
 \openout6 = `AIS_MasterThesis_Wafi.out'.
 
  (c:/MA_Write/thesis-write-/01_sections/00_title.tex
-<02_figures/ude.jpg, id=86, 845.1575pt x 327.2225pt>
+<02_figures/ude.jpg, id=90, 845.1575pt x 327.2225pt>
 File: 02_figures/ude.jpg Graphic file (type jpg)
 <use 02_figures/ude.jpg>
 Package pdftex.def Info: 02_figures/ude.jpg  used on input line 67.
@@ -1395,10 +1395,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 3--8
  []
 
 ) [5] (c:/MA_Write/thesis-write-/01_sections/02_section.tex
-<02_figures/ferry.jpg, id=145, 26.0172pt x 107.2005pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<02_figures/ferry.jpg, id=159, 26.0172pt x 107.2005pt>
 File: 02_figures/ferry.jpg Graphic file (type jpg)
 <use 02_figures/ferry.jpg>
-Package pdftex.def Info: 02_figures/ferry.jpg  used on input line 79.
+Package pdftex.def Info: 02_figures/ferry.jpg  used on input line 86.
 (pdftex.def)             Requested size: 26.87143pt x 72.39319pt.
 ) [6 <c:/MA_Write/thesis-write-/02_figures/ferry.jpg>] [7] (c:/MA_Write/thesis-write-/01_sections/03_section.tex
 LaTeX Font Info:    Trying to load font information for TS1+bch on input line 11.
@@ -1413,13 +1416,13 @@ Overfull \hbox (1.85349pt too wide) in paragraph at lines 11--14
 \T1/bch/m/n/12 and \T1/cmtt/m/n/12 AIS_weather_h_rename_copy.csv\T1/bch/m/n/12 . The in-for-ma-tion from the lat-ter comma
  []
 
-<02_figures/outputhist.png, id=161, 1160.6562pt x 880.9713pt>
+<02_figures/outputhist.png, id=179, 1160.6562pt x 880.9713pt>
 File: 02_figures/outputhist.png Graphic file (type png)
 <use 02_figures/outputhist.png>
 Package pdftex.def Info: 02_figures/outputhist.png  used on input line 28.
 (pdftex.def)             Requested size: 664.23744pt x 504.17525pt.
 [8] [9 <c:/MA_Write/thesis-write-/02_figures/outputhist.png>] [10]
-<02_figures/heatmap_corr.png, id=180, 635.2533pt x 562.9833pt>
+<02_figures/heatmap_corr.png, id=197, 635.2533pt x 562.9833pt>
 File: 02_figures/heatmap_corr.png Graphic file (type png)
 <use 02_figures/heatmap_corr.png>
 Package pdftex.def Info: 02_figures/heatmap_corr.png  used on input line 64.
@@ -1430,7 +1433,7 @@ Underfull \vbox (badness 1975) has occurred while \output is active []
  [11 <c:/MA_Write/thesis-write-/02_figures/heatmap_corr.png>] [12] (c:/texlive/2021/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) [13]
-<02_figures/rfrftree.png, id=239, 1414.68526pt x 292.6935pt>
+<02_figures/rfrftree.png, id=256, 1414.68526pt x 292.6935pt>
 File: 02_figures/rfrftree.png Graphic file (type png)
 <use 02_figures/rfrftree.png>
 Package pdftex.def Info: 02_figures/rfrftree.png  used on input line 148.
@@ -1474,23 +1477,23 @@ Overfull \hbox (6.79999pt too wide) in paragraph at lines 39--40
 
 [18] (c:/MA_Write/thesis-write-/AIS_MasterThesis_Wafi.aux)
 Package rerunfilecheck Info: File `AIS_MasterThesis_Wafi.out' has not changed.
-(rerunfilecheck)             Checksum: E210F15CA0ABAE8218C047E3FC2BB4F1;2115.
+(rerunfilecheck)             Checksum: 5B435561EFC540076E7B3D1876876D22;2282.
 Package rerunfilecheck Info: File `AIS_MasterThesis_Wafi.brf' has not changed.
-(rerunfilecheck)             Checksum: E5EFE238534A4506D66CB0820391879E;343.
+(rerunfilecheck)             Checksum: BDCC6078C4BA0A74C746935179453892;782.
  ) ) 
 Here is how much of TeX's memory you used:
- 43762 strings out of 478994
- 958589 string characters out of 5862208
- 1764355 words of memory out of 5000000
- 60278 multiletter control sequences out of 15000+600000
+ 43769 strings out of 478994
+ 958671 string characters out of 5862208
+ 1764369 words of memory out of 5000000
+ 60283 multiletter control sequences out of 15000+600000
  478629 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 107i,13n,105p,842b,1599s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 107i,13n,105p,1020b,1599s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{c:/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2021/texmf-dist/fonts/type1/bitstrea/charter/bchb8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/bitstrea/charter/bchr8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/bitstrea/charter/bchr8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/bitstrea/charter/bchri8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/kpfonts/jkpex.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/kpfonts/jkpmi.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/kpfonts/jkpmn8a.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/kpfonts/jkpsy.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt0800.pfb><c:/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on c:/MA_Write/thesis-write-/AIS_MasterThesis_Wafi.pdf (18 pages, 1404908 bytes).
+Output written on c:/MA_Write/thesis-write-/AIS_MasterThesis_Wafi.pdf (18 pages, 1411341 bytes).
 PDF statistics:
- 329 PDF objects out of 1000 (max. 8388607)
- 272 compressed objects within 3 object streams
- 84 named destinations out of 1000 (max. 500000)
- 246 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 361 PDF objects out of 1000 (max. 8388607)
+ 303 compressed objects within 4 object streams
+ 86 named destinations out of 1000 (max. 500000)
+ 254 words of extra memory for PDF output out of 10000 (max. 10000000)
 
