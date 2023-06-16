@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2023)
+This is BibTeX, Version 0.99d (TeX Live 2021/W32TeX)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: AIS_MasterThesis_Wafi.aux
 The style file: unsrturl.bst
@@ -9,45 +9,46 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: 01_sections/06_bib.bib
 Warning--empty journal in Stopford.2009
-You've used 13 entries,
-            2616 wiz_defined-function locations,
-            691 strings with 7596 characters,
-and the built_in function-call counts, 5055 in all, are:
-= -- 515
-> -- 180
+Warning--empty year in Rakke2016
+You've used 17 entries,
+            2555 wiz_defined-function locations,
+            708 strings with 8600 characters,
+and the built_in function-call counts, 6385 in all, are:
+= -- 621
+> -- 252
 < -- 1
-+ -- 57
-- -- 44
-* -- 321
-:= -- 694
-add.period$ -- 50
-call.type$ -- 13
-change.case$ -- 12
++ -- 81
+- -- 64
+* -- 415
+:= -- 876
+add.period$ -- 65
+call.type$ -- 17
+change.case$ -- 15
 chr.to.int$ -- 0
-cite$ -- 14
-duplicate$ -- 127
-empty$ -- 523
-format.name$ -- 44
-if$ -- 1382
+cite$ -- 19
+duplicate$ -- 166
+empty$ -- 675
+format.name$ -- 64
+if$ -- 1752
 int.to.chr$ -- 0
-int.to.str$ -- 13
-missing$ -- 14
-newline$ -- 79
-num.names$ -- 13
-pop$ -- 91
+int.to.str$ -- 17
+missing$ -- 18
+newline$ -- 102
+num.names$ -- 17
+pop$ -- 109
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 362
+skip$ -- 469
 stack$ -- 0
-substring$ -- 231
-swap$ -- 39
-text.length$ -- 23
+substring$ -- 249
+swap$ -- 45
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 1
-while$ -- 29
-width$ -- 15
-write$ -- 167
-(There was 1 warning)
+warning$ -- 2
+while$ -- 36
+width$ -- 19
+write$ -- 217
+(There were 2 warnings)

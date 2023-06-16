@@ -1,9 +1,46 @@
 \section{Introduction} \label{introduction}
 
-The research on efficient vessel operation is a direction that is actively being pursued by marine industry stakeholder. Efficient vessel operation reduce  translates to increase in profitability of the operation. One of the determining factor will be the reduction of Fuel Oil Consumption (FOC). Fuel cost takes up considerable portion in ships operating cost. This is clearly indicated through findings made by Ronen \cite{Ronen.2011} and Stopford \cite{Stopford.2009}. The findings mentioned that FOC consumption of a large ship potentially constitute to 75\% of the total ship operating cost while the latter noted that FOC makes up to \(\frac{2}{3}\) of vessel voyage cost and over \(\frac{1}{4}\) of vessel's overall cost. \\
+The research on efficient ship operation is a direction that is being actively pursued by marine industry stakeholder as efficient ship operations equates to increase in profitability. One of the determining factors is the reduction of Fuel Oil Consumption (FOC). FOC takes up considerable portion in ship's operating cost. This is clearly indicated through findings made by Ronen \cite{Ronen.2011} and Stopford \cite{Stopford.2009}. The former mentioned that FOC consumption of a large ship potentially constitute to 75\% of the total ship operating cost while the latter noted that FOC makes up to two-thirds of vessel voyage cost and over one-quarter of vessel's overall cost. \\
 
-With that, maritime industry stakeholder actively search for inexpensive approach to reduce FOC. As such, they look into ways to optimise operational measure as technical solutions are expensive. The operational measures include the inclusion of weather/environmental routing, speed optimisation, trim optimisation and virtual (just-in/time) arrival policy \cite{Li.2022}. It is noted by {Be{\c{s}}ik{\c{c}}i} et al. \cite{BalBesikci.2016} that lowering ship speed will have the greatest impact in fuel economy, reducing the ship speed by $2-3$ Knots could halve the operating cost of shipping company \cite{Stopford.2009,Wijnolst.2009}. {Be{\c{s}}ik{\c{c}}i} et al. then further elaborated that the main cause of this is the nonlinear relationship between ship speed and fuel consumption. Ronen \cite{Ronen.1982} estimated that fuel consumption can be calculated through third order function of the ship speed. Wang et al. \cite{Wang.2012} verified this estimation.\\
+With that, maritime industry stakeholder actively searches for inexpensive approach to reduce FOC. As such, they investigate ways to optimise operational measures as technical solutions are expensive \cite{Li.2022}. The operational measures include the inclusion of weather/environmental routing, speed optimisation, trim optimisation and virtual (just-in/time) arrival policy \cite{Li.2022}. It is noted by {Be{\c{s}}ik{\c{c}}i} et al. \cite{BalBesikci.2016} that lowering ship speed will have the greatest impact in fuel economy, reducing the ship speed by $2-3 knots$  could halve the operating cost of shipping company \cite{Stopford.2009,Wijnolst.2009}. {Be{\c{s}}ik{\c{c}}i} et al. further elaborated that the main cause of this is the nonlinear relationship between ship speed and fuel consumption. Ronen \cite{Ronen.1982,Ronen.2011} and Wang et al. \cite{Wang.2012} approximated that fuel consumption can be derived through third order function of the ship speed. \\
 
+Due to volatility and ever-increasing bunker fuel price, developing a model that could accurately predict ship speed would be beneficial to forecast the ship's FOC. The model could potentially help maritime industry stakeholder make decisions at the most opportune moment. Data driven i.e., machine learning approaches have been attempted by several authors in different literatures to model fuel consumption and reported good results in its predictive performance \cite{BalBesikci.2016,Jeon.2018,Gkerekos.2019,Abebe.2020,Kim.2021}. However, powerful machine learning models are usually unintuitive making it difficult to interpret its decisions \cite{Geron.2019}. This brings us to Random Forest, a powerful model that offers partial interpretability in their decisions. With this consideration, modelling using Random Forest will be the focus of this thesis.
+
+\subsection{Research Objective, Contributions and Boundary}\label{objectives}
+
+This thesis aims to predict the ship's speed captured by Automatic Identification System (AIS) using random forest model. In this study, this speed shall be designated as the ship's Speed Over Ground (SOG). The modelling uses fused hourly data from AIS information of Hammershus Ro-Ro ferry and local meteorological weather data in region of travel. Subsequently, the ship actual speed, which is designated as speed through water (STW), shall be derived from the predicted SOG to enable estimation for fuel consumption over different journey periods. The modelling is performed in {\tt Python} programming language using machine learning packages {\tt sklearn} offered by Pedregosa et al. \cite{FabianPedregosa.2011}. \\
+
+Using this approach, we shall raise the following research questions (RQs), namely:
+
+\begin{itemize}
+    \item \textbf{RQ1}. Is it feasible to fuse AIS data and meteorological data to accurately predict the ship's SOG ?
+    \item \textbf{RQ2}. During modelling, which optimisation parameter has the greatest impact in increasing the model's predictive performance ?
+    \item \textbf{RQ3}. During evaluation, what are the performance measures that should be considered to help us gain the most information out of the model's behaviour ?
+\end{itemize} 
+
+To answer the research questions, the following research boundaries are set:
+
+\begin{itemize}
+    \item Random forest has the capability to solve both classification and regression problem. Because the target variable, SOG, is continuous, we will only adopt the regression algorithm of random forest.
+    \item The focus of this work is a detailed study on the performance of random forest as predictor for the target value. As such, we will not perform exhaustive comparison test between different machine learning models.
+    \item The estimation for fuel consumption shall be done using simple formulation by Ronen \cite{Ronen.1982,Ronen.2011}. This thesis will not consider the more comprehensive such as method proposed by Kim et al. \cite{Kim.2020}. The comprehensive methodology by Kim et al. \cite{Kim.2020} use ISO standards to perform the estimation. However, some information for the estimation are not available in our dataset. 
+    \item The Hammershus Ro-Ro ship sails between port of K{\o}ge, R{\o}nne, Ystad and Sassnitz. However, we will only consider the journey between port of K{\o}ge, R{\o}nne and Ystad as part of the data for the voyage between port of R{\o}nne and Sassnitz are missing. 
+\end{itemize}
+
+If satisfactory solutions can be met for the bounded research questions, this thesis will provide the following contributions like  the work previously done by Rakke \cite{Rakke2016} : 
+
+\begin{itemize}
+    \item Avoid expenses of purchasing (possibly) unaffordable ship information from online database and shipping companies. 
+    \item Independent of commercial parties, as information are available in public domain.
+    \item Robust modelling approach that requires minimal data pre-processing and minimal model configuration.   
+\end{itemize}
+
+
+
+
+
+
+ 
 
 
 
