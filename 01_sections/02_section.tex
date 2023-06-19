@@ -21,10 +21,10 @@ This literature review described the capability of Random Forest Regressor to pr
 
 \subsection{Decision Tree}\label{dt_theo}
 
-Decision tree is a non-parametric model that is able to perform both classification and regression tasks for discrete variable and continuous variable respectively. It is a powerful algorithm, capable of fitting complex datasets. The model requires very little to no data preprocessing \cite{Geron.2019,Hastie.2009}. Decision tree is a white box model\footnote{This is not to be confused with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} \cite{Geron.2019}. In machine learning sense, this means that the model is intuitive and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To understand the principle of random forest, understanding how decision tree operates is necessary as the principle working of random forest stems from decision trees \cite{Geron.2019,Affenzeller.2020}. In this thesis, We shall only discuss the underlying principle of regression tree.\\  
+Decision tree is a non-parametric model that can perform both classification and regression tasks for discrete variable and continuous variable respectively. It is a powerful algorithm, capable of fitting complex datasets. The model requires very little to no data pre-processing \cite{Geron.2019,Hastie.2009}. Decision tree is a white box model\footnote{This is not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} \cite{Geron.2019}. In machine learning sense, this means that the model is intuitive, and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To understand the principle of random forest, understanding how decision tree operates is necessary as the principle working of random forest stems from decision trees \cite{Geron.2019,Affenzeller.2020}. In this thesis, we shall only discuss the underlying principle of regression tree.\\  
 \newpage
 
-To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm. Partition space shown by figure \ref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of figure \ref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. Here, we can see the interpretability of a tree based model. The partition space can be represented by a single tree, this is especially helpful when multiple input variables are involved, the inputs can be represented by a single tree \cite{Hastie.2009}.
+To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm \cite{Breiman.2017}. Partition space shown by figure \ref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of figure \ref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. Here, we can see the interpretability of a tree-based model. The partition space can be represented by a single tree, this is especially helpful when multiple input variables are involved, the inputs can be represented by a single tree \cite{Hastie.2009}.
 
 \begin{figure}[h]
 \centering
@@ -69,7 +69,7 @@ To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the
     
     \end{tikzpicture}
     
-    \captionof{figure}{Example of partition space} 
+    \captionof{figure}{Example of partition space \cite{Hastie.2009}} 
     \label{fig:partitionspace}
 \end{minipage}%
 \begin{minipage}[b]{.5\textwidth}
@@ -83,30 +83,42 @@ To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the
         [.$X_1\leq t_3$ [.$R_3$ ]
         [.$X_2\leq t_4$ [.$R_4$ ] [.$R_5$ ] ] ] ]
     \end{tikzpicture}
-    \captionof{figure}{Example of partition tree} 
+    \captionof{figure}{Example of partition tree \cite{Hastie.2009}} 
     \label{fig:partitiontree}
 \end{minipage}
 \end{figure}
 
-Now, we need to understand the principle of selection for the feature $X_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$. Assuming a case with single feature $X$ and response $Y$, with $m$ data points. The following steps are observed: 
-\begin{enumerate}
-    \item Possible thresholds are determined by calculating the splitting value (For example, suppose there are data points at $X = [0.2,0.4]$, then the splitting value is the value in between i.e. $t_k = 0.3$)
-    \item Calculate the mean of data points of the left and right partition space respectively, Defined by the following equation $\hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}$
-    \item Calculate the mean squared error (MSE) of each data points in its respective partition space. Through the equation $MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2$ 
-    \item The MSE from the respective partition space is summed.
-    \item Step $1 - 4$ is recursively repeated, until the minimum of the cost function $J(X,T_k)$, i.e. minimum MSE, is determined:
-     \begin{equation}\label{costfun}
-        J(X,T_k) = \frac{m_{left}}{m}MSE_{left} + \frac{m_{right}}{m}MSE_{right}
-        \begin{cases}
-            MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2 \\
-            \hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}
-        \end{cases}   
-    \end{equation}
-\end{enumerate} 
+Now, we need to understand the principle of selection for the feature $X_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$. Assuming a case with single feature $X$ and response $Y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $X = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of data points of the left and right partition space is calculated. This step is then followed by calculating the mean squared error (MSE) of each data points in its respective partition space. Subsequently, the MSE from the respective partition space is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function 
+$J(X,t_k)$. \cite{Geron.2019}:
 
-Once complete, then the regions is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value. Same principle is also applied when multiple feature is present. Consider there are $X_t$ features, then for each respective features $X_1,X_2,\dots,X_t$, The MSE for each of the features is calculated using the cost function $J(X,T_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
+\begin{equation}\label{costfun}
+    J(X,t_k) = \frac{m_{left}}{m}MSE_{left} + \frac{m_{right}}{m}MSE_{right}
+    \begin{cases}
+        MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2 \\
+        \hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}
+    \end{cases}   
+\end{equation}
 
-While powerful, decision tree unfortunately suffer from overfitting when the model is unconstrained. Decision tree makes very few assumptions regarding the training data. Therefore, it will adapt to the training data and fitting it very closely. Therefore it is necessary to regularise i.e. restrict the decision tree's freedom during the training. By tuning the maximum tree depth through {\tt max\_depth} parameter, this could potentially help reduce overfitting. Additionally, setting the amount of minimum number of samples a leaf node have through {\tt min\_samples\_leaf} can alleviate overfitting as well.  
+Once complete, then the regions is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value. Same principle is also applied when multiple features are present. Consider there are $X_t$ features, then for each respective features $X_1,X_2,\dots,X_t$, The MSE for each of the features is calculated using the cost function $J(X,T_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.9\textwidth]{02_figures/fig6_5_partspace_geron09.png}
+    \caption{Prediction of two Decision tree regression models \cite{Geron.2019}}
+    \label{fig:geron6_5}
+\end{figure}
+
+While powerful, decision tree unfortunately suffers from overfitting when the model is unconstrained. Decision tree makes very few assumptions regarding the training data. Therefore, it will adapt to the training data and fitting it very closely \cite{Geron.2019}. Additionally, an individual tree tends to be unstable, when the data is altered, a completely different set of splits might be found\cite{Hastie.2009,Kuhn.2013}. Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom during the training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. However, to address the fundamental drawbacks of decision tree, we shall look into random forest.
+\begin{figure}
+    \centering
+        \includegraphics[width=.9\textwidth]{02_figures/fig6_6_paramdepth_geron09.png}
+        \caption{Regularising a Decision Tree regressor \cite{Geron.2019}}
+        \label{fig:geron6_6}
+\end{figure}
+
+\subsection{Random Forest}\label{ensemble_theo}
+
+To understand random forest, the concept of ensemble method shall first be understood. Ensemble is defined as group of predictors such as classifier or regressor. Predictions are aggregated across multiple predictors, for regression task, the prediction is the average across the predictors. This principle is applied to random forest, a group of decision trees is trained on different random set of training data. For regression task, this means the prediction value is the average of the prediction across the decision trees. Such ensemble of decision trees is called \emph{\textbf{Random Forest}} \cite{Hastie.2009,Breiman.2001,TinKamHo.1995}.
 
 
 
@@ -114,18 +126,17 @@ While powerful, decision tree unfortunately suffer from overfitting when the mod
 
 
 
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-    %uncomment if require: \path (0,452); %set diagram left start at 0, and has height of 452
+
+
+
+% \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%     %uncomment if require: \path (0,452); %set diagram left start at 0, and has height of 452
     
-    %Shape: Axis 2D [id:dp697661158302031] 
-    \draw  (220,297.8) -- (517.5,297.8)(249.75,80) -- (249.75,322) (510.5,292.8) -- (517.5,297.8) -- (510.5,302.8) (244.75,87) -- (249.75,80) -- (254.75,87)  ;
-    %Image [id:dp23308396965327827] 
-    \draw (245,305) node [rotate=-40.58] {\includegraphics[width=26.87pt,height=72.39pt]{02_figures/ferry.jpg}};
-    
-    
-    
-    
-\end{tikzpicture}
+%     %Shape: Axis 2D [id:dp697661158302031] 
+%     \draw  (220,297.8) -- (517.5,297.8)(249.75,80) -- (249.75,322) (510.5,292.8) -- (517.5,297.8) -- (510.5,302.8) (244.75,87) -- (249.75,80) -- (254.75,87)  ;
+%     %Image [id:dp23308396965327827] 
+%     \draw (245,305) node [rotate=-40.58] {\includegraphics[width=26.87pt,height=72.39pt]{02_figures/ferry.jpg}};
+% \end{tikzpicture}
 
 
 
@@ -137,4 +148,47 @@ While powerful, decision tree unfortunately suffer from overfitting when the mod
 
 
 
+% Phased out, but might be useful
 
+% Might be useful for multiple images !
+% \begin{figure}[h]
+% \centering
+% \begin{minipage}[t]{.5\textwidth}
+%     \centering
+%     % \begin{figure}
+%     \includegraphics[width=\textwidth]{02_figures/featureserrro.png}
+%     % \end{figure}
+%     \captionof{figure}{Effects of number of features on RMSE}
+%     \label{fig:featureserror}
+% \end{minipage}%
+% \begin{minipage}[t]{.5\textwidth}
+%     \centering
+%     % \begin{figure}
+%     \includegraphics[width=\textwidth]{02_figures/depthError.png}
+%     % \end{figure}
+%     \captionof{figure}{Effects of tree depth on RMSE}
+%     \label{fig:deptherror}
+% \end{minipage}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.5\textwidth]{02_figures/depthError.png}
+%         \caption{Effect of tree depth on RMSE for validation dataset}
+%         \label{fig:Tree Depth Error}
+% \end{figure}
+
+% \begin{enumerate}
+%     \item Possible thresholds are determined by calculating the splitting value (For example, suppose there are data points at $X = [0.2,0.4]$, then the splitting value is the value in between i.e. $t_k = 0.3$)
+%     \item Calculate the mean of data points of the left and right partition space respectively, Defined by the following equation $\hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}$
+%     \item Calculate the mean squared error (MSE) of each data points in its respective partition space. Through the equation $MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2$ 
+%     \item The MSE from the respective partition space is summed.
+%     \item Step $1 - 4$ is recursively repeated, until the minimum of the cost function $J(X,T_k)$, i.e. minimum MSE, is determined:
+%      \begin{equation}\label{costfun}
+%         J(X,t_k) = \frac{m_{left}}{m}MSE_{left} + \frac{m_{right}}{m}MSE_{right}
+%         \begin{cases}
+%             MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2 \\
+%             \hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}
+%         \end{cases}   
+%     \end{equation}
+% \end{enumerate} 
