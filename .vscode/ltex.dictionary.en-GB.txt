@@ -12,3 +12,8 @@ Rakke
 Pedregosa
 RQs
 Haranen
+Køge
+Rønne
+Ystad
+Sassnitz
+Scikit-Learn
