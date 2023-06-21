@@ -2,13 +2,16 @@
 % 2019-08-08 v. 0.1.0
 % Juan Camilo Henao Londono
 % Universität Duisburg-Essen
-\documentclass[12pt,twoside]{article}
+\documentclass[12pt,a4paper,oneside]{article}
+% % Default format
+% \documentclass[12pt,twoside]{article}
+% % Book format
+% \documentclass[12pt, a4paper, oneside]{book}
 % include files that load packages and define macros
 \input{00_setup/preamble.tex} % various packages needed for maths etc.
 \input{00_setup/notation.tex} % short-hand notation and macros
 
 \begin{document}
-
 \input{01_sections/00_title.tex}
 \pagebreak
 \thispagestyle{empty}
@@ -19,6 +22,7 @@
 \listoffigures
 % \newpage
 % \input{01_sections/06_equations.tex}
+% {\setstretch{1}
 \newpage
 \input{01_sections/01_section.tex}
 \newpage
@@ -30,6 +34,7 @@
 \newpage
 \input{01_sections/05_section.tex}
 \newpage
+% }
 %\printbibliography
 
 \bibliographystyle{unsrturl}
@@ -37,6 +42,7 @@
 \bibliography{01_sections/06_bib}
 
 \newpage
+{\setstretch{1}
 \input{01_sections/07_declaration.tex}
-
+}
 \end{document}

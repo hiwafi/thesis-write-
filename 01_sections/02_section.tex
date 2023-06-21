@@ -21,10 +21,10 @@ This literature review described the capability of Random Forest Regressor to pr
 
 \subsection{Decision Tree}\label{dt_theo}
 
-Decision tree is a non-parametric model that can perform both classification and regression tasks for discrete variable and continuous variable respectively. It is a powerful algorithm, capable of fitting complex datasets. The model requires very little to no data pre-processing \cite{Geron.2019,Hastie.2009}. Decision tree is a white box model\footnote{This is not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} \cite{Geron.2019}. In machine learning sense, this means that the model is intuitive, and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To understand the principle of random forest, understanding how decision tree operates is necessary as the principle working of random forest stems from decision trees \cite{Geron.2019,Affenzeller.2020}. In this thesis, we shall only discuss the underlying principle of regression tree.\\  
+Decision tree is a non-parametric model that can perform both classification and regression tasks for discrete variable and continuous variable respectively. It is a powerful algorithm, capable of fitting complex datasets. The model requires very little to no data pre-processing \cite{Geron.2019,Hastie.2009}. Decision tree is a white box model\footnote{This is not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} \cite{Geron.2019}. In machine learning sense, this means that the model is intuitive, and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To understand random forest, understanding how decision tree operates is necessary as the principle working of random forest stems from decision trees \cite{Geron.2019,Affenzeller.2020}. In this thesis, we shall only discuss the underlying principle of regression tree.\\  
 \newpage
 
-To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm \cite{Breiman.2017}. Partition space shown by figure \ref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of figure \ref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. Here, we can see the interpretability of a tree-based model. The partition space can be represented by a single tree, this is especially helpful when multiple input variables are involved, the inputs can be represented by a single tree \cite{Hastie.2009}.
+To train Decision Trees, {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm \cite{Breiman.2017}. Partition space shown by \Cref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of \Cref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. The binary tree representation can be especially helpful when multiple input variables are involved, as the responses can be represented by a single tree \cite{Hastie.2009}.
 
 \begin{figure}[h]
 \centering
@@ -88,18 +88,17 @@ To train Decision Trees. {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the
 \end{minipage}
 \end{figure}
 
-Now, we need to understand the principle of selection for the feature $X_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$. Assuming a case with single feature $X$ and response $Y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $X = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of data points of the left and right partition space is calculated. This step is then followed by calculating the mean squared error (MSE) of each data points in its respective partition space. Subsequently, the MSE from the respective partition space is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function 
-$J(X,t_k)$. \cite{Geron.2019}:
+Now, we need to understand the principle of selection for the feature $k_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$. Assuming a case with single feature $k$ and response $Y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $k = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of data points of the left and right partition space is calculated as seen in \Cref{fig:geron6_5}. This step is then followed by calculating the mean squared error (MSE) of each data points in its respective partition space. Subsequently, the MSE from the respective partition space is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function $J(k,t_k)$. \cite{Geron.2019}:
 
 \begin{equation}\label{costfun}
-    J(X,t_k) = \frac{m_{left}}{m}MSE_{left} + \frac{m_{right}}{m}MSE_{right}
+    J(k,t_k) = \frac{m_{\text{left}}}{m}\text{MSE}_\text{left} + \frac{m_{\text{right}}}{m}\text{MSE}_\text{right}
     \begin{cases}
-        MSE_{node} = \sum\limits_{i\in node}(\hat{y}_{node} - y^{(i)} )^2 \\
-        \hat{y}_{node} = \frac{1}{m_{node}}\sum\limits_{i\in node} y ^ {(i)}
+        \text{MSE}_\text{node} = \sum\limits_{i \in \text{node}}(\hat{y}_\text{node} - y^{(i)} )^2 \\
+        \hat{y}_{\text{node}} = \frac{1}{m_{\text{node}}}\sum\limits_{i\in \text{node}} y ^ {(i)}
     \end{cases}   
 \end{equation}
 
-Once complete, then the regions is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value. Same principle is also applied when multiple features are present. Consider there are $X_t$ features, then for each respective features $X_1,X_2,\dots,X_t$, The MSE for each of the features is calculated using the cost function $J(X,T_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
+Once complete, then the regions is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value. Same principle is also applied when multiple features are present. Consider there are $k_t$ features, then for each respective features $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated using the cost function $J(k,t_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
 
 \begin{figure}[h]
     \centering
@@ -116,9 +115,43 @@ While powerful, decision tree unfortunately suffers from overfitting when the mo
         \label{fig:geron6_6}
 \end{figure}
 
-\subsection{Random Forest}\label{ensemble_theo}
+\subsection{Random Forest}\label{rf_theo}
 
-To understand random forest, the concept of ensemble method shall first be understood. Ensemble is defined as group of predictors such as classifier or regressor. Predictions are aggregated across multiple predictors, for regression task, the prediction is the average across the predictors. This principle is applied to random forest, a group of decision trees is trained on different random set of training data. For regression task, this means the prediction value is the average of the prediction across the decision trees. Such ensemble of decision trees is called \emph{\textbf{Random Forest}} \cite{Hastie.2009,Breiman.2001,TinKamHo.1995}.
+To understand random forest, the concept of ensemble method shall first be understood. Ensemble is defined as group of predictors such as classifier or regressor. Predictions are aggregated across multiple predictors, for regression task, the prediction is the average across the predictors. This principle is applied to random forest, a group of decision trees is trained on different random set of training data. For regression task, this means the prediction value is the average of the prediction across the decision trees. Such ensemble of decision trees is called \emph{\textbf{Random Forest}} \cite{Hastie.2009,Breiman.2001,TinKamHo.1995}.\\
+
+Ensemble methods achieve the best performance, when the predictors are as independent to one another. In statistical sense, this can be achieved by reducing correlation among the trees. This can be realised by adding randomness during tree construction process. For this purpose, random forest utilise \emph{bagging} \cite{Breiman.1996} method (short for \emph{bootstrap aggregating}) during the training process. First, bootstrap sample is created, this means that a sample of the dataset is randomly selected and allowed to appear more than once. This sampling technique is referred to as sampling \emph{with} replacement. Once the predictor are trained, then the prediction of the new instance is \emph{aggregated} across the predictors. \cite{Kuhn.2013,Hastie.2009,Geron.2019}\\
+
+To add further randomness, random forest involves random selection of input features $k$ that are considered to split the tree. This means that the feature $k$ that will be used to split the tree is selected from this random subset of feature. The selection for the best feature to be used as the root of the tree and its subsequent node, as well as the stopping rule for the tree's growth is similar to that of decision tree. \cite{Kuhn.2013,Hastie.2009,Geron.2019}\\
+
+These measures introduced in random forest address the tendency of decision tree to overfit. In fact, the instability of decision tree mentioned in \Cref{dt_theo} is exploited in random forest to gain randomness during construction of the tree. Experience from Hastie et al. \cite{Hastie.2009} shown that random forest requires minimal parameter tuning to achieve good performance while Kuhn et al. \cite{Kuhn.2013} reported that tuning parameter does not have a drastic effect on performance. \\
+
+However, what random forest gains in predictive performance, loses in interpretability. Random forest is generally considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020} \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.}. The randomness means that it is challenging to describe the decisions made during the selection of the samples and also during the selection of the input features.\\ 
+
+Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value. Additionally, extra-trees (Extremely Randomized Trees) is introduced by Geurts et al. \cite{Geurts.2006} to further randomise random forest. The key difference lies on how each split is selected, in extra-trees each tree split is selected in random instead of searching for the best split. Extra-trees also does not bootstrap the samples, which mean it samples \emph{without} replacement.\\
+
+Overview of the tree-based model discussed in \Cref{dt_theo} and \Cref{rf_theo} can be summarised in \Cref{table_trees}:
+
+\begin{table}[ht]
+    % \small
+    \centering
+    \resizebox {\textwidth}{!}
+    {\begin{tabular}{ |p{5cm}|p{3cm}|p{3cm}|p{3cm}|  }
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Model}} & \multicolumn{1}{|c|}{\textbf{Decision Tree}}  & \multicolumn{1}{|c|} {\textbf{Random Forest}} & \multicolumn{1}{|c|}{\textbf{Extra-Trees}}\\
+    \hline
+    Number of trees & \multicolumn{1}{|c|}{1} & \multicolumn{1}{|c|}{Many} & \multicolumn{1}{|c|}{Many}\\
+    \hline
+    Features considered for split at each node &   \multicolumn{1}{|c|}{All features}  & \multicolumn{1}{|c|}{Random subset of features} & \multicolumn{1}{|c|}{Random subset of features} \\
+    \hline
+    Bootstrapping & \multicolumn{1}{|c|}{Not applied} & \multicolumn{1}{|c|}{Yes} & \multicolumn{1}{|c|}{No}\\
+    \hline
+    Split Rule  & \multicolumn{1}{|c|}{Best split} & \multicolumn{1}{|c|}{Best split}& \multicolumn{1}{|c|}{Random split}\\
+    \hline
+    \end{tabular}}
+\caption{Comparison of tree based model}\label{table_trees}
+\end{table}
+
+
 
 
 

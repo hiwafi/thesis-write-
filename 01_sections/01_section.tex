@@ -4,7 +4,9 @@ The research on efficient ship operation is a direction that is being actively p
 
 With that, maritime industry stakeholder actively searches for inexpensive approach to reduce FOC. As such, they investigate ways to optimise operational measures as technical solutions are expensive \cite{Li.2022}. The operational measures include the inclusion of weather/environmental routing, speed optimisation, trim optimisation and virtual (just-in/time) arrival policy \cite{Li.2022}. It is noted by {Be{\c{s}}ik{\c{c}}i} et al. \cite{BalBesikci.2016} that lowering ship speed will have the greatest impact in fuel economy, reducing the ship speed by $2-3 knots$  could halve the operating cost of shipping company \cite{Stopford.2009,Wijnolst.2009}. {Be{\c{s}}ik{\c{c}}i} et al. further elaborated that the main cause of this is the nonlinear relationship between ship speed and fuel consumption. Ronen \cite{Ronen.1982,Ronen.2011} and Wang et al. \cite{Wang.2012} approximated that fuel consumption can be derived through third order function of the ship speed. \\
 
-Due to volatility and ever-increasing bunker fuel price, developing a model that could accurately predict ship speed would be beneficial to forecast the ship's FOC. The model could potentially help maritime industry stakeholder make decisions at the most opportune moment. Data driven i.e., machine learning approaches have been attempted by several authors in different literatures to model fuel consumption and reported good results in its predictive performance \cite{BalBesikci.2016,Jeon.2018,Gkerekos.2019,Abebe.2020,Kim.2021}. However, powerful machine learning models are usually unintuitive making it difficult to interpret its decisions \cite{Geron.2019}. This brings us to Random Forest, a powerful model that offers partial interpretability in their decisions. With this consideration, modelling using Random Forest will be the focus of this thesis.
+Due to volatility and ever-increasing bunker fuel price, developing a model that could accurately predict ship speed would be beneficial to forecast the ship's FOC. The model could potentially help maritime industry stakeholder make decisions at the most opportune moment. Data driven i.e., machine learning approaches have been attempted by several authors in different literatures to model fuel consumption and reported good results in its predictive performance \cite{BalBesikci.2016,Jeon.2018,Gkerekos.2019,Abebe.2020,Kim.2021}. However, powerful machine learning models are usually unintuitive making it difficult to interpret its decisions \cite{Geron.2019}. This brings us to Random Forest, a powerful model that offers partial interpretability in their decisions. With this consideration, modelling using Random Forest will be the focus of this thesis. 
+
+\newpage
 
 \subsection{Research Objective, Contributions and Boundary}\label{objectives}
 
@@ -26,6 +28,8 @@ To answer the research questions, the following research boundaries are set:
     \item The estimation for fuel consumption shall be done using simple formulation by Ronen \cite{Ronen.1982,Ronen.2011}. This thesis will not consider the more comprehensive method such as the method proposed by Kim et al. \cite{Kim.2020} as the focus of this work is to estimate the SOG using random forest-
     \item The Hammershus Ro-Ro ship sails between port of K{\o}ge, R{\o}nne, Ystad and Sassnitz. However, we will only consider the journey between port of K{\o}ge, R{\o}nne and Ystad as part of the data for the voyage between port of R{\o}nne and Sassnitz are missing. 
 \end{itemize}
+
+\newpage
 
 The use of AIS data provides the following contributions as indicated by Rakke \cite{Rakke2016}: 
 
