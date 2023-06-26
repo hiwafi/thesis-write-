@@ -1,11 +1,25 @@
 \section{Research Methodology} \label{method}
 
-In this chapter the methodology used to develop the model will be discussed. 
-The discussion on different parameters in the vessel's journey data will be discussed here. 
-This includes the mining and merging of the features. The method used to develop the ship's speed model will be discussed in this chapter. 
-This consists of the parameter used to develop the model. Ultimately, the model is then used to predict the ship's fuel consumption.
+In this chapter the methodology used to develop random forest model will be discussed. The details of data source used for training the model will be presented in \Cref{data_acquisition}. Methodology applied during data pre-processing will be described in \Cref{data_prep_sub}. To simplify the model, domain knowledge based feature selection will be explained in \Cref{feature_select}. The methodology used to develop random forest model include model hyperparameter optimisation, explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used which is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application}.
 
-\subsection{Data Preprocessing}
+\subsection{Data Preprocessing}\label{data_prep_main}
+
+\subsubsection{Data Acquisition}\label{data_acquisition}
+temporal resolution
+
+\subsubsection{Data Preprocessing}\label{data_prep_sub}
+
+\subsubsection{Feature Selection}\label{feature_select}
+
+\subsection{Modelling}\label{modelling}
+
+\subsubsection{Model Hyperparameter Optimisation}\label{hpo}
+
+\subsubsection{Model Validation}\label{model_validation}
+
+\subsubsection{Methodology Application}\label{methodology_application}
+
+
 
 \begin{itemize}
     \item Two data sources are imported. {\tt AIS\_weather\_H\_ok2\_copy.csv} \\ and {\tt AIS\_weather\_h\_rename\_copy.csv}. The information from the latter comma delimited 

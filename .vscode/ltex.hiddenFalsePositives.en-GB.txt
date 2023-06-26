@@ -1,0 +1,1 @@
+{"rule":"OXFORD_SPELLING_Z_NOT_S","sentence":"^\\QThe literature review in \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q presents past and present research on utilisation of machine learning method of This chapter deals with the past and present research in the relevant area which include literature review.\\E$"}

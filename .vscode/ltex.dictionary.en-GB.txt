@@ -17,3 +17,6 @@ Rønne
 Ystad
 Sassnitz
 Scikit-Learn
+BBMs
+Breiman
+SOLAS
