@@ -137,7 +137,7 @@ To add further randomness, random forest involves random selection of input feat
 
 These measures introduced in random forest address the tendency of decision tree to overfit. In fact, the instability of decision tree mentioned in \Cref{dt_theo} is exploited in random forest to gain randomness during construction of the tree. Experience from Hastie et al. \cite{Hastie.2009} shown that random forest requires minimal parameter tuning to achieve satisfactory performance while Kuhn et al. \cite{Kuhn.2013} reported that tuning parameter does not have a drastic effect on performance. \\
 
-However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020} \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.}. The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value. 
+However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020}. \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value. 
 
 \subsubsection{Extra-Trees (Extremely Randomised Trees)}\label{et_theo}
 
@@ -231,48 +231,30 @@ AIS is also further differentiated by its equipment class. The classification is
 
 As indicated in \Cref{AIS_struct}, the speed shown in AIS is the speed over ground (SOG). However, for calculation of ship's fuel consumption, the actual speed i.e. speed through water (STW) is required. This can be achieved by correcting the SOG for the current speed, in consideration of the research by Zhou et al. \cite{Zhou.2017} which shows the impact of current on ship's SOG. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Similarly, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
 
-To calculate the correction, this study will adopt the methodology proposed by Kim et al. \cite{Kim.2020b} and Yang et al. \cite{Yang.2020}. The $u$ and $v$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}:
+To calculate the correction, this study will adopt the methodology proposed by Kim et al. \cite{Kim.2020b} and Yang et al. \cite{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{current}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
 \begin{equation}\label{eqvgx}
-    U_{\text{SOG}} = V_{\text{SOG}}\cdot\sin(\beta)   
+    V_{\text{SOG}}^x = V_{\text{SOG}}\cdot\sin(\alpha)   
 \end{equation}
 \begin{equation}\label{eqvgy}
-    V_{\text{SOG}} = V_g\cos(\beta)   
+    V_{\text{SOG}}^y = V_{\text{SOG}}\cdot\cos(\alpha)   
 \end{equation} 
+\begin{equation}\label{eqvcx}
+     V_{\text{current}}^x = V_{\text{current}}\cdot\sin(\gamma)   
+\end{equation}
+\begin{equation}\label{eqvcy}
+    V_{\text{current}}^y = V_{\text{current}}\cdot\cos(\gamma)   
+\end{equation}
+Then the resulting equation to determine STW, including the current compensation, is given by:\\
+\begin{equation}
+    V_{\text{STW}}^x = V_{\text{SOG}}^x - V_{\text{current}}^x    
+\end{equation}
+\begin{equation}
+    V_{\text{STW}}^y = V_{\text{SOG}}^y - V_{\text{current}}^y      
+\end{equation}
+\begin{equation}
+    V_{\text{STW}} = \sqrt{(V_{\text{STW}}^x)^2 + (V_{\text{STW}}^y)^2} 
+\end{equation}
 
-% \begin{itemize}
-%     \item The ship's Speed Through Water STW can be calculated using vector component of the SOG and current speed. The direction used will be according to True North. \cite{Yang.2020,Zhou.2020}
-%     \item SOG represents the speed of the ship with reference to the ground, while the STW represent the ship's speed with reference to water.
-%     \item SOG also can be termed by the ship's speed that is captured by the GPS, and does not consider any effect of the current
-%     \item This means that the ship's STW will be greater than the ship's SOG when there is current moving against the ship's movement direction and vice versa 
-%     \item The vector decomposition can be defined from the following equations, which is based on the equation by \cite{Yang.2020}:
-    % \begin{itemize}
-    %     \item The ship's SOG $V_g$ can be decomposed into $V_{g}^x$ and $V_{g}^y$, which represents the $x$ and $y$ components of the SOG respectively using the ship's course heading (COG) $\beta$ \emph{with respect to True North}:
-    %     \begin{equation}\label{eqvgx}
-    %         V_{g}^x = V_g\sin(\beta)   
-    %     \end{equation}
-    %     \begin{equation}\label{eqvgy}
-    %         V_{g}^y = V_g\cos(\beta)   
-    %     \end{equation}
-    %     \item To consider the effect of sea current. The current speed $V_c$ will also be decomposed to $x$ and $y$ components respectively using the current direction $\gamma$ \emph{with respect to True North}:
-    %     \begin{equation}\label{eqvcx}
-    %         V_{c}^x = V_g\sin(\gamma)   
-    %     \end{equation}
-    %     \begin{equation}\label{eqvcy}
-    %         V_{c}^y = V_g\cos(\gamma)   
-    %     \end{equation}
-    %     \item from here the ship' STW $V_{wx}$ and $V_{wy}$ component can be found from the following equation: 
-    %     \begin{equation}
-    %         V_{w}^x = V_{g}^x - V_{c}^x    
-    %     \end{equation}
-    %     \begin{equation}
-    %         V_{w}^y = V_{g}^y - V_{c}^y 
-    %     \end{equation}
-    %     \item The magnitude of the STW can be readily obtained from the following vector synthesis
-    %     \begin{equation}
-    %         V_w = \sqrt{(V_{w}^x)^2 + (V_{w}^y)^2} 
-    %     \end{equation}
-    % \end{itemize}
-    \newpage
 \subsection{Calculation of Fuel Oil Consumption}\label{foc_calc}
 
 

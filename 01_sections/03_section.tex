@@ -1,15 +1,110 @@
 \section{Research Methodology} \label{method}
 
-In this chapter the methodology used to develop random forest model will be discussed. The details of data source used for training the model will be presented in \Cref{data_acquisition}. Methodology applied during data pre-processing will be described in \Cref{data_prep_sub}. To simplify the model, domain knowledge based feature selection will be explained in \Cref{feature_select}. The methodology used to develop random forest model include model hyperparameter optimisation, explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used which is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application}.
+In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep_sub}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used. The underlying principle is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
 
-\subsection{Data Preprocessing}\label{data_prep_main}
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=\textwidth]{02_figures/flowmethod2.png}
+        \caption{Scheme of proposed methodology}
+        \label{fig:flowchart}
+\end{figure}
 
-\subsubsection{Data Acquisition}\label{data_acquisition}
-temporal resolution
+\subsection{Data Acquisition}\label{data_acquisition}
+
+For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershus is collected. The shore-based AIS data is made available by Danish Maritime Authority which tracked her journey between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz and structured according to \Cref{AIS_struct}. The AIS data is fused with weather data from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with temporal resolution of 1 hour at granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with temporal resolution of 3 hours at granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
+
+The resulting fusion resulted in dataset with temporal resolution of 1 hour. Some information static information from the AIS data are excluded before further data preprocessing, this includes ship's MMSI, Callsign, Name, IMO and Navigational Status. Additionally, information of the ship's Rate of Turn (ROT) is not available in this case. The weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\ 
+
+Through vector decomposition, information of Northward and Eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$. Similarly, information of Northward and Eastward current Velocity is converted to absolute current speed and current direction \emph{with respect to True North} $\gamma$.\\ 
+
+Additional information is then added to the dataset. True direction information is added to gain information of the effect of weather direction \emph{with respect to ship's beam}. As such, from information based on True North such as: wind direction, current direction, swell direction, wind wave direction and true wave direction, are converted to information on true direction and added to the dataset. The initial structure have 32 features, 9 AIS feature and 23 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{dataset_init_struct} \\
+
+\begin{table}
+    % \small
+    % \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ |p{8cm}|c| }
+    \hline
+    \textbf{Feature} & \textbf{Unit} \\
+    \hline
+    \multicolumn{2}{|l|}{\textbf{AIS data}}\\
+    \hline
+    Position Time Stamp & DD\slash MM\slash YYYY HH:MM:SS\\
+    \hline
+    Latitude & $deg.$\\
+    \hline
+    Longitude & $deg.$ \\
+    \hline
+    Width & $m$ \\
+    \hline
+    Length & $m$ \\
+    \hline
+    SOG & $\text{knot}$ \\
+    \hline
+    COG & $deg.$ \\
+    \hline
+    Heading & $deg.$ \\
+    \hline
+    Draught & $m$ \\
+    \hline
+    \multicolumn{2}{|l|}{\textbf{Weather Data (0.5° Granularity)}}\\
+    \hline
+    Wind Speed & $m/s$ \\
+    \hline
+    True North Wind Direction $\varphi$ & $m/s$ \\
+    \hline
+    Temperature above oceans & $K$ \\
+    \hline
+    Air Density above oceans & $kg/m^3$\\
+    \hline
+    Maximum Wave Height & $m$ \\
+    \hline
+    Swell Direction & $deg.$\\
+    \hline
+    Wind Wave Direction & $deg.$ \\
+    \hline
+    Swell Period & $deg.$ \\
+    \hline
+    Wind Wave Period & $sec$\\
+    \hline
+    Wave Direction & $deg.$\\
+    \hline
+    Wave Period & $sec.$\\
+    \hline
+    Sea Surface Temperature & $K$\\
+    \hline
+    Combined Wind Wave Swell Height & $m$ \\
+    \hline
+    Swell Height & $m$\\
+    \hline
+    Wind Wave Height & $m$ \\
+    \hline
+    Surface Pressure & $Pa$ \\
+    \hline
+    Current Speed & $m/s$\\
+    \hline
+    True North Current Direction $\gamma$ & $m/s$\\
+    \hline
+    True Wind Direction & $deg.$ \\
+    \hline
+    True Current Direction & $deg.$ \\
+    \hline
+    True Swell Direction & $deg.$ \\
+    \hline
+    True Wind Wave Direction & $deg.$ \\
+    \hline
+    True Wave Direction & $deg.$ \\
+    \hline
+    \end{tabular}}
+\caption{Structure of fused dataset}\label{dataset_init_struct}
+\end{table}
 
 \subsubsection{Data Preprocessing}\label{data_prep_sub}
 
-\subsubsection{Feature Selection}\label{feature_select}
+
+
+
+\subsection{Feature Selection}\label{feature_select}
 
 \subsection{Modelling}\label{modelling}
 
