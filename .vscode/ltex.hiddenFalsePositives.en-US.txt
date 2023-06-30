@@ -1,0 +1,9 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QTo validate the model's generalisation capability, statistical performance measure is used.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSummary of methodology application in this study is summarised in \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and visually represented in figure \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QEuropean Centre for Medium-Range Weather Forecast\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThis indicated that about half of the total data points represented the ship's stationary behaviour.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QEach sample's missing values are imputed using the mean of nearest neighbour found in training dataset \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. NaN values.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QImputing strategy using k-nearest neighbour is considered as it reflected the weather conditions within the region of missing values.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFrom this distribution, the relation between significant wave height \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, the highest ten percent of waves \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and average wave height \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q can be summarised as follows \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q:\\E$"}
