@@ -1,6 +1,6 @@
 \section{Research Methodology} \label{method}
 
-In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep_sub}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used. The underlying principle is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
+In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used. The underlying principle is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
 
 \begin{figure}[h]
     \centering
@@ -13,67 +13,95 @@ In this chapter the methodology used to develop random forest model will be disc
 
 For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershus is collected. The shore-based AIS data is made available by Danish Maritime Authority which tracked her journey between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz and structured according to \Cref{AIS_struct}. The AIS data is fused with weather data from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with temporal resolution of 1 hour at granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with temporal resolution of 3 hours at granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
 
-The resulting fusion resulted in dataset with temporal resolution of 1 hour. Some information static information from the AIS data are excluded before further data preprocessing, this includes ship's MMSI, Callsign, Name, IMO and Navigational Status. Additionally, information of the ship's Rate of Turn (ROT) is not available in this case. The weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\ 
+The resulting fusion resulted in dataset with temporal resolution of 1 hour. Some information static information from the AIS data which only indicated the ship's identity are excluded. This includes ship's MMSI, Callsign, Name, IMO and Navigational Status. Additionally, information of the ship's Rate of Turn (ROT) is not available in this case. The weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\ 
 
-Through vector decomposition, information of Northward and Eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$. Similarly, information of Northward and Eastward current Velocity is converted to absolute current speed and current direction \emph{with respect to True North} $\gamma$.\\ 
+Through vector decomposition, information of Northward and Eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
+
+\begin{equation}\label{eqn:vwindabs}
+    V_{\text{wind}} = \sqrt{(V_{\text{wind}}^N)^2 + (V_{\text{wind}}^E)^2} 
+\end{equation}
+\begin{equation}\label{eqn:winddir}
+    \varphi = 
+    \begin{cases}
+        360 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E > 0 \quad \wedge \quad V_{\text{wind}}^N < 0 \\ 
+        180 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E < 0 \quad \wedge \quad V_{\text{wind}}^N > 0 \\ 
+        270 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E > 0 \quad \wedge \quad V_{\text{wind}}^N > 0 \\
+        \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \qquad \text{\textbf{otherwise}} 
+    \end{cases}   
+\end{equation}
+
+Similarly, information of Northward and Eastward current Velocity is converted to absolute current speed and current direction \emph{with respect to True North} $\gamma$.\\ 
+
+\begin{equation}\label{eqn:vcurrabs}
+    V_{\text{current}} = \sqrt{(V_{\text{current}}^N)^2 + (V_{\text{current}}^E)^2} 
+\end{equation}
+\begin{equation}\label{eqn:currdir}
+    \gamma = 
+    \begin{cases}
+        360 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E < 0 \quad \wedge \quad V_{\text{current}}^N > 0 \\ 
+        180 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E > 0 \quad \wedge \quad V_{\text{current}}^N < 0 \\ 
+        270 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E < 0 \quad \wedge \quad V_{\text{current}}^N < 0 \\
+        \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \qquad \text{\textbf{otherwise}} 
+    \end{cases}   
+\end{equation}
 
 Additional information is then added to the dataset. True direction information is added to gain information of the effect of weather direction \emph{with respect to ship's beam}. As such, from information based on True North such as: wind direction, current direction, swell direction, wind wave direction and true wave direction, are converted to information on true direction and added to the dataset. The initial structure have 32 features, 9 AIS feature and 23 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{dataset_init_struct} \\
 
 \begin{table}
     % \small
-    % \centering
+    \centering
     % \resizebox {\textwidth}{!}
     {\begin{tabular}{ |p{8cm}|c| }
     \hline
-    \textbf{Feature} & \textbf{Unit} \\
+    \textbf{Feature} & \textbf{Feature Name}  \\
     \hline
     \multicolumn{2}{|l|}{\textbf{AIS data}}\\
     \hline
-    Position Time Stamp & DD\slash MM\slash YYYY HH:MM:SS\\
+    Position Time Stamp [DD\slash MM\slash YYYY HH:MM:SS] & {\tt Time} \\
     \hline
-    Latitude & $deg.$\\
+    Latitude [°] & {\tt LAT}   \\
     \hline
-    Longitude & $deg.$ \\
+    Longitude [°] & {\tt LON}  \\
     \hline
-    Width & $m$ \\
+    Width [m] & {\tt width}  \\
     \hline
-    Length & $m$ \\
+    Length [m] & {\tt length}\\
     \hline
-    SOG & $\text{knot}$ \\
+    SOG [Knots] & {\tt sog} \\
     \hline
-    COG & $deg.$ \\
+    COG [m/s] & {\tt cog}  \\
     \hline
-    Heading & $deg.$ \\
+    Heading [°] & {\tt heading}  \\
     \hline
-    Draught & $m$ \\
+    Draught [m] & {\tt draught} \\
     \hline
     \multicolumn{2}{|l|}{\textbf{Weather Data (0.5° Granularity)}}\\
     \hline
-    Wind Speed & $m/s$ \\
+    Wind Speed [m/s] & {\tt windspeed} \\
     \hline
-    True North Wind Direction $\varphi$ & $m/s$ \\
+    True North Wind Direction, $\varphi$ [°] & {\tt truenorthcurrentdir} \\
     \hline
-    Temperature above oceans & $K$ \\
+    Air Temperature Above Oceans [K] & {\tt oceantemperature} \\
     \hline
-    Air Density above oceans & $kg/m^3$\\
+    Air Density Above Oceans [$\text{kg/m}^3$]& - \\
     \hline
-    Maximum Wave Height & $m$ \\
+    Maximum Wave Height [m] & {\tt waveheight} \\
     \hline
-    Swell Direction & $deg.$\\
+    Swell Direction [°] & - \\
     \hline
-    Wind Wave Direction & $deg.$ \\
+    Wind Wave Direction & - \\
     \hline
-    Swell Period & $deg.$ \\
+    Swell Period [s] & {\tt swellperiod} \\
     \hline
-    Wind Wave Period & $sec$\\
+    Wind Wave Period [s] & {\tt windwaveperiod}\\
     \hline
-    Wave Direction & $deg.$\\
+    Wave Direction [°] & - \\
     \hline
-    Wave Period & $sec.$\\
+    Wave Period [s] & {\tt waveperiod}\\
     \hline
-    Sea Surface Temperature & $K$\\
+    Sea Surface Temperature [K] & {\tt surftemp}\\
     \hline
-    Combined Wind Wave Swell Height & $m$ \\
+    Combined Wind Wave Swell Height [m] &  {\tt Windwaveswellheight} \\
     \hline
     Swell Height & $m$\\
     \hline
@@ -99,18 +127,90 @@ Additional information is then added to the dataset. True direction information 
 \caption{Structure of fused dataset}\label{dataset_init_struct}
 \end{table}
 
-\subsubsection{Data Preprocessing}\label{data_prep_sub}
+\subsection{Data Preprocessing}\label{data_prep}
+
+This section presents the steps taken to during data preprocessing. The dataset will be first subjected to data cleaning which include identification of anomalies and missing values, the steps are explained in \Cref{data_cleaning}. Boundary condition is then applied to ensure that the model represent operating condition at steady state. Using domain knowledge, appropriate features are selected and discarded to ensure the model obeys shipping domain knowledge. This dataset is to be split into training, validation and test dataset. These steps will be further elaborated in \Cref{feature_select}.
+
+\subsubsection{Data Cleaning}\label{data_cleaning}
+
+The journey between the port of K{\o}ge, R{\o}nne, Ystad and Sassnitz is plotted using {\tt QGIS}\footnote{https://qgis.org/en/site/, {\tt QGIS} is a free and open source geographic information system}. The plot of the journey is shown in \Cref{fig:YearJourney}, it can be seen, that the journey between R{\o}nne and Sassnitz is not represented completely. As in this information is missing due to poor coverage in the area between Sassnitz and R{\o}nne. This is shown by the plot shown in \Cref{fig:aiscoverage}. Therefore, the data plot for the journey between Sassnitz and R{\o}nne will be excluded. Basic threshold of decimal degrees of 55.04° N for latitude is applied, this threshold will exclude the journey between Sassnitz and R{\o}nne.\\ 
+
+\begin{figure}
+    \centering
+        \includegraphics[width=0.8\textwidth]{02_figures/SassnitznoFilter.png}
+        \caption{Journey of the ship in a year}
+        \label{fig:YearJourney}
+\end{figure}
+
+\begin{figure}
+    \centering
+        \includegraphics[width=0.9\textwidth]{02_figures/AIS_Coverage.png}
+        \caption{Shore based AIS Coverage based on data from AIS database \cite{webaisdk.2023}}
+        \label{fig:aiscoverage}
+\end{figure}
+
+In its initial state, the dataset contains 7453 data points which described the journey of the ship in one year. To gain better insight, the data points are visualised in figure $\dots$. The initial dataset considers all navigational status of the ship, which include ``mooring'', ``anchoring'' and ``underway using engine''. This is clearly observed in the histogram for the SOG distribution in fifure \dots, with large data count when the ship is stationary. To ensure that the dataset represents the actual operating condition of ship in steady state, a threshold of 5 knots is applied. SOG can vary due to changing sea state, but it can also be reduced by the ship's operator around the port when it departs from port of origin or arriving at port of origin. Any data points with SOG less than 5 knots will be discarded which is considered as manoeuvring \cite{Abebe.2020}.\\
+
+Source of error can also be observed in data points of current speed. In current speed range around $0.01 - 0.03$ \verb|m/s|, there is unreasonable amount of data points within this range. This error is attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in misrepresented absolute current speed within this data points. To address the missing values, the missing data points are imputed using {\tt KNNImputer} feature from {\tt Scikit-Learn}. Each sample's missing values are imputed using the mean of nearest neighbour found in training dataset \cite{FabianPedregosa.2011}. Once the missing values of northward and southward current are imputed, resulting current speed can be calculated and as shown by figure $\dots$, anomalies are corrected. The imputing approach using k-nearest neighbour is also applied to data points that contain {\tt NaN} values, as the model provided by {\tt Scikit-Learn} cannot handle missing values.\\
+
+\subsubsection{Feature Selection}\label{feature_select}
+
+To select appropriate features for the model, correlation between the features is first studied. Selection of features is based on statistical approach of High Correlation Filter proposed by Abebe et al. \cite{Abebe.2020}. This approach considers pairs of features with correlation features higher than 0.7 as one entity. However, the selection of highly correlated features must not violate natural state of matter. Therefore, in addition to statistical approach, the scienctific reasoning behind the correlations will be considered and prioritised over the statistical approach.\\
+
+The features combined wind wave swell height, swell height, maximum wave height and wind wave height are physically correlated. In sea wave theory, wind wave swell height is also known as significant wave height $H_{1/3}$. It is defined as the mean of the highest one-third of waves in the wave record \cite{Holthuijsen.2007}. \\
+
+\begin{figure}
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/Bretschneider_1965_wavedist.jpg}
+        \caption{Statistical distribution of wave heights \cite{bretschneider.1965}}
+        \label{fig:wavestats}
+\end{figure}
+
+The distribution of wave heights can be represented by probability density function. Hence, the term ``highest one-third of waves'' here means the region of wave heights that belong in the upper one-third of a probability density function, this is illustrated in \Cref{fig:wavestats}. From this distribution, the relation between significant wave height $H_{1/3}$, the highest ten percent of waves $H_{10}$ and average wave height $\overline{H}$ can be summarised as follows \cite{bretschneider.1965,Holthuijsen.2007}: 
+
+\begin{equation}\label{eqn:Hsig_mean}
+    \overline{H} = 0.625\cdot H_{1/3}
+\end{equation}
+\begin{equation}\label{eqn:Hsig_Hten}
+    H_{10} = 2.03\cdot \overline{H} = 1.27\cdot H_{1/3} 
+\end{equation}
+\begin{equation}\label{eqn:Hsig_max}
+    H_{\text{max}} = 2 \cdot H_{1/3} 
+\end{equation} 
+
+Additionally, Bitner-Gregersen \cite{BitnerGregersen.2005} described the relation between the significant wave height, wind wave height and swell height through following equation:
+
+\begin{equation}\label{eqn:H_sig_root}
+    H_{1/3} = \sqrt{(H_{\text{swell}})^2 + (H_{\text{windwave}})^2} 
+\end{equation}
+
+From here, it is clear that significant wave height should be retained for modelling, as it holds critical information regarding wave properties. The features swell height, wind wave height and maximum wave height will be dropped as it can be defined through correlations defined in \Cref{eqn:Hsig_mean},\Cref{eqn:Hsig_Hten},\Cref{eqn:Hsig_max} and \Cref{eqn:H_sig_root}. This decision is also statistically supported through the high correlation filter method. As shown in \Cref{fig:heatmap1}, high correlation are observed between these features.\\
+
+\begin{figure}
+    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/heatmap_corr_ovr.png}
+    \caption{Correlation Heat Map}
+    \label{fig:heatmap_ovr}
+\end{figure}
+
+From the \Cref{fig:heatmap1}, high correlation is observed between wave direction, swell direction and wind wave direction. Bitner-Gregersen further elaborated that the state of the sea can be described through so called   \cite{K.Torsethaugen.2004}
 
 
 
+\subsubsection{Feature Selection}\label{wavedist}
 
-\subsection{Feature Selection}\label{feature_select}
 
 \subsection{Modelling}\label{modelling}
 
 \subsubsection{Model Hyperparameter Optimisation}\label{hpo}
 
 \subsubsection{Model Validation}\label{model_validation}
+
+\begin{figure}
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/JuneFilter.png}
+        \caption{Journey of the ship in June}
+        \label{fig:JuneJourney}
+\end{figure}
 
 \subsubsection{Methodology Application}\label{methodology_application}
 
@@ -132,6 +232,9 @@ Additional information is then added to the dataset. True direction information 
     \item The features are represented in a histogram plot. For the feature Current speed, anomaly is detected. Certain spike is detected around $0.01 - 0.03$ \verb|m/s|. Reasons unknown. The data is retained, including the spike, until a definitive answer can be found.
     \item OPEN QUESTION : What is the necessity of feature standardization / normalization ? Normalization is required for ANN as model training requires the value between 0 and 1. But in case of RFR, there is no such requirement. Through testing, data standardization also does not seem to improve the model's performance. 
 \end{itemize}
+
+% This file was created with Citavi 6.16.0.0
+
 
 \begin{sidewaysfigure}
     \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/outputhist.png}

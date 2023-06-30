@@ -232,26 +232,26 @@ AIS is also further differentiated by its equipment class. The classification is
 As indicated in \Cref{AIS_struct}, the speed shown in AIS is the speed over ground (SOG). However, for calculation of ship's fuel consumption, the actual speed i.e. speed through water (STW) is required. This can be achieved by correcting the SOG for the current speed, in consideration of the research by Zhou et al. \cite{Zhou.2017} which shows the impact of current on ship's SOG. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Similarly, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
 
 To calculate the correction, this study will adopt the methodology proposed by Kim et al. \cite{Kim.2020b} and Yang et al. \cite{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{current}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
-\begin{equation}\label{eqvgx}
+\begin{equation}\label{eqn:sogx}
     V_{\text{SOG}}^x = V_{\text{SOG}}\cdot\sin(\alpha)   
 \end{equation}
-\begin{equation}\label{eqvgy}
+\begin{equation}\label{eqn:sogy}
     V_{\text{SOG}}^y = V_{\text{SOG}}\cdot\cos(\alpha)   
 \end{equation} 
-\begin{equation}\label{eqvcx}
+\begin{equation}\label{eqn:vcurrx}
      V_{\text{current}}^x = V_{\text{current}}\cdot\sin(\gamma)   
 \end{equation}
-\begin{equation}\label{eqvcy}
+\begin{equation}\label{eqn:vcurry}
     V_{\text{current}}^y = V_{\text{current}}\cdot\cos(\gamma)   
 \end{equation}
 Then the resulting equation to determine STW, including the current compensation, is given by:\\
-\begin{equation}
+\begin{equation}\label{eqn:stwx}
     V_{\text{STW}}^x = V_{\text{SOG}}^x - V_{\text{current}}^x    
 \end{equation}
-\begin{equation}
+\begin{equation}\label{eqn:stwy}
     V_{\text{STW}}^y = V_{\text{SOG}}^y - V_{\text{current}}^y      
 \end{equation}
-\begin{equation}
+\begin{equation}\label{eqn:stwabs}
     V_{\text{STW}} = \sqrt{(V_{\text{STW}}^x)^2 + (V_{\text{STW}}^y)^2} 
 \end{equation}
 

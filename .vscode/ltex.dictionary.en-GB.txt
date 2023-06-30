@@ -20,3 +20,4 @@ Scikit-Learn
 BBMs
 Breiman
 SOLAS
+Bitner-Gregersen
