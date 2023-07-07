@@ -100,17 +100,32 @@ Decision tree is a white box model\footnote{This is not to be interchanged with 
 \end{minipage}
 \end{figure}
 
-Now, we need to understand the principle of selection for the feature $k_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$. Assuming a case with single feature $k$ and response $Y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $k = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of data points of the left and right partition space is calculated as seen in \Cref{fig:geron6_5}. This step is then followed by calculating the mean squared error (MSE) of each data points in its respective partition space. Subsequently, the MSE from the respective partition space is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function $J(k,t_k)$. \cite{Geron.2019}:
+Now, we need to understand the principle of selection for the feature $k_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$; Assuming a case with single feature $k$ and response $y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $k = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of the response $y$ of partition space $S_1$ and $S_2$ is calculated as seen in \Cref{fig:geron6_5}.\\ 
 
-\begin{equation}\label{costfun}
-    J(k,t_k) = \frac{m_{\text{left}}}{m}\text{MSE}_\text{left} + \frac{m_{\text{right}}}{m}\text{MSE}_\text{right}
+This step is then followed by calculating the sum of squared error (SSE) of each data points in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \cite{Geron.2019,Kuhn.2013}:
+
+% \begin{equation}\label{costfun}
+%     J(k,t_k) = \frac{m_{\text{left}}}{m}\text{SSE}_\text{S1} + \frac{m_{\text{right}}}{m}\text{SSE}_\text{S2}
+%     \begin{cases}
+%         \text{SSE}_{S_{i=(1,2)}} = \sum\limits_{i \in \text{node}}(\hat{y}_\text{node} - y^{(i)} )^2 \\
+%         \hat{y}_{\text{node}} = \frac{1}{m_{\text{node}}}\sum\limits_{i\in \text{node}} y ^ {(i)}
+%     \end{cases}   
+% \end{equation}
+\begin{equation}\label{eqn:sse}
+    \text{MSE}_{S_i} = \frac{1}{m_{S_i}}\text{SSE}_{S_i} \quad \textbf{where} \quad i = (1,2)   
+\end{equation}
+\begin{equation}\label{eqn:costfun}
+    J(k,t_k) = \frac{1}{m_{S_1}}\text{SSE}_{S_1} + \frac{1}{m_{S_2}}\text{SSE}_{S_2}
     \begin{cases}
-        \text{MSE}_\text{node} = \sum\limits_{i \in \text{node}}(\hat{y}_\text{node} - y^{(i)} )^2 \\
-        \hat{y}_{\text{node}} = \frac{1}{m_{\text{node}}}\sum\limits_{i\in \text{node}} y ^ {(i)}
-    \end{cases}   
+        \text{SSE}_{S_i} = \sum\limits_{i \in S_i}(\hat{y}_{S_i} - y_{S_i} )^2 \\
+        \hat{y}_{S_i} = \frac{1}{m_{S_i}}\sum\limits_{i\in S_i} y
+    \end{cases}  
 \end{equation}
 
-Once complete, then the regions is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value. Same principle is also applied when multiple features are present. Consider there are $k_t$ features, then for each respective features $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated using the cost function $J(k,t_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
+
+Once complete, then the partition space is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in {\tt Scikit-Learn}), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value.\\ 
+
+Same principle is also applied when multiple features are present. Consider there are $k_t$ features, then for each respective features $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated using the cost function $J(k,t_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \cite{Hastie.2009,Geron.2019}.\\
 
 \begin{figure}[h]
     \centering
@@ -119,7 +134,7 @@ Once complete, then the regions is further split into two more regions and this 
     \label{fig:geron6_5}
 \end{figure}
 
-While powerful, decision tree unfortunately suffers from overfitting when the model is unconstrained. Decision tree makes very few assumptions regarding the training data. Therefore, it will adapt to the training data and fitting it very closely \cite{Geron.2019}. Additionally, an individual tree tends to be unstable, when the data is altered, a completely different set of splits might be found\cite{Hastie.2009,Kuhn.2013}. Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom during the training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. However, to address the fundamental drawbacks of decision tree, we shall look into random forest.
+While powerful, decision tree suffers from overfitting when the model is unconstrained. Decision tree makes very few assumptions regarding the training data. Therefore, it will adapt to the training data and fitting it very closely \cite{Geron.2019}. Additionally, an individual tree tends to be unstable, when the data is altered, a completely different set of splits might be found\cite{Hastie.2009,Kuhn.2013}. Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom during the training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. However, to address the fundamental drawbacks of decision tree, we shall look into random forest.
 \begin{figure}
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/fig6_6_paramdepth_geron09.png}
@@ -137,33 +152,33 @@ To add further randomness, random forest involves random selection of input feat
 
 These measures introduced in random forest address the tendency of decision tree to overfit. In fact, the instability of decision tree mentioned in \Cref{dt_theo} is exploited in random forest to gain randomness during construction of the tree. Experience from Hastie et al. \cite{Hastie.2009} shown that random forest requires minimal parameter tuning to achieve satisfactory performance while Kuhn et al. \cite{Kuhn.2013} reported that tuning parameter does not have a drastic effect on performance. \\
 
-However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020}. \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value. 
+However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020}. \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value.\\ 
 
 \subsubsection{Extra-Trees (Extremely Randomised Trees)}\label{et_theo}
 
 Additionally, extra-trees (Extremely Randomised Trees) is introduced by Geurts et al. \cite{Geurts.2006} to further randomise random forest. The key difference lies on how each split is selected; in extra-trees each tree split is selected in random instead of searching for the best split. This technique saves computational power, as searching for best split is one of the tasks that takes up most computational power \cite{Geron.2019}. Extra-trees also do not bootstrap the samples, which mean it samples \emph{without} replacement.\\
 
-Overview of the tree-based model discussed in \Cref{dt_theo} and \Cref{rf_theo} can be summarised in \Cref{table_trees}:
+% Overview of the tree-based model discussed in \Cref{dt_theo} and \Cref{rf_theo} can be summarised in \Cref{table_trees}:
 
-\begin{table}[ht]
-    % \small
-    \centering
-    \resizebox {\textwidth}{!}
-    {\begin{tabular}{ |p{5cm}|p{3cm}|p{3cm}|p{3cm}|  }
-    \hline
-    \multicolumn{1}{|c|}{\textbf{Model}} & \multicolumn{1}{|c|}{\textbf{Decision Tree}}  & \multicolumn{1}{|c|} {\textbf{Random Forest}} & \multicolumn{1}{|c|}{\textbf{Extra-Trees}}\\
-    \hline
-    Number of trees & \multicolumn{1}{|c|}{1} & \multicolumn{1}{|c|}{Many} & \multicolumn{1}{|c|}{Many}\\
-    \hline
-    Features considered for split at each node &   \multicolumn{1}{|c|}{All features}  & \multicolumn{1}{|c|}{Random subset of features} & \multicolumn{1}{|c|}{Random subset of features} \\
-    \hline
-    Bootstrapping & \multicolumn{1}{|c|}{Not applied} & \multicolumn{1}{|c|}{Yes} & \multicolumn{1}{|c|}{No}\\
-    \hline
-    Split Rule  & \multicolumn{1}{|c|}{Best split} & \multicolumn{1}{|c|}{Best split}& \multicolumn{1}{|c|}{Random split}\\
-    \hline
-    \end{tabular}}
-\caption{Comparison of tree based model}\label{table_trees}
-\end{table}
+% \begin{table}[ht]
+%     % \small
+%     \centering
+%     \resizebox {\textwidth}{!}
+%     {\begin{tabular}{ |p{5cm}|p{3cm}|p{3cm}|p{3cm}|  }
+%     \hline
+%     \multicolumn{1}{|c|}{\textbf{Model}} & \multicolumn{1}{|c|}{\textbf{Decision Tree}}  & \multicolumn{1}{|c|} {\textbf{Random Forest}} & \multicolumn{1}{|c|}{\textbf{Extra-Trees}}\\
+%     \hline
+%     Number of trees & \multicolumn{1}{|c|}{1} & \multicolumn{1}{|c|}{Many} & \multicolumn{1}{|c|}{Many}\\
+%     \hline
+%     Features considered for split at each node &   \multicolumn{1}{|c|}{All features}  & \multicolumn{1}{|c|}{Random subset of features} & \multicolumn{1}{|c|}{Random subset of features} \\
+%     \hline
+%     Bootstrapping & \multicolumn{1}{|c|}{Not applied} & \multicolumn{1}{|c|}{Yes} & \multicolumn{1}{|c|}{No}\\
+%     \hline
+%     Split Rule  & \multicolumn{1}{|c|}{Best split} & \multicolumn{1}{|c|}{Best split}& \multicolumn{1}{|c|}{Random split}\\
+%     \hline
+%     \end{tabular}}
+% \caption{Comparison of tree based model}\label{table_trees}
+% \end{table}
 
 \subsection{Introduction to AIS data}\label{ais_theo}
 

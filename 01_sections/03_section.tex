@@ -1,6 +1,6 @@
 \section{Research Methodology} \label{method}
 
-In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. To validate the model's generalisation capability, statistical performance measure is used. The underlying principle is elaborated in \Cref{model_validation}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
+In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. Different performance metrics is used to validate the model's generalisation capability, The underlying principle of the metrics is elaborated in \Cref{perf_metrics}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
 
 \begin{figure}[h]
     \centering
@@ -15,10 +15,10 @@ For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershu
 
 The resulting fusion resulted in dataset with temporal resolution of 1 hour. Some information static information from the AIS data which only indicated the ship's identity are excluded. This includes ship's MMSI, Callsign, Name, IMO and Navigational Status. Additionally, information of the ship's Rate of Turn (ROT) is not available in this case. The weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\ 
 
-The features \begin{enumerate*}
+The features \begin{enumerate*}[label={(\arabic*)}]
     \item wind direction,
     \item swell direction,
-    \item wind wave direction
+    \item and wind wave direction
 \end{enumerate*} are oriented to true north. However, to reflect the actual direction of weather effects that are acting on the ship, these features are converted to true direction; where true direction is defined as the direction of weather effect with respect to the bow of the ship. The value ranges between 0° and 180°. Subsequently, through vector decomposition, the northward and eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
 
 \begin{equation}\label{eqn:vwindabs}
@@ -157,21 +157,24 @@ From preliminary analysis, possible source of error is identified for data point
 
 To address the missing values, the missing values for eastward current and northward current are imputed using {\tt KNNImputer} feature from {\tt Scikit-Learn}. Each sample's missing values are imputed using the mean of nearest neighbour found in training dataset \cite{FabianPedregosa.2011}. Once the missing values of northward and southward current are imputed, the current speed for the missing values will be recalculated.\\ 
 
-The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values. Imputing missing values is necessary as modelling package by {\tt Scikit-learn} cannot handle missing values. Imputing strategy using k-nearest neighbour is considered as it reflected the weather conditions within the region of missing values.\\
+The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values. Imputing missing values is necessary as modelling package by {\tt Scikit-learn} cannot handle missing values. Imputing strategy using k-nearest neighbour is considered as it should reflect the weather conditions within the region of missing values.\\
 
 \subsubsection{Feature Selection}\label{feature_select}
 
 To select appropriate features for the model, correlation between the features is first studied. Feature selection is necessary to simplify the model and subsequently save computing cost during training. Selection of features is based on statistical approach of High Correlation Filter proposed by Abebe et al. \cite{Abebe.2020}. This approach considers pairs of features with correlation features higher than 0.7 as one entity. However, the selection of highly correlated features must not violate natural state of matter. Therefore, in addition to statistical approach, the scientific reasoning behind the correlations will be considered and prioritised over the statistical approach.\\
 
-From AIS data, the information on \begin{enumerate*}
-    \item time
-    \item latitude
-    \item longitude
-    \item width 
+From AIS data, the information on \begin{enumerate*}[label={(\arabic*)}]
+    \item time,
+    \item latitude,
+    \item longitude,
+    \item width, and
     \item length
-\end{enumerate*} are not included for training. As time, latitude and longitude have no impact on the ship. While the width and length is constant.\\  
+\end{enumerate*} are not included for training. As time, latitude and longitude have no impact on the ship. While the width and length is properties from the ship that remain constant.\\  
 
-The features combined wind wave swell height, swell height, maximum wave height and wind wave height are physically correlated. In sea wave theory, wind wave swell height is also known as significant wave height $H_{1/3}$. It is defined as the mean of the highest one-third of waves in the wave record \cite{Holthuijsen.2007}. \\
+The features \begin{enumerate*}[label={(\arabic*)}]
+\item combined wind wave swell height, 
+\item swell height, maximum wave height 
+\item and wind wave height \end{enumerate*} are physically correlated. In sea wave theory, wind wave swell height is also known as significant wave height $H_{1/3}$. It is defined as the mean of the highest one-third of waves in the wave record \cite{Holthuijsen.2007}. \\
 
 \begin{figure}
     \centering
@@ -201,16 +204,17 @@ Additionally, Bitner-Gregersen \cite{BitnerGregersen.2005} described the relatio
 From here, it is clear that significant wave height should be retained for modelling, as it holds critical information regarding wave properties. The features swell height, wind wave height and maximum wave height will be dropped as it can be defined through correlations defined in \Cref{eqn:Hsig_mean},\Cref{eqn:Hsig_Hten},\Cref{eqn:Hsig_max} and \Cref{eqn:H_sig_root}. This decision is also statistically supported through the high correlation filter method. As shown in \Cref{fig:heatmap1}, high correlation are observed between these features.\\
 
 \begin{figure}
-    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/heatmap_corr_ovr.png}
+    \centering
+    \includegraphics[width=.9\linewidth,height=.9\textheight,keepaspectratio]{02_figures/heatmap_corr_ovr.png}
     \caption{Correlation Heat Map}
     \label{fig:heatmap_ovr}
 \end{figure}
 
-From the \Cref{fig:heatmap1}, high correlation is observed between wave period, swell period and wind wave period. Bitner-Gregersen further elaborated that the state of the sea can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak \cite{K.Torsethaugen.2004}. Hence, the features swell period and wind wave period are discarded as it only distinguish whether the sea is dominated by swell or by wind. The feature wave period will still be retained. Consequently, the features true wind wave direction and true swell direction will be discarded as the features that explained the magnitude of these features are discarded.\\
+From \Cref{fig:heatmap1}, high correlation is observed between wave period, swell period and wind wave period. Bitner-Gregersen further elaborated that the state of the sea can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak \cite{K.Torsethaugen.2004}. Hence, the features swell period and wind wave period are discarded as it only distinguish whether the sea is dominated by swell or by wind. The feature wave period will still be retained. Consequently, the features true wind wave direction and true swell direction will be discarded as the features that explained the magnitude of these features are discarded.\\
 
 Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current.\\
 
-From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining features will be selected as training features. This is summarised in \Cref{dataset_train_struct}.
+From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{dataset_train_struct}.
 \begin{table}
     % \small
     \centering
@@ -257,11 +261,122 @@ From feature selection, 5 features from AIS data are discarded while 11 features
 
 In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor, random forest regressor and extra-tree regressor. In addition, the tree-based models are compared against multiple linear regressor to as benchmark. The methodology to develop the best model is divided into several steps.\\
 
-For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. 
+For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. The explanation of training process and selection of the best model is broken down into several sections. In \Cref{hpo}, the tuning parameter of {\tt Scikit-Learn} will be studied extensively as suitable tuning could result in improved model performance.\\
+
+Appropriate statistical performance measures are applied to each model; the performance measures selected will help to evaluate how well a model is able to make generalisation on validation and test dataset. The evaluation will be cross validated in form of k-folding. The details on evaluation methodology used in this thesis will be discussed in \Cref{perf_metrics}. \\
+
+\subsubsection{Performance Metrics for Model Validation}\label{perf_metrics}
+
+To gain sensible estimate of model performance and how precise a model is, the model will be cross validated by means of k-folding. K-fold cross validation split the training set into k subsets which is called \emph{folds}, then the model will be trained k times using k-1 subsets and remaining one for validation, this process is illustrated in \Cref{fig:kfold}. For each iteration, each model is evaluated using different performance metrics such as \begin{enumerate*}[label={(\arabic*)}]
+    \item  Coefficient of Determination ($R^2$), 
+    \item Explained Variance (EV), 
+    \item Mean Absolute Error (MAE),
+    \item Root Mean Square (RMSE) and
+    \item Median Absolute Deviation (MAD). 
+\end{enumerate*} The results from each iteration is then averaged, where the information on model precision can be gained from the standard deviation. Performing k-fold cross validation checks model robustness against different datasets. The properties of each performance metric will be discussed in the following sections.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.85\textwidth]{02_figures/kfold.png}
+    \caption{Visual illustration of k-folding, Grey shaded box represents the validation data while white box represents the training data}
+    \label{fig:kfold}
+\end{figure}
+
+\paragraph{Coefficient of Determination ({$R^2$})}\label{rsquared}
+
+The coefficient of determination $R^2$ gives a measure on prediction quality, $R^2$ quantifies the ability of the regression model to approximate the actual values. $R^2 $ is defined by \Cref{eqn:rsquared}, where $y$ represents true target output, $\hat{y}$ represents the predictor output and $\overline{y}$ represents the mean. $R^2$ score range between 0 and 1, higher values i.e. $R^2 \rightarrow 1$ indicate better model fit and score of 1 indicate perfect prediction.\\
+
+\begin{equation}\label{eqn:rsquared}
+    R^2(y,\hat{y}) = 1 - \frac{\sum_{i = 1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}} )^2 }{\sum_{i = 1}^{n} (y_{\text{i}} - \overline{y}_{\text{i}})^2} \quad \textbf{where} \quad \overline{y} = \frac{1}{n}\sum_{1}^{n} y_\text{i}
+\end{equation}
+
+\paragraph{Explained Variance (EV)}\label{expVar}
+
+Explained variance indicate how well a model can capture variance from a dataset. It is defined by \Cref{eqn:expVar}, where $\sigma_x$ represents standard deviation of parameter $x$. EV score range between 0 and 1, where the best score of $EV = 1$ can be obtained if $\sigma^2_{(y-\hat{y})} \rightarrow 0$.\\  
+
+\begin{equation}\label{eqn:expVar}
+    EV(y,\hat{y}) = 1 - \frac{\sigma^2_{(y-\hat{y})}}{\sigma^2_{y}}
+\end{equation}
+
+\paragraph{Mean Absolute Error (MAE)}\label{MAE}
+
+MAE indicated the expected value of absolute ($L^1$ norm) error, and it can be calculated by:
+
+\begin{equation}\label{eqn:MAE}
+    MAE(y,\hat{y}) = \frac{1}{n}\sum_{i=1}^{n} |y_{\text{i}} - \hat{y}_{\text{i}}| 
+\end{equation}
+
+\paragraph{Root Mean Square Error (RMSE)}\label{RMSE}
+
+The RMSE describe the expected value of quadratic error. RMSE place large penalty on large deviation between true and estimated values and for this reason, it can be used to as a metric to indicate model performance against outliers. Ideal score is observed when $\text{RMSE} \rightarrow 0$. RMSE can be considered as absolute measure of model fitness. Omitting the root term, RMSE becomes MSE, which is the loss function of \Cref{eqn:costfun} that is used to determine the most optimal split in a regression decision tree.\\
+
+\begin{equation}\label{eqn:RMSE}
+    RMSE(y,\hat{y}) = \sqrt{\frac{1}{n}\sum_{i=1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}})^2} 
+\end{equation}
+
+\paragraph{Median Absolute Deviation (MAD)}\label{MAD} 
+
+MAD is a performance metrics that considers the median of the absolute errors. It is robust to outlier as it only consider median performance
+
+\begin{equation}\label{eqn:MAD}
+    MAD(y,\hat{y}) =  \text{median} (|y_{\text{1}} - \hat{y}_{\text{1}}|,\dots,|y_{\text{i}} - \hat{y}_{\text{i}}|)
+\end{equation}
+
 
 \subsubsection{Model Hyperparameter Optimisation}\label{hpo}
 
-\subsubsection{Model Validation}\label{model_validation}
+The subject of parameter tuning was briefly discussed in \Cref{dt_theo}. In \Cref{dt_theo} parameter tuning was applied to decision tree regressor to avoid overfitting by changing the minimum amount of samples a leaf node has. This example implies that altering model hyperparameter will affect the model performance. However, the optimisation of the hyperparameter cannot be performed \emph{a priori} and as such iterative process will be performed until best hyperparameter value is found.\\ 
+
+\scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with its value range is evaluated using cross validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves construction of grids containing all possible combinations of hyperparameter value in specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values.\\ 
+
+The exhaustive nature of {\tt GridSearchCV} means that it is computationally costly to perform, especially when there are multiple hyperparameters to be considered and value search space is large. {\tt RandomizedSearchCV} gives more control to computing budget by setting the number of iteration and usually produces more accurate results than {\tt GridSearchCV} approach. \cite{Geron.2019,J.Bergstra.2012}. \\
+
+For this reason, the {\tt RandomizedSearchCV} will be employed to search for best possible hyperparameter. However, the limitation of \emph{a priori} knowledge of hyperparameter value still exists. In spite of {\tt RandomizedSearchCV} ability to control the computational budget, it is still takes considerable time to obtain the best hyperparameter value. The computational budget may be spent on searches in unpromising search space. With that, initial exploration on the effect of each hyperparameter on model performance will be performed to give better overview on which search space that should be considered during hyperparameter optimisation. In the next subsections, the effect of tunable hyperparameter of tree-based model from \scikit/ will be explored to give baseline numbers for the search space. RMSE is used as performance metrics as the hyperparameter parameter optimisation done in this thesis aims to reduce the error during prediction. \\ 
+
+\paragraph{Number of features}\label{max_features}
+
+Defined with default value as {\tt max\_features=None} in \scikit/. This hyperparameter controls the number of features to be considered when looking for the best split, the default {\tt None} option means it will consider all features. This parameter tuning is available for Decision Tree Regressor, Random Forest Regressor and Extra-Tree Regressor. Initial exploration indicated Random Forest Regressor and Extra Tree Regressor benefit from considering more features, Decision Tree Regressor requires further fine-tuning to optimise the model as the default {\tt None} means it will consider all features when searching for best split.\\ 
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/hpo_n_features.png}
+        \caption{Hyperparameter tuning of {\tt max\_features}}
+        \label{fig:hpo_n_features}
+\end{figure}
+
+\paragraph{Number of sample in a leaf node}\label{min_samples_leaf}
+
+Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls number of samples required to be at leaf node, where split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at certain breakeven point, in this case, it is found to be at {\tt min\_samples\_leaf=4}. But after this breakeven point, the model's performance degrades. It is also observed that RFR and ETR does not benefit from any form of regularisation.  
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/hpo_min_samples_leaf.png}
+        \caption{Hyperparameter tuning of {\tt min\_samples\_leaf}}
+        \label{fig:hpo_min_samples_leaf}
+\end{figure}
+
+\paragraph{Depth of Tree}\label{max_depth}
+
+Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at certain depth while ETR benefits from allowing full growth of the tree. The results are summarised in \Cref{fig:hpo_max_depth}  
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.95\textwidth]{02_figures/hpo_max_depth.png}
+        \caption{Hyperparameter tuning of {\tt max\_depth}}
+        \label{fig:hpo_max_depth}
+\end{figure}
+
+\paragraph{Number of Trees}\label{n_estimators}
+
+Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}. 
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.95\textwidth]{02_figures/hpo_n_estimators.png}
+        \caption{Hyperparameter tuning of {\tt n\_estimators}}
+        \label{fig:n_estimators}
+\end{figure}
+
 
 \begin{figure}
     \centering
@@ -291,7 +406,7 @@ For training, the dataset is split into training, validation and test dataset in
     \item OPEN QUESTION : What is the necessity of feature standardization / normalization ? Normalization is required for ANN as model training requires the value between 0 and 1. But in case of RFR, there is no such requirement. Through testing, data standardization also does not seem to improve the model's performance. 
 \end{itemize}
 
-% This file was created with Citavi 6.16.0.0
+
 
 
 \begin{sidewaysfigure}

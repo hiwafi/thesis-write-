@@ -47,8 +47,8 @@
 \usepackage{amsmath}
 
 % Alternative activation, when working with laptop,use draft settings !
-% \usepackage{graphicx}
-\usepackage[draft]{graphicx}
+\usepackage{graphicx}
+% \usepackage[draft]{graphicx}
 
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{dsfont}
@@ -113,11 +113,18 @@
 \newcommand{\tabitem}{~~\llap{\textbullet}~~}
 \numberwithin{equation}{section}
 \usepackage[inline]{enumitem}
+\usepackage{titlesec}
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
+% Quick macros to type repeated texts
 
-
-
-
+\newcommand{\scikit}{}
+\def\scikit/{{\tt Scikit-Learn}}
 
 
 
