@@ -30,8 +30,9 @@
 %----------------------------------------------------------------------------------------
 \usepackage{ifxetex}
 \usepackage{textpos}
-\usepackage{cite}
-% \usepackage{natbib}
+% \usepackage{cite}
+\usepackage[round]{natbib}
+\usepackage{doi}
 \usepackage{kpfonts}
 \usepackage[a4paper,hmargin=2.8cm,vmargin=2.0cm,includeheadfoot]{geometry}
 \usepackage{ifxetex}
@@ -239,7 +240,8 @@ autogobble = true
 \usepackage{fontspec}
 \setmainfont[Scale=.8]{OpenDyslexic-Regular}
 \else
-\usepackage[pdftex,pagebackref,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
+% \usepackage[pdftex,pagebackref,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
+% \usepackage[pdftex,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
 \usepackage[nameinlink,noabbrev]{cleveref}
 \hypersetup{pdftitle={},
   pdfsubject={}, 
