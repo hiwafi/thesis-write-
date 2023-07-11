@@ -1,6 +1,6 @@
 \chapter{Research Methodology} \label{chp:method}
 
-In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. Different performance metrics is used to validate the model's generalisation capability, The underlying principle of the metrics is elaborated in \Cref{perf_metrics}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
+In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{sec:data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{sec:data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{sec:feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{sec:hpo}. Different performance metrics is used to validate the model's generalisation capability, The underlying principle of the metrics is elaborated in \Cref{sec:perf_metrics}. Summary of methodology application in this study is summarised in \Cref{sec:methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
 
 \begin{figure}[h]
     \centering
@@ -11,7 +11,7 @@ In this chapter the methodology used to develop random forest model will be disc
 
 \section{Data Acquisition}\label{sec:data_acquisition}
 
-For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershus is collected. The shore-based AIS data is made available by Danish Maritime Authority which tracked her journey between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz and structured according to \Cref{AIS_struct}. The AIS data is fused with weather data from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with temporal resolution of 1 hour at granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with temporal resolution of 3 hours at granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
+For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershus is collected. The shore-based AIS data is made available by Danish Maritime Authority which tracked her journey between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz and structured according to \Cref{tbl:AIS_struct}. The AIS data is fused with weather data from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with temporal resolution of 1 hour at granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with temporal resolution of 3 hours at granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
 
 The resulting fusion resulted in dataset with temporal resolution of 1 hour. Some information static information from the AIS data which only indicated the ship's identity are excluded. This includes ship's MMSI, Callsign, Name, IMO and Navigational Status. Additionally, information of the ship's Rate of Turn (ROT) is not available in this case. The weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions.\\ 
 
@@ -49,7 +49,7 @@ Similarly, information of Northward and Eastward current Velocity is converted t
     \end{cases}   
 \end{equation}
 
-This conversion is performed as the information of current speed and current direction, $\gamma$, is necessary to perform the correction formula shown in \Cref{eqn:stwx} and \Cref{eqn:stwy}. However, for training purpose, this feature will not be considered. Instead, the true current direction and true wind direction will be considered. The initial structure have 27 features, 9 AIS features and 18 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{dataset_init_struct} \\
+This conversion is performed as the information of current speed and current direction, $\gamma$, is necessary to perform the correction formula shown in \Cref{eqn:stwx} and \Cref{eqn:stwy}. However, for training purpose, this feature will not be considered. Instead, the true current direction and true wind direction will be considered. The initial structure have 27 features, 9 AIS features and 18 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{tbl:dataset_init_struct} \\
 
 \begin{table}
     % \small
@@ -133,7 +133,7 @@ This conversion is performed as the information of current speed and current dir
 
 \section{Data Preprocessing}\label{sec:data_prep}
 
-This section presents the steps taken to during data preprocessing. The dataset will be first subjected to data cleaning which include identification of anomalies and missing values, the steps are explained in \Cref{data_cleaning}. Boundary condition is then applied to ensure that the model represent operating condition at steady state. Using domain knowledge, appropriate features are selected and discarded to ensure the model obeys shipping domain knowledge. This dataset is to be split into training, validation and test dataset. These steps will be further elaborated in \Cref{feature_select}.
+This section presents the steps taken to during data preprocessing. The dataset will be first subjected to data cleaning which include identification of anomalies and missing values, the steps are explained in \Cref{sec:data_cleaning}. Boundary condition is then applied to ensure that the model represent operating condition at steady state. Using domain knowledge, appropriate features are selected and discarded to ensure the model obeys shipping domain knowledge. This dataset is to be split into training, validation and test dataset. These steps will be further elaborated in \Cref{sec:feature_select}.
 
 \subsection{Data Cleaning}\label{sec:data_cleaning}
 
@@ -155,9 +155,9 @@ In its initial state, the dataset contains 7453 data points which described the 
 
 From preliminary analysis, possible source of error is identified for data points representing current speed. In range of current speed between $0.01$ and $0.03$ [m/s], noticeable peak in data points is observed. This peak attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in single random error value for current speed which resulted in the peak observed in the histogram.\\ 
 
-To address the missing values, the missing values for eastward current and northward current are imputed using {\tt KNNImputer} feature from {\tt Scikit-Learn}. Each sample's missing values are imputed using the mean of nearest neighbour found in training dataset \cite{FabianPedregosa.2011}. Once the missing values of northward and southward current are imputed, the current speed for the missing values will be recalculated.\\ 
+To address the missing values, the missing values for eastward current and northward current are imputed using {\tt KNNImputer} feature from \scikit/. Each sample's missing values are imputed using the mean of nearest neighbour found in training dataset \cite{FabianPedregosa.2011}. Once the missing values of northward and southward current are imputed, the current speed for the missing values will be recalculated.\\ 
 
-The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values. Imputing missing values is necessary as modelling package by {\tt Scikit-learn} cannot handle missing values. Imputing strategy using k-nearest neighbour is considered as it should reflect the weather conditions within the region of missing values.\\
+The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values. Imputing missing values is necessary as modelling package by \scikit/ cannot handle missing values. Imputing strategy using k-nearest neighbour is considered as it should reflect the weather conditions within the region of missing values.\\
 
 \subsection{Feature Selection}\label{sec:feature_select}
 
@@ -214,7 +214,7 @@ From \Cref{fig:heatmap1}, high correlation is observed between wave period, swel
 
 Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current.\\
 
-From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{dataset_train_struct}.
+From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{tbl:dataset_train_struct}.
 \begin{table}
     % \small
     \centering
@@ -261,9 +261,9 @@ From feature selection, 5 features from AIS data are discarded while 11 features
 
 In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor, random forest regressor and extra-tree regressor. In addition, the tree-based models are compared against multiple linear regressor to as benchmark. The methodology to develop the best model is divided into several steps.\\
 
-For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. The explanation of training process and selection of the best model is broken down into several sections. In \Cref{hpo}, the tuning parameter of {\tt Scikit-Learn} will be studied extensively as suitable tuning could result in improved model performance.\\
+For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. The explanation of training process and selection of the best model is broken down into several sections. In \Cref{sec:hpo}, the tuning parameter of \scikit/ will be studied extensively as suitable tuning could result in improved model performance.\\
 
-Appropriate statistical performance measures are applied to each model; the performance measures selected will help to evaluate how well a model is able to make generalisation on validation and test dataset. The evaluation will be cross validated in form of k-folding. The details on evaluation methodology used in this thesis will be discussed in \Cref{perf_metrics}. \\
+Appropriate statistical performance measures are applied to each model; the performance measures selected will help to evaluate how well a model is able to make generalisation on validation and test dataset. The evaluation will be cross validated in form of k-folding. The details on evaluation methodology used in this thesis will be discussed in \Cref{sec:perf_metrics}. \\
 
 \subsection{Performance Metrics for Model Validation}\label{sec:perf_metrics}
 
@@ -325,7 +325,7 @@ MAD is a performance metrics that considers the median of the absolute errors. I
 
 \subsection{Model Hyperparameter Optimisation}\label{sec:hpo}
 
-The subject of parameter tuning was briefly discussed in \Cref{dt_theo}. In \Cref{dt_theo} parameter tuning was applied to decision tree regressor to avoid overfitting by changing the minimum amount of samples a leaf node has. This example implies that altering model hyperparameter will affect the model performance. However, the optimisation of the hyperparameter cannot be performed \emph{a priori} and as such iterative process will be performed until best hyperparameter value is found.\\ 
+The subject of parameter tuning was briefly discussed in \Cref{sec:dt_theo}. In \Cref{sec:dt_theo} parameter tuning was applied to decision tree regressor to avoid overfitting by changing the minimum amount of samples a leaf node has. This example implies that altering model hyperparameter will affect the model performance. However, the optimisation of the hyperparameter cannot be performed \emph{a priori} and as such iterative process will be performed until best hyperparameter value is found.\\ 
 
 \scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with its value range is evaluated using cross validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves construction of grids containing all possible combinations of hyperparameter value in specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values.\\ 
 
@@ -385,7 +385,7 @@ Defined with default value as {\tt n\_estimators=100}. This hyperparameter contr
         \label{fig:JuneJourney}
 \end{figure}
 
-\subsubsection{Methodology Application}\label{methodology_application}
+\subsection{Methodology Application}\label{sec:methodology_application}
 
 
 
