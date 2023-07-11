@@ -1,10 +1,10 @@
-\section{Theoretical Background} \label{theory}
+\chapter{Theoretical Background}\label{chp:theory}
 
-The literature review in \Cref{litreview} presents past and present research on utilisation of machine learning method to achieve energy efficient operation. The concept of modelling ship operation using machine learning model is explained in \Cref{ship_modelling}. Performance of random forest as predictor in previous research are discussed in \Cref{rf_performance}. Brief conclusion of the literature review is presented in \Cref{lit_review_conclusion}.\\
+\section{Literature Review}\label{sec:litreview}
 
-\subsection{Literature Review}\label{litreview}
+The literature review in \Cref{sec:litreview} presents past and present research on utilisation of machine learning method to achieve energy efficient operation. The concept of different modelling approach for ship operation will be discussed in \Cref{sec:ship_modelling}. Generalisation performance of random forest in various research are discussed in \Cref{sec:rf_performance}. Brief summary of the literature review is presented in \Cref{sec:lit_review_conclusion}.\\
 
-\subsubsection{Modelling Approach for Ship Operation}\label{ship_modelling}
+\subsection{Modelling Approach for Ship Operation}\label{sec:ship_modelling}
 
 The work by Yan et al. \cite{Yan.2021} provides a thorough review of the different attempts that have been made by different authors to predict different parameters of ship's operation, this includes ship's fuel consumption. Per definition by Haranen et al. \cite{MichaelHaranen.2016}, the modelling of ship operation is categorised into White Box Model (WBM), Black Box Model (BBM) and Grey Box Model (GBM). Machine learning approach is categorised as BBM, BBM approach is defined as purely data driven approach requiring no prior knowledge about the ship operation. The literature review by Yan et al. \cite{Yan.2021} indicated that about $42\%$ of the research utilised BBM model based on machine learning approach.\\ 
 
@@ -12,11 +12,11 @@ Yan et al. \cite{Yan.2021} elaborated further in their work, that BBMs in genera
 
 From the work of Yan et al. \cite{Yan.2021}, it can be concluded that model accuracy and appropriateness is a significant factor that should be considered when modelling. The model should obey shipping domain knowledge and an intuitive model will help shipping experts analyse its accuracy. For this reason, tree-based model will be considered as it is known for its intuitiveness and interpretability \cite{Breiman.2017}. Breiman et al.\cite{Breiman.2001} even claimed that random forest is the ``most interpretable'' and ``most accurate''. With that,\Cref{rf_performance} will focus on predictive performance of random forest against different machine learning model on different data types and data source. \\
 
-\subsubsection{Use of AIS Data for Scientific Research}\label{ais_use}
+\subsection{Use of AIS Data for Scientific Research}\label{sec:ais_use}
 
 Apart from its intended use as collision avoidance system AIS data have seen potential usage in the field of scientific research. In the third Green House Gas (GHG) study by Smith et al.\cite{T.W.P.Smith.2015}, uses AIS to estimate global shipping emission inventories. Rakke \cite{Rakke2016} proposed a methodology termed ECAIS to calculate ship emissions based on the fuel consumption from AIS data. Through Holtrop-Mennen approximation and literature approximation, the ship's power propulsion can be determined which is subsequently used to predict specific fuel consumption. Wen et al. \cite{Wen.2017} attempted to minimise the Energy Efficiency Operational Indicator (EEOI) using green routing. Recent research by Kim et al. \cite{Kim.2020b} used publicly accessible AIS data, ship static data and environmental data to estimate EEOI  without requiring the actual FOC. The study used big data technology as public data are of large capacity. Generally, the study using AIS data is done to achieve independence from the need to use commercial database. The detail of AIS data will be discussed in \Cref{ais_theo}\\  
 
-\subsubsection{Prediction Performance of Random Forest}\label{rf_performance}
+\subsection{Prediction Performance of Random Forest}\label{sec:rf_performance}
 
 Majority of the BBM approach based on ML is dominated by ANN \cite{Yan.2021}. However, there are literatures that considered decision tree-based modelling approach to predict fuel consumption. Some example of decision tree based modelling include Decision Tree (DT), Random Forest (RF) and Extra Tree (ET). Soner et al. \cite{Soner.2018} implemented tree-based model, which include bagging, random forest (RF), and bootstrap. In their work, they used data captured from onboard sensors of a ferry to predict speed through water and fuel consumption per hour. From the test dataset, the random forest model described root mean square error (RMSE) of $0.34$ Knots during its prediction of Speed Through Water (STW). Yan et al. \cite{Yan.2020} used random forest (RF) model to minimise fuel consumption for a voyage of a dry bulk ship. The model use ship operational data and sea and weather data from noon report and EMCWF. The prediction performance report from this literature reported mean absolute percentage error (MAPE) of $7.91\%$.\\      
 
@@ -26,15 +26,15 @@ Li et al. \cite{Li.2022} performed more extensive research on the effects of dat
 
 Abebe et al. \cite{Abebe.2020} used different approach in their research by predicting the ship's Speed Over Ground (SOG) instead of FOC. In this work, AIS data and noon-report weather data from 14 tracks and 62 ships are used for the SOG prediction. The observation showed that RF model achieved RMSE of $0.25$ knots, while using $489$ seconds for training. Decision tree achieved RMSE of $0.36$ knots, taking up $52$ seconds for training. This shows that RFR outperforms DTR at cost of computational power.\\
 
-\subsubsection{Conclusion of Literature Review}\label{lit_review_conclusion}
+\subsection{Conclusion of Literature Review}\label{sec:lit_review_conclusion}
 
 This literature review described the capability of Random Forest Regressor to predict fuel consumptions and ship speed, irrespective of data source and type of data used. Promising results from different performance measures across different literatures indicated the capability random forest model as predictor. As such, this thesis aims to find optimisation possibilities to extract maximum prediction performance from random forest. Due to the nonlinear, third order function estimate of fuel consumption \cite{Ronen.1982,Ronen.2011}. Accurate prediction of ship speed is paramount to ensure optimal ship operation resulting in increase of profitability. 
 
-\subsection{Tree-based model}\label{tree_intro}
+\section{Tree-based model}\label{sec:tree_intro}
 
 Random forest belongs to the family of tree-based model and its functional principle stems from decision tree. Decision tree is a non-parametric model that can perform both classification and regression tasks for discrete variable and continuous variable. It is a powerful algorithm, capable of fitting complex datasets. Tree-based model requires very little to no data pre-processing \cite{Geron.2019,Hastie.2009}. To grasp the concept of random forest, The principle working of decision tree will be introduced in depth in \Cref{dt_theo}. It is then followed by \Cref{rf_theo} which presents the principle function behind random forest. Brief explanation for Extra-Trees, method introduced to further improvise random forest, will be presented in \Cref{et_theo}.\\
 
-\subsubsection{Decision Tree}\label{dt_theo}
+\subsection{Decision Tree}\label{sec:dt_theo}
 
 Decision tree is a white box model\footnote{This is not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} \cite{Geron.2019}. In machine learning sense, this means that the model is intuitive, and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To train Decision Trees, {\tt Scikit-Learn} \cite{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm \cite{Breiman.2017}. Partition space shown by \Cref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of \Cref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. The binary tree representation can be especially helpful when multiple input variables are involved, as the responses can be represented by a single tree \cite{Hastie.2009}.\\
 
@@ -154,7 +154,7 @@ These measures introduced in random forest address the tendency of decision tree
 
 However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \cite{Geron.2019,Affenzeller.2020}. \footnote{Again, not to be interchanged with the definition described by Haranen et al. \cite{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value.\\ 
 
-\subsubsection{Extra-Trees (Extremely Randomised Trees)}\label{et_theo}
+\subsection{Extra-Trees (Extremely Randomised Trees)}\label{sec:et_theo}
 
 Additionally, extra-trees (Extremely Randomised Trees) is introduced by Geurts et al. \cite{Geurts.2006} to further randomise random forest. The key difference lies on how each split is selected; in extra-trees each tree split is selected in random instead of searching for the best split. This technique saves computational power, as searching for best split is one of the tasks that takes up most computational power \cite{Geron.2019}. Extra-trees also do not bootstrap the samples, which mean it samples \emph{without} replacement.\\
 
@@ -180,7 +180,7 @@ Additionally, extra-trees (Extremely Randomised Trees) is introduced by Geurts e
 % \caption{Comparison of tree based model}\label{table_trees}
 % \end{table}
 
-\subsection{Introduction to AIS data}\label{ais_theo}
+\section{AIS Data}\label{sec:ais_theo}
 
 Automatic Identification System (AIS) is an automated tracking system onboard ships to automatically transmit information about the ship to other ships and coastal authorities. As part of the revised new chapter V of SOLAS\footnote{International convention for the Safety of Lives at Sea} regulation. In 2000, International Maritime Organization (IMO) requires installation of AIS class A equipment on all ships of 300 gross tonnage and upward engaged on international voyages, cargo ships of 500 gross tonnages and upwards not engaged on international voyages and all passenger ships irrespective of size. This requirement is then made compulsory to all ships by 2004. \cite{Rakke2016,webimo.2014}\\
 
@@ -242,7 +242,7 @@ AIS is also further differentiated by its equipment class. The classification is
 \caption{Structure of AIS data \cite{webimo.2014}}\label{AIS_struct}
 \end{table}
 
-\subsubsection{Current correction}\label{curr_corr}
+\subsection{Current Correction}\label{sec:curr_corr}
 
 As indicated in \Cref{AIS_struct}, the speed shown in AIS is the speed over ground (SOG). However, for calculation of ship's fuel consumption, the actual speed i.e. speed through water (STW) is required. This can be achieved by correcting the SOG for the current speed, in consideration of the research by Zhou et al. \cite{Zhou.2017} which shows the impact of current on ship's SOG. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Similarly, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
 
@@ -270,7 +270,9 @@ Then the resulting equation to determine STW, including the current compensation
     V_{\text{STW}} = \sqrt{(V_{\text{STW}}^x)^2 + (V_{\text{STW}}^y)^2} 
 \end{equation}
 
-\subsection{Calculation of Fuel Oil Consumption}\label{foc_calc}
+\section{Weather data and its parameter}\label{sec:weather_theo}
+
+\section{Calculation of Fuel Oil Consumption}\label{sec:foc_calc}
 
 
 

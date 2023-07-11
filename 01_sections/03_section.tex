@@ -1,4 +1,4 @@
-\section{Research Methodology} \label{method}
+\chapter{Research Methodology} \label{chp:method}
 
 In this chapter the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{hpo}. Different performance metrics is used to validate the model's generalisation capability, The underlying principle of the metrics is elaborated in \Cref{perf_metrics}. Summary of methodology application in this study is summarised in \Cref{methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
 
@@ -9,7 +9,7 @@ In this chapter the methodology used to develop random forest model will be disc
         \label{fig:flowchart}
 \end{figure}
 
-\subsection{Data Acquisition}\label{data_acquisition}
+\section{Data Acquisition}\label{sec:data_acquisition}
 
 For the purpose of model training, 2021 AIS data from Ro-Ro ferry ship Hammershus is collected. The shore-based AIS data is made available by Danish Maritime Authority which tracked her journey between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz and structured according to \Cref{AIS_struct}. The AIS data is fused with weather data from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with temporal resolution of 1 hour at granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with temporal resolution of 3 hours at granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
 
@@ -128,14 +128,14 @@ This conversion is performed as the information of current speed and current dir
     True Wave Direction [°] & {\tt truewavedir} \\
     \hline
     \end{tabular}}
-\caption{Structure of fused dataset}\label{dataset_init_struct}
+\caption{Structure of fused dataset}\label{tbl:dataset_init_struct}
 \end{table}
 
-\subsection{Data Preprocessing}\label{data_prep}
+\section{Data Preprocessing}\label{sec:data_prep}
 
 This section presents the steps taken to during data preprocessing. The dataset will be first subjected to data cleaning which include identification of anomalies and missing values, the steps are explained in \Cref{data_cleaning}. Boundary condition is then applied to ensure that the model represent operating condition at steady state. Using domain knowledge, appropriate features are selected and discarded to ensure the model obeys shipping domain knowledge. This dataset is to be split into training, validation and test dataset. These steps will be further elaborated in \Cref{feature_select}.
 
-\subsubsection{Data Cleaning}\label{data_cleaning}
+\subsection{Data Cleaning}\label{sec:data_cleaning}
 
 The journey between the port of K{\o}ge, R{\o}nne, Ystad and Sassnitz is plotted using {\tt QGIS}\footnote{https://qgis.org/en/site/, {\tt QGIS} is a free and open source geographic information system}. The plot of the journey is shown in \Cref{fig:YearJourney}, it can be seen, that the journey between R{\o}nne and Sassnitz is not represented completely. As in this information is missing due to poor coverage in the area between Sassnitz and R{\o}nne. This is shown by the plot shown in \Cref{fig:aiscoverage}. Therefore, the data plot for the journey between Sassnitz and R{\o}nne will be excluded. Basic threshold of decimal degrees of 55.04° N for latitude is applied, this threshold will exclude the journey between Sassnitz and R{\o}nne.\\ 
 \begin{figure}
@@ -159,7 +159,7 @@ To address the missing values, the missing values for eastward current and north
 
 The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values. Imputing missing values is necessary as modelling package by {\tt Scikit-learn} cannot handle missing values. Imputing strategy using k-nearest neighbour is considered as it should reflect the weather conditions within the region of missing values.\\
 
-\subsubsection{Feature Selection}\label{feature_select}
+\subsection{Feature Selection}\label{sec:feature_select}
 
 To select appropriate features for the model, correlation between the features is first studied. Feature selection is necessary to simplify the model and subsequently save computing cost during training. Selection of features is based on statistical approach of High Correlation Filter proposed by Abebe et al. \cite{Abebe.2020}. This approach considers pairs of features with correlation features higher than 0.7 as one entity. However, the selection of highly correlated features must not violate natural state of matter. Therefore, in addition to statistical approach, the scientific reasoning behind the correlations will be considered and prioritised over the statistical approach.\\
 
@@ -254,7 +254,7 @@ From feature selection, 5 features from AIS data are discarded while 11 features
     True Wave Direction [°] & {\tt truewavedir} \\
     \hline
     \end{tabular}}
-\caption{Structure of fused dataset}\label{dataset_train_struct}
+\caption{Structure of fused dataset}\label{tbl:dataset_train_struct}
 \end{table}
 
 \subsection{Modelling}\label{modelling}
@@ -265,7 +265,7 @@ For training, the dataset is split into training, validation and test dataset in
 
 Appropriate statistical performance measures are applied to each model; the performance measures selected will help to evaluate how well a model is able to make generalisation on validation and test dataset. The evaluation will be cross validated in form of k-folding. The details on evaluation methodology used in this thesis will be discussed in \Cref{perf_metrics}. \\
 
-\subsubsection{Performance Metrics for Model Validation}\label{perf_metrics}
+\subsection{Performance Metrics for Model Validation}\label{sec:perf_metrics}
 
 To gain sensible estimate of model performance and how precise a model is, the model will be cross validated by means of k-folding. K-fold cross validation split the training set into k subsets which is called \emph{folds}, then the model will be trained k times using k-1 subsets and remaining one for validation, this process is illustrated in \Cref{fig:kfold}. For each iteration, each model is evaluated using different performance metrics such as \begin{enumerate*}[label={(\arabic*)}]
     \item  Coefficient of Determination ($R^2$), 
@@ -282,7 +282,7 @@ To gain sensible estimate of model performance and how precise a model is, the m
     \label{fig:kfold}
 \end{figure}
 
-\paragraph{Coefficient of Determination ({$R^2$})}\label{rsquared}
+\subsubsection{Coefficient of Determination ({$R^2$})}\label{sec:rsquared}
 
 The coefficient of determination $R^2$ gives a measure on prediction quality, $R^2$ quantifies the ability of the regression model to approximate the actual values. $R^2 $ is defined by \Cref{eqn:rsquared}, where $y$ represents true target output, $\hat{y}$ represents the predictor output and $\overline{y}$ represents the mean. $R^2$ score range between 0 and 1, higher values i.e. $R^2 \rightarrow 1$ indicate better model fit and score of 1 indicate perfect prediction.\\
 
@@ -290,7 +290,7 @@ The coefficient of determination $R^2$ gives a measure on prediction quality, $R
     R^2(y,\hat{y}) = 1 - \frac{\sum_{i = 1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}} )^2 }{\sum_{i = 1}^{n} (y_{\text{i}} - \overline{y}_{\text{i}})^2} \quad \textbf{where} \quad \overline{y} = \frac{1}{n}\sum_{1}^{n} y_\text{i}
 \end{equation}
 
-\paragraph{Explained Variance (EV)}\label{expVar}
+\subsubsection{Explained Variance (EV)}\label{sec:expVar}
 
 Explained variance indicate how well a model can capture variance from a dataset. It is defined by \Cref{eqn:expVar}, where $\sigma_x$ represents standard deviation of parameter $x$. EV score range between 0 and 1, where the best score of $EV = 1$ can be obtained if $\sigma^2_{(y-\hat{y})} \rightarrow 0$.\\  
 
@@ -298,7 +298,7 @@ Explained variance indicate how well a model can capture variance from a dataset
     EV(y,\hat{y}) = 1 - \frac{\sigma^2_{(y-\hat{y})}}{\sigma^2_{y}}
 \end{equation}
 
-\paragraph{Mean Absolute Error (MAE)}\label{MAE}
+\subsubsection{Mean Absolute Error (MAE)}\label{sec:MAE}
 
 MAE indicated the expected value of absolute ($L^1$ norm) error, and it can be calculated by:
 
@@ -306,7 +306,7 @@ MAE indicated the expected value of absolute ($L^1$ norm) error, and it can be c
     MAE(y,\hat{y}) = \frac{1}{n}\sum_{i=1}^{n} |y_{\text{i}} - \hat{y}_{\text{i}}| 
 \end{equation}
 
-\paragraph{Root Mean Square Error (RMSE)}\label{RMSE}
+\subsubsection{Root Mean Square Error (RMSE)}\label{sec:RMSE}
 
 The RMSE describe the expected value of quadratic error. RMSE place large penalty on large deviation between true and estimated values and for this reason, it can be used to as a metric to indicate model performance against outliers. Ideal score is observed when $\text{RMSE} \rightarrow 0$. RMSE can be considered as absolute measure of model fitness. Omitting the root term, RMSE becomes MSE, which is the loss function of \Cref{eqn:costfun} that is used to determine the most optimal split in a regression decision tree.\\
 
@@ -314,7 +314,7 @@ The RMSE describe the expected value of quadratic error. RMSE place large penalt
     RMSE(y,\hat{y}) = \sqrt{\frac{1}{n}\sum_{i=1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}})^2} 
 \end{equation}
 
-\paragraph{Median Absolute Deviation (MAD)}\label{MAD} 
+\subsubsection{Median Absolute Deviation (MAD)}\label{sec:MAD} 
 
 MAD is a performance metrics that considers the median of the absolute errors. It is robust to outlier as it only consider median performance
 
@@ -323,7 +323,7 @@ MAD is a performance metrics that considers the median of the absolute errors. I
 \end{equation}
 
 
-\subsubsection{Model Hyperparameter Optimisation}\label{hpo}
+\subsection{Model Hyperparameter Optimisation}\label{sec:hpo}
 
 The subject of parameter tuning was briefly discussed in \Cref{dt_theo}. In \Cref{dt_theo} parameter tuning was applied to decision tree regressor to avoid overfitting by changing the minimum amount of samples a leaf node has. This example implies that altering model hyperparameter will affect the model performance. However, the optimisation of the hyperparameter cannot be performed \emph{a priori} and as such iterative process will be performed until best hyperparameter value is found.\\ 
 
@@ -333,7 +333,7 @@ The exhaustive nature of {\tt GridSearchCV} means that it is computationally cos
 
 For this reason, the {\tt RandomizedSearchCV} will be employed to search for best possible hyperparameter. However, the limitation of \emph{a priori} knowledge of hyperparameter value still exists. In spite of {\tt RandomizedSearchCV} ability to control the computational budget, it is still takes considerable time to obtain the best hyperparameter value. The computational budget may be spent on searches in unpromising search space. With that, initial exploration on the effect of each hyperparameter on model performance will be performed to give better overview on which search space that should be considered during hyperparameter optimisation. In the next subsections, the effect of tunable hyperparameter of tree-based model from \scikit/ will be explored to give baseline numbers for the search space. RMSE is used as performance metrics as the hyperparameter parameter optimisation done in this thesis aims to reduce the error during prediction. \\ 
 
-\paragraph{Number of features}\label{max_features}
+\subsubsection{Number of features}\label{sec:max_features}
 
 Defined with default value as {\tt max\_features=None} in \scikit/. This hyperparameter controls the number of features to be considered when looking for the best split, the default {\tt None} option means it will consider all features. This parameter tuning is available for Decision Tree Regressor, Random Forest Regressor and Extra-Tree Regressor. Initial exploration indicated Random Forest Regressor and Extra Tree Regressor benefit from considering more features, Decision Tree Regressor requires further fine-tuning to optimise the model as the default {\tt None} means it will consider all features when searching for best split.\\ 
 
@@ -344,7 +344,7 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
         \label{fig:hpo_n_features}
 \end{figure}
 
-\paragraph{Number of sample in a leaf node}\label{min_samples_leaf}
+\subsubsection{Number of sample in a leaf node}\label{sec:min_samples_leaf}
 
 Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls number of samples required to be at leaf node, where split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at certain breakeven point, in this case, it is found to be at {\tt min\_samples\_leaf=4}. But after this breakeven point, the model's performance degrades. It is also observed that RFR and ETR does not benefit from any form of regularisation.  
 
@@ -355,7 +355,7 @@ Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This param
         \label{fig:hpo_min_samples_leaf}
 \end{figure}
 
-\paragraph{Depth of Tree}\label{max_depth}
+\subsubsection{Depth of Tree}\label{sec:max_depth}
 
 Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at certain depth while ETR benefits from allowing full growth of the tree. The results are summarised in \Cref{fig:hpo_max_depth}  
 
@@ -366,7 +366,7 @@ Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparam
         \label{fig:hpo_max_depth}
 \end{figure}
 
-\paragraph{Number of Trees}\label{n_estimators}
+\subsubsection{Number of Trees}\label{sec:n_estimators}
 
 Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}. 
 
