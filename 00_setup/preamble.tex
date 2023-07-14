@@ -40,7 +40,8 @@
 \usepackage{tabularx,longtable,multirow,subfigure,caption}%hangcaption
 \usepackage{fncylab} %formatting of labels
 \usepackage{fancyhdr}
-\usepackage{xcolor}
+% \usepackage[svgnames,x11names,table]{xcolor}
+\usepackage[dvipsnames]{xcolor}
 \usepackage[tight,ugly]{units}
 \usepackage{url}
 \usepackage{float}
@@ -126,6 +127,11 @@
 
 \newcommand{\scikit}{}
 \def\scikit/{{\tt Scikit-Learn}}
+
+\newcommand\bcitet[1]{\textbf{\citet{#1}}}
+\newcommand\bcitep[1]{\textbf{\citep{#1}}}
+
+
 
 
 
@@ -250,10 +256,14 @@ autogobble = true
   pdfstartview=FitH,
   pdfpagemode={UseOutlines},% None, FullScreen, UseOutlines
   bookmarksnumbered=true, bookmarksopen=true, colorlinks,
-    citecolor=black,%
-    filecolor=black,%
+    citecolor=NavyBlue,%
+    filecolor=NavyBlue,%
     linkcolor=black,%
-    urlcolor=black}
+    urlcolor=NavyBlue}
+  % citecolor=black,%
+    % filecolor=black,%
+    % linkcolor=black,%
+    % urlcolor=black}
 \usepackage[all]{hypcap}
 \fi
 
