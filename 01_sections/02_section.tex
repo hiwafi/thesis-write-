@@ -2,7 +2,7 @@
 
 \section{Literature Review}\label{sec:litreview}
 
-The literature review in \Cref{sec:litreview} presents past and present research on utilisation of machine learning methods to achieve energy efficient operation. The concept of different modelling approaches for ship operation will be discussed in \Cref{sec:modelling_type}. The generalisation performance of random forest in various research will be discussed in \Cref{sec:rf_performance}. Brief summary of the literature review is presented in \Cref{sec:lit_review_conclusion}.\\
+The literature review in \Cref{sec:litreview} presents past and present research on utilisation of machine learning methods to achieve energy efficient operation. The concept of different modelling approaches for ship operation will be discussed in \Cref{sec:modelling_type}. Short summary of the data source in the modelling of FOC is given in \Cref{sec:data_use}. The review of popular machine learning model used to predict FOC is presented in \Cref{sec:ml_var_appl}. The performance of tree-based model, which include random forest and extra trees in various research will be discussed in \Cref{sec:tree_litreview}. Brief summary of the literature review is presented in \Cref{sec:lit_review_conclusion}.\\
 
 \subsection{Modelling Approach for Ship Operation}\label{sec:modelling_type}
 
@@ -20,7 +20,7 @@ BBMs in general have a good fitting ability for training data and good predictiv
 
 Hence, GBMs are introduced to address the limitations of both WBMs and BBMs by combining the mechanistic knowledge of the ship and physical principles of the vessel's system with BBM models, which possess good predictive capability. Despite these advantages, \bcitet{Yan.2021} noted that GBM approach is not a common approach, recent research to predict fuel consumption are mainly dominated by BBM approach, specifically BBM based on machine learning approach.\\
 
-\subsection{Overview of data source}\label{sec:ais_use}
+\subsection{Review of data source used for FOC model}\label{sec:data_use}
 
 The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using machine learning approach, it is especially important to ensure sufficient amount of good quality data to be available for model training to ensure precise and accurate training of the model \bcitep{Halevy.2009}.\\ 
 
@@ -30,8 +30,7 @@ It can be summarised, that the modelling of FOC use the following types of data 
 
 \textbf{Sensor Data}: Data obtained from installed sensor onboard the vessel. This may include fuel flow sensors, Global Positioning System (GPS) receiver and wind speed sensors are among the possible sensors that can be installed onboard a vessel. Sensor data address the issues of data quantity from noon report, as pointed out in the study by \bcitet{Gkerekos.2019} for the prediction of daily FOC. The machine learning models, which are produced by the Automated Data Logging and Monitoring (ADLM) system outperforms the models that used noon data for their training by $5-7\%$ for a collection period of 3 months of the ADLM system and 2.5 years for the noon data. However, installing onboard sensors may be complex and costly \bcitep{JoanPeturPetersen.2011} and the resulting sensor data will need to be handled properly to account for error in the sensors.\\
 
-\textbf{AIS Data}: Apart from its intended use as collision avoidance system AIS data have seen potential usage in the field of scientific research. In the third Green House Gas (GHG) study by Smith et al.\citep{T.W.P.Smith.2015}, uses AIS to estimate global shipping emission inventories. Rakke \citep{Rakke2016} proposed a methodology termed ECAIS to calculate ship emissions based on the fuel consumption from AIS data. Through Holtrop-Mennen approximation and literature approximation, the ship's power propulsion can be determined which is subsequently used to predict specific fuel consumption. Wen et al. \citep{Wen.2017} attempted to minimise the Energy Efficiency Operational Indicator (EEOI) using green routing. Recent research by Kim et al. \citep{Kim.2020b} used publicly accessible AIS data, ship static data and environmental data to estimate EEOI  without requiring the actual FOC. The study used big data technology as public data are of large capacity. Generally, the study using AIS data is done to achieve independence from the need to use commercial database. The detail of AIS data will be discussed in \Cref{sec:ais_theo}\\  
-
+\textbf{AIS Data}: Apart from its intended use as collision avoidance system, AIS data have seen potential usage in ship behaviour analysis and environmental analysis. The Green House Gas (GHG) study by IMO \bcitep{IMO.2020,T.W.P.Smith.2015}, uses AIS to estimate global shipping emission inventories. \bcitet{Rakke2016} proposed a methodology termed ECAIS to calculate ship emissions based on the fuel consumption from AIS data. Through Holtrop-Mennen approximation and literature approximation, the ship's power propulsion can be determined which is subsequently used to predict specific fuel consumption. \bcitet{Kim.2020b} used publicly accessible AIS data, ship static data, and environmental data to estimate EEOI using big data technology. Generally, the study using AIS data is done to achieve independence from the need to use commercial databases. The details of AIS data will be discussed in \Cref{sec:ais_theo}\\  
 
 \subsection{Review of ML approach to predict FOC}\label{sec:ml_var_appl}
 
@@ -45,13 +44,9 @@ However, the development of ANN models is a challenging task. ANN models tend to
 
 \subsection{Tree-Based Model as FOC model}\label{sec:tree_litreview}
 
-Concerning interpretability, modelling approaches such Linear Regression (LR), KNN and tree-based models have shown superior interpretability in comparison to ANNs. LR can explain the effect of each input variable on the output through the coefficients. KNN searches for the nearest neighbour and their closeness is evaluated through distance measurement algorithms such as Euclidean distance. Additionally, LRs and KNNs also offer easy implementation and adequate explainability. However, both approaches suffer from sensitivity to outliers and noise in data\\
+Concerning interpretability, modelling approaches such Linear Regression (LR), KNN and tree-based models have shown superior interpretability in comparison to ANNs. LR can explain the effect of each input variable on the output through the coefficients. KNN searches for the nearest neighbour and their closeness is evaluated through distance measurement algorithms such as Euclidean distance. Additionally, LRs and KNNs also offer easy implementation and adequate explainability. However, both approaches suffer from sensitivity to outliers and noise in data.\\
 
-This brings us to tree-based model, a powerful and intuitive modelling approach capable of performing classification tasks for discrete data and regression tasks for continuous data. The main idea behind tree-based model follows the principle of partition space, the data points are split into their respective segment according to a certain threshold. The split is performed until a certain stopping rule is applied or when there are no more data points available for splitting and this splitting process for a single tree can be visualised using binary tree representation. \bcitep{Hastie.2009}.\\
-
-However, a single decision tree is prone to overfitting and sensitive to outliers, but this limitation can be resolved through regularisation or by creating an ensemble of independent decision trees, known as Random Forest (RF). In Random Forest Regressor (RFR), the prediction is the average of the prediction across the decision trees \bcitet{Breiman.2001}. The detailed principle of tree-based regressor will be discussed in greater detail in \Cref{sec:tree_intro}.\\
-
-There have been various research that considered tree based model to model FOC:\\
+This brings us to tree-based model, a supervised, highly interpretable machine learning modelling approach capable of performing classification tasks for discrete data and regression tasks for continuous data. According to summary of \bcitet{Yan.2021}, it is not as popular as ANN, however some literature work and studies have indicated its benefits and performance superiority over other machine learning modelling approaches:\\
 
 \bcitet{Soner.2018} used the ferry dataset from \bcitet{Petersen.2012} to predict FOC using tree-based model, which includes bagging, random forest (RF), and bootstrap. From the test dataset, the random forest model achieved RMSE of $43.5$ L/h for the fuel consumption. Which suggested improvement from ANN model from the study of \bcitet{Petersen.2012}.\\ 
 
@@ -63,19 +58,30 @@ The advantage of tree-based model is further highlighted by \bcitet{Gkerekos.201
 
 \bcitet{Abebe.2020} attempted to use machine learning approach to predict SOG of the ship. In this study, AIS data and noon-report weather data from 14 tracks and 62 ships are used for model training. The model considered the ship draught, ship dynamic information, tonnage, and environmental conditions. The result of this study exhibited the feasibility of using AIS data and meteorological data to predict SOG of the ship. The results also further indicated the strength of tree-based model, on test dataset, ETR achieved the best result with model fit of $98.47\%$ and RMSE of $0,234$ knots. It is also reported that ETR achieved better performance with about half of the computational cost of RFR.\\ 
 
+\subsection{Review of WBM for FOC prediction}\label{sec:wbm_review}
+
+To predict the FOC of a ship, WBMs usually calculate the resistances encountered by the vessel based on physics and hydrodynamic laws. The total resistance is summed from resistance of calm water resistances and additional resistance from wind, wave, and other external factors. The corresponding engine power at a particular speed can be calculated, and consequently the FOC can be calculated.\bcitep{MichaelHaranen.2016}\\
+
+The methods from \bcitet{Guldhammer.1974}, \bcitet{Hollenbach.1999}, and \bcitet{Kristensen.2012} use different formulations, assumptions, and input variables for engine power estimation. For this thesis, the main focus will be the use of the estimation method from Holtrop-Mennen \bcitep{Holtrop.1978,Holtrop.1982,Holtrop.1984}. Holtrop-Mennen estimate method allowable application range is suitable in most of the cases. This is indicated by studies from \bcitet{Rakke2016} and \bcitet{Kim.2020b}. \bcitet{Rakke2016} used ship operational and mechanical data from various works of literature and AIS data for input variables to estimate the engine power using Holtrop-Mennen method to subsequently calculate FOC. The FOC is then used to estimate GHG emissions for different ships and the study reported about $5\%$ error rate during model testing. \bcitet{Kim.2020b} successfully estimated Energy Efficiency Operational Index (EEOI) without actual FOC. The study used AIS data as well as publicly accessible weather data and ship static information. The approach in this study used Holtrop-Mennen method to estimate engine power which is consequently used to calculate FOC for EEOI estimations.\\ 
+
 \subsection{Conclusion of Literature Review}\label{sec:lit_review_conclusion}
 
-This literature review described the capability of Random Forest Regressor to predict fuel consumptions and ship speed, irrespective of data source and type of data used. Promising results from different performance measures across different literatures indicated the capability random forest model as predictor. As such, this thesis aims to find optimisation possibilities to extract maximum prediction performance from random forest. Due to the nonlinear, third order function estimate of fuel consumption \citep{Ronen.1982,Ronen.2011}. Accurate prediction of ship speed is paramount to ensure optimal ship operation resulting in increase of profitability. 
+As termed by \bcitet{Yan.2021}, the GBM model in this thesis falls under the category of sequential GBM, where the BBM and the WBM will be developed in series and combined to form a single GBM. The BBM will be developed to perform initial prediction and the resulting prediction will be passed into the WBM. The use of tree-based regressor, which will be used to predict SOG, provides solution to the problem of poor interpretability of some machine learning models. Furthermore, tree-based models can outperform most of the available machine learning models while providing added benefits of little requirement for data preprocessing and relatively cheap computational cost. The selection of Holtrop-Mennen as engine power estimation method is justified by the application range of the methodology and successes from previous studies.\\ 
 
 \section{Tree-based model}\label{sec:tree_intro}
 
-Random forest belongs to the family of tree-based model and its functional principle stems from decision tree. Decision tree is a non-parametric model that can perform both classification and regression tasks for discrete variable and continuous variable. It is a powerful algorithm, capable of fitting complex datasets. Tree-based model requires very little to no data pre-processing \citep{Geron.2019,Hastie.2009}. To grasp the concept of random forest, The principle working of decision tree will be introduced in depth in \Cref{sec:dt_theo}. It is then followed by \Cref{sec:rf_theo} which presents the principle function behind random forest. Brief explanation for Extra-Trees, method introduced to further improvise random forest, will be presented in \Cref{sec:et_theo}.\\
+Decision Tree, Random Forest and Extra-Tree are classified as tree-based model, which is supervised machine learning model capable of classification tasks for discrete variables and regression tasks for continuous variables. In this section, the theory of Decision Tree (DT), Random Forest (RF) and Extra Tree (ET) will be discussed in detail in \Cref{sec:dt_theo}, \Cref{sec:rf_theo} and \Cref{sec:et_theo}.\\  
 
 \subsection{Decision Tree}\label{sec:dt_theo}
 
-Decision tree is a white box model\footnote{This is not to be interchanged with the definition described by Haranen et al. \citep{MichaelHaranen.2016} regarding modelling of ship operation.} \citep{Geron.2019}. In machine learning sense, this means that the model is intuitive, and the structure of the model is interpretable. Thus, the structure of the model can be analysed in detail. To train Decision Trees, \scikit/ \citep{FabianPedregosa.2011} uses the \emph{Classification and Regression Tree} (CART) algorithm \citep{Breiman.2017}. Partition space shown by \Cref{fig:partitionspace} are used to illustrate the decision of CART algorithm. This process can be alternatively represented by the binary tree of \Cref{fig:partitiontree}, observation that satisfies the condition are assigned to the left branch and the opposite is assigned to the right branch. The binary tree representation can be especially helpful when multiple input variables are involved, as the responses can be represented by a single tree \citep{Hastie.2009}.\\
+The principle of decision tree as a predictor can be defined as one or more nested {\tt if-then} statements based on a rule that partitions the data into partition space as shown in \Cref{fig:partitionspace}. Alternatively, the partition space generated from {\tt if-then} statements can be represented using binary tree representation, which is more interpretable as multiple input response can be represented by a single tree.\bcitep{Kuhn.2013,Hastie.2009}\\ 
 
-\begin{figure}[h]
+A decision tree consists of the following type of nodes, \textbf{\emph{Root node}} defines the topmost node. \textbf{\emph{Leaf nodes}} are also termed as terminal nodes, it is the node that will give the final prediction output. The
+\textbf{\emph{Internal Node}} is defined as the nodes between the root node and leaf node. The process of dividing a node into successive nodes is called \textbf{\emph{splitting}}. The node that is being split is called \textbf{\emph{parent node}} and the successive nodes that are created are called \textbf{\emph{child nodes}}. To grow a tree in a regression task, the splitting process is commonly regulated by Mean Square Error (MSE). The tree growth algorithm are based on Classification and Regression Tree (CART).\\
+
+To understand the principle of selection for the feature, $k_t$ , of the parent node and splitting rule, $t_k$ , for data partition, the following example will be presented:\\
+
+\begin{figure}
 \centering
 \begin{minipage}[b]{.5\textwidth}
     \centering
@@ -118,7 +124,7 @@ Decision tree is a white box model\footnote{This is not to be interchanged with 
     
     \end{tikzpicture}
     
-    \captionof{figure}{Example of partition space \citep{Hastie.2009}} 
+    \captionof{figure}{Example of partition space \bcitep{Hastie.2009}} 
     \label{fig:partitionspace}
 \end{minipage}%
 \begin{minipage}[b]{.5\textwidth}
@@ -132,22 +138,15 @@ Decision tree is a white box model\footnote{This is not to be interchanged with 
         [.$X_1\leq t_3$ [.$R_3$ ]
         [.$X_2\leq t_4$ [.$R_4$ ] [.$R_5$ ] ] ] ]
     \end{tikzpicture}
-    \captionof{figure}{Example of partition tree \citep{Hastie.2009}} 
+    \captionof{figure}{Example of partition tree \bcitep{Hastie.2009}} 
     \label{fig:partitiontree}
 \end{minipage}
 \end{figure}
 
-Now, we need to understand the principle of selection for the feature $k_t$ and threshold $t_k$. We shall first start with the principle of selection of the threshold $t_k$; Assuming a case with single feature $k$ and response $y$, with $m$ data points. The algorithm starts by looking for possible thresholds. This is determined by calculating the splitting value.\footnote{For example, suppose there are data points at $k = [0.2,0.4]$, then the splitting value is the value in between, i.e., $t_k = 0.3$}. Then, the mean of the response $y$ of partition space $S_1$ and $S_2$ is calculated as seen in \Cref{fig:geron6_5}.\\ 
+\textbf{For the selection of the optimal splitting rule $t_k$}: Given a case with single feature $k$ and response $y$ with $m$ data points present. The algorithm starts by looking for possible splits between two distinct data points $y$. This split results in two distinct partition spaces. For each partition space $S_1$ and $S_2$, the mean is calculated by dividing the sum of response $y$ with the amount of data points $m$ for each respective partition space $S_1$ and $S_2$.\\ 
 
-This step is then followed by calculating the sum of squared error (SSE) of each data points in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produce minimum sum of MSE is determined. This algorithm is defined by the following cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \citep{Geron.2019,Kuhn.2013}:
+This step is then followed by calculating the sum of squared error (SSE) of each data point in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produces minimum sum of MSE is found, this threshold will be selected as splitting rule for the parent node and correspond to the threshold that minimise the cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \citep{Geron.2019,Kuhn.2013}:
 
-% \begin{equation}\label{costfun}
-%     J(k,t_k) = \frac{m_{\text{left}}}{m}\text{SSE}_\text{S1} + \frac{m_{\text{right}}}{m}\text{SSE}_\text{S2}
-%     \begin{cases}
-%         \text{SSE}_{S_{i=(1,2)}} = \sum\limits_{i \in \text{node}}(\hat{y}_\text{node} - y^{(i)} )^2 \\
-%         \hat{y}_{\text{node}} = \frac{1}{m_{\text{node}}}\sum\limits_{i\in \text{node}} y ^ {(i)}
-%     \end{cases}   
-% \end{equation}
 \begin{equation}\label{eqn:sse}
     \text{MSE}_{S_i} = \frac{1}{m_{S_i}}\text{SSE}_{S_i} \quad \textbf{where} \quad i = (1,2)   
 \end{equation}
@@ -159,37 +158,51 @@ This step is then followed by calculating the sum of squared error (SSE) of each
     \end{cases}  
 \end{equation}
 
+\textbf{For the selection of the most optimal feature for parent node $t_k$}: Similar principle is also applied for the selection of the most optimal feature for the parent node. Consider there are $k_t$ features, then for each respective feature $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated following the cost function $J(k,t_k)$. The feature that can best \emph{\textbf{minimise}} the cost function will be selected as the root node of the tree. The subsequent selections of the feature for the parent node follow the same principle. \bcitep{Hastie.2009,Geron.2019}.\\
 
-Once complete, then the partition space is further split into two more regions and this process is recursively continued until a stopping rule is applied. The stopping rule are either when the tree reaches the maximum depth, (This is controlled by the parameter {\tt max\_depth} in \scikit/), or when it cannot find a split that can further reduce MSE. This best split also corresponds to the best possible fit to the predicted value.\\ 
+Once complete, then the partition space is further split into two more regions to look for the next possible split that minimise the cost function $J(k,t_k)$. This process is recursively continued until the number of samples to split falls under a certain threshold or when it cannot find a split that can further reduce MSE.\\ 
 
-Same principle is also applied when multiple features are present. Consider there are $k_t$ features, then for each respective features $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated using the cost function $J(k,t_k)$. The feature that can \emph{\textbf{minimise}} the cost function will be selected as the root of the tree. The tree is then grown further by recursively repeating this process \citep{Hastie.2009,Geron.2019}.\\
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=.9\textwidth]{02_figures/fig6_5_partspace_geron09.png}
-    \caption{Prediction of two Decision tree regression models \citep{Geron.2019}}
+    \caption{Prediction of two Decision tree regression models \bcitep{Geron.2019}}
     \label{fig:geron6_5}
 \end{figure}
 
-While powerful, decision tree suffers from overfitting when the model is unconstrained. Decision tree makes very few assumptions regarding the training data. Therefore, it will adapt to the training data and fitting it very closely \citep{Geron.2019}. Additionally, an individual tree tends to be unstable, when the data is altered, a completely different set of splits might be found\citep{Hastie.2009,Kuhn.2013}. Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom during the training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. However, to address the fundamental drawbacks of decision tree, we shall look into random forest.
+The resulting decisions for the best possible splits can be represented using binary tree, this makes decision tree highly interpretable and easy to implement. The inherent logic structure from {\tt if-then} statements means that it can handle various types of data (sparse, skewed, continuous, categorical, etc.) without the need for data pre-processing. Decision tree implicitly conducts feature selection which is a desirable trait for many modelling problems \bcitep{Kuhn.2013}.\\
+
+However, a single decision tree suffers from overfitting when the model is unconstrained. The logical principle of {\tt if-then} statements means that decision tree will attempt to fit the training data as closely as possible. Furthermore, single decision tree model tends to be unstable, altering the data will cause drastic change in the structure of the tree, there exist possibilities where completely different set of splits might be found resulting in different interpretations. \bcitep{Hastie.2009,Kuhn.2013}.\\
+
+From \Cref{fig:partitionspace}, it can be implied that each decision boundaries are orthogonal to an axis i.e. all splits are perpendicular to an axis and this form rectangular subspaces for each predicted value. If the relationship between predictors and response cannot be adequately defined by the rectangular subspaces, then tree based model will suffer from larger prediction error than other kinds of models \bcitep{Kuhn.2013}.\\
+
+Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom to grow during model training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. Other regularisation techniques will be discussed in \Cref{sec:hpo}.\\ 
+
+Regularisation of decision tree will help to address the overfitting issues and improve the robustness of the model, this may result in better generalisation capability. Nonetheless, in order to attain significant improvements in the performance of decision tree model, it is necessary to seek alternative solutions.\\
+
 \begin{figure}
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/fig6_6_paramdepth_geron09.png}
-        \caption{Regularising a Decision Tree regressor \citep{Geron.2019}}
+        \caption{Regularising a Decision Tree regressor \bcitep{Geron.2019}}
         \label{fig:geron6_6}
 \end{figure}
 
-\subsubsection{Random Forest}\label{sec:rf_theo}
+\subsection{Random Forest}\label{sec:rf_theo}
 
-To understand random forest, the concept of ensemble method shall first be understood. Ensemble is defined as group of predictors such as classifier or regressor. Predictions are aggregated across multiple predictors, for regression task, the prediction is the average across the predictors. This principle is applied to random forest, a group of decision trees is trained on different random set of training data. For regression task, this means the prediction value is the average of the prediction across the decision trees. Such ensemble of decision trees is called \emph{\textbf{Random Forest}} \citep{Hastie.2009,Breiman.2001,TinKamHo.1995}.\\
+Ensemble learning is one of the possible solution to improve the performance of DT regressors. The main idea of ensemble learning is combining the strengths of a collection of simpler base models \bcitep{Hastie.2009}. This idea is applied to random forest (RF), it involves combination of multiple learning algorithms, known as weak learners. In random forest, each of these learners are single decision tree.\\
 
-Ensemble methods achieve the best performance when the predictors are as independent to one another. In statistical sense, this can be achieved by reducing correlation among the trees. This can be realised by adding randomness during tree construction process. For this purpose, random forest utilises \emph{bagging} \citep{Breiman.1996} method (short for \emph{bootstrap aggregating}) during the training process. First, bootstrap sample is created, this means that a sample of the dataset is randomly selected and allowed to appear more than once. This sampling technique is referred to as sampling \emph{with} replacement. Once predictors are trained, then the prediction of the new instance is \emph{aggregated} across the predictors. \citep{Kuhn.2013,Hastie.2009,Geron.2019}\\
+The most common ensemble methods are \emph{boosting} and \emph{bagging}. In boosting, the learner evolves over time, where successive trees are dependent on the earlier trees. In bagging (short for \emph{bootstrap aggregating}) each tree is trained using bootstrap sample of the training set i.e. this means that a sample of the training dataset is randomly selected and allowed to appear more than once\footnote{This sampling technique is referred to as sampling \emph{with} replacement}. Each model in the ensemble then generate a prediction from the bootstrapped sample and the predictions are aggregated across the learners \bcitep{TinKamHo.1995,Breiman.2001}.\\
 
-To add further randomness, random forest involves random selection of input features $k$ that are considered to split the tree. This means that the feature $k$ that will be used to split the tree is selected from this random subset of feature. The selection for the best feature to be used as the root of the tree and its subsequent node, as well as the stopping rule for the tree's growth is similar to that of decision tree. \citep{Kuhn.2013,Hastie.2009,Geron.2019}\\
+The performance of bagging can be further improved by reducing correlation between trees i.e. de-correlating trees. This can be achieved by adding randomness during tree construction process. \bcitet{Dietterich.2000} introduced the idea of random split selection, this means that a feature $k$ will be selected from random subset of feature. From this random subset, the assignment of the feature for the parent node follows the CART algorithm described in \Cref{sec:dt_theo}.\\
+
+This algorithm, involving creation of bootstrap sample, random selection of splitting feature and aggregation of the prediction is termed by \bcitet{Breiman.2001} as \textbf{\emph{Random Forest}}. The methodology introduced in random forest address the tendency of decision tree to overfit and the issue with lack of robustness. De-correlating trees means that each learner are independent of each other, and the combination of many independent, strong learners yields an improvement in error rates i.e. reduction in variance and robustness against noisy response. It is also proven by \bcitet{Breiman.2001} that random forest cannot overfit, that means growing more trees should not affect the performance of random forest, albeit with a greater computational burden.\\
+
+
 
 These measures introduced in random forest address the tendency of decision tree to overfit. In fact, the instability of decision tree mentioned in \Cref{sec:dt_theo} is exploited in random forest to gain randomness during construction of the tree. Experience from Hastie et al. \citep{Hastie.2009} shown that random forest requires minimal parameter tuning to achieve satisfactory performance while Kuhn et al. \citep{Kuhn.2013} reported that tuning parameter does not have a drastic effect on performance. \\
 
-However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \citep{Geron.2019}. \footnote{Again, not to be interchanged with the definition described by Haranen et al. \citep{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value.\\ 
+However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \citep{Geron.2019}. \footnotemark{Again, not to be interchanged with the definition described by Haranen et al. \citep{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value.\\ 
+
 
 \subsection{Extra-Trees (Extremely Randomised Trees)}\label{sec:et_theo}
 

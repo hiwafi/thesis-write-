@@ -32,7 +32,7 @@
 \usepackage{textpos}
 % \usepackage{cite}
 \usepackage[round]{natbib}
-\usepackage{doi}
+% \usepackage{doi}
 \usepackage{kpfonts}
 \usepackage[a4paper,hmargin=2.8cm,vmargin=2.0cm,includeheadfoot]{geometry}
 \usepackage{ifxetex}
@@ -122,7 +122,7 @@
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
+% \usepackage{footnotebackref}
 % Quick macros to type repeated texts
 
 \newcommand{\scikit}{}
@@ -247,8 +247,10 @@ autogobble = true
 \setmainfont[Scale=.8]{OpenDyslexic-Regular}
 \else
 % \usepackage[pdftex,pagebackref,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
-% \usepackage[pdftex,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
+\usepackage[pdftex,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
 \usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage{doi}
+\usepackage{footnotebackref}
 \hypersetup{pdftitle={},
   pdfsubject={}, 
   pdfauthor={Hibatul Wafi},
