@@ -6,6 +6,7 @@
 % % Default format
 % \documentclass[12pt,twoside]{article}
 % % Book format
+% \documentclass[12pt, a4paper, twoside]{book}
 \documentclass[12pt, a4paper, oneside]{book}
 % include files that load packages and define macros
 \input{00_setup/preamble.tex} % various packages needed for maths etc.
@@ -14,7 +15,8 @@
 \begin{document}
 \input{01_sections/00_title.tex}
 \pagebreak
-\thispagestyle{empty}
+\frontmatter
+\pagestyle{empty}
 \tableofcontents
 \newpage
 \listoftables
@@ -23,6 +25,8 @@
 % \newpage
 % \input{01_sections/06_equations.tex}
 % {\setstretch{1}
+\mainmatter
+\pagestyle{fancy}
 \newpage
 \input{01_sections/01_section.tex}
 \newpage
@@ -36,7 +40,8 @@
 \newpage
 % }
 %\printbibliography
-
+\pagestyle{empty}
+\renewcommand{\thepage}{}
 % \bibliographystyle{unsrturl}
 \bibliographystyle{plainnat}
 % \bibliographystyle{elsarticle-harv}

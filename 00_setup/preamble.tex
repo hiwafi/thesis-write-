@@ -47,6 +47,7 @@
 \usepackage{float}
 \usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{mathtools}
 
 % Alternative activation, when working with laptop,use draft settings !
 \usepackage{graphicx}
@@ -124,6 +125,7 @@
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 % \usepackage{footnotebackref}
 % Quick macros to type repeated texts
+\setlength{\abovecaptionskip}{0pt} 
 
 \newcommand{\scikit}{}
 \def\scikit/{{\tt Scikit-Learn}}
@@ -308,8 +310,16 @@ autogobble = true
 
 \setlength{\headheight}{14.5pt}
 \pagestyle{fancy}
-\fancyfoot[ER,OL]{\thepage}
-\fancyfoot[OC,EC]{\sffamily }
+\newcommand{\changefont}{%
+    \fontsize{9}{11}\selectfont
+}
+\fancyhead[LE,RO]{\changefont \slshape \rightmark} %section
+\fancyhead[RE,LO]{\changefont \slshape \leftmark} %chapter
+\fancyfoot[C]{\thepage} %footer
+% \fancyfoot[EC,OC]{\thepage}
+% \fancyfoot[OC,EC]{\sffamily }
+% \fancyfoot[ER,OL]{\thepage}
+% \fancyfoot[OC,EC]{\sffamily }
 %Page no. in the left on
 %odd pages and on right on even pages
 \renewcommand{\headrulewidth}{0.1pt}
