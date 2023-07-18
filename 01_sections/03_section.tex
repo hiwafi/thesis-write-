@@ -52,81 +52,50 @@ Similarly, information of Northward and Eastward current Velocity is converted t
 This conversion is performed as the information of current speed and current direction, $\gamma$, is necessary to perform the correction formula shown in \Cref{eqn:stwx} and \Cref{eqn:stwy}. However, for training purpose, this feature will not be considered. Instead, the true current direction and true wind direction will be considered. The initial structure have 27 features, 9 AIS features and 18 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{tbl:dataset_init_struct} \\
 
 \begin{table}
-    % \small
+    \scriptsize
     \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ |p{8cm}|c| }
+    {\begin{tabular}{ p{0.4\textwidth} c }
     \hline
     \textbf{Feature} & \textbf{Feature Name}  \\
     \hline
-    \multicolumn{2}{|l|}{\textbf{AIS data}}\\
+    \multicolumn{2}{l}{\textbf{AIS data}}\\
     \hline
     Position Time Stamp [DD\slash MM\slash YYYY HH:MM:SS] & {\tt Time} \\
-    \hline
     Latitude [°] & {\tt LAT}   \\
-    \hline
     Longitude [°] & {\tt LON}  \\
-    \hline
     Width [m] & {\tt width}  \\
-    \hline
     Length [m] & {\tt length}\\
-    \hline
     SOG [Knots] & {\tt sog} \\
-    \hline
     COG [m/s] & {\tt cog}  \\
-    \hline
     Heading [°] & {\tt heading}  \\
-    \hline
     Draught [m] & {\tt draught} \\
     \hline
-    \multicolumn{2}{|l|}{\textbf{Weather Data (0.5° Granularity)}}\\
+    \multicolumn{2}{l}{\textbf{Weather Data (0.5° Granularity)}}\\
     \hline
     Wind Speed [m/s] & {\tt windspeed} \\
-    \hline
     True North Wind Direction, $\varphi$ [°] & {\tt truenorthcurrentdir} \\
-    \hline
     Air Temperature Above Oceans [K] & {\tt oceantemperature} \\
-    % \hline
     % Air Density Above Oceans [$\text{kg/m}^3$]& - \\
-    \hline
     Maximum Wave Height [m] & {\tt waveheight} \\
-    % \hline
     % Swell Direction [°] & - \\
-    % \hline
     % Wind Wave Direction & - \\
-    \hline
     Swell Period [s] & {\tt swellperiod} \\
-    \hline
     Wind Wave Period [s] & {\tt windwaveperiod}\\
-    % \hline
     % Wave Direction [°] & - \\
-    \hline
     Wave Period [s] & {\tt waveperiod}\\
-    \hline
     Sea Surface Temperature [K] & {\tt surftemp}\\
-    \hline
     Combined Wind Wave Swell Height [m] &  {\tt windwaveswellheight} \\
-    \hline
     Swell Height [m] & {\tt swellheight}\\
-    \hline
     Wind Wave Height [m] & {\tt windwaveheight}  \\
-    % \hline
     % Surface Pressure & - \\
-    \hline
     Current Speed [m/s] & {\tt curspeed} \\
-    \hline
     True North Current Direction $\gamma$ [°] & {\tt truenorthcurrentdir}\\
-    \hline
     True Wind Direction [°] & {\tt truewinddir}  \\
-    \hline
     True Current Direction [°] & {\tt truecurrentdir} \\
-    \hline
     True Swell Direction [°] & {\tt trueswelldir} \\
-    \hline
     True Wind Wave Direction [°] & {\tt truewindwavedir} \\
-    \hline
     True Wave Direction [°] & {\tt truewavedir} \\
-    \hline
     \end{tabular}}
 \caption{Structure of fused dataset}\label{tbl:dataset_init_struct}
 \end{table}
@@ -257,7 +226,7 @@ From feature selection, 5 features from AIS data are discarded while 11 features
 \caption{Structure of fused dataset}\label{tbl:dataset_train_struct}
 \end{table}
 
-\subsection{Modelling}\label{modelling}
+\section{Modelling}\label{sec:modelling}
 
 In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor, random forest regressor and extra-tree regressor. In addition, the tree-based models are compared against multiple linear regressor to as benchmark. The methodology to develop the best model is divided into several steps.\\
 
@@ -265,7 +234,7 @@ For training, the dataset is split into training, validation and test dataset in
 
 Appropriate statistical performance measures are applied to each model; the performance measures selected will help to evaluate how well a model is able to make generalisation on validation and test dataset. The evaluation will be cross validated in form of k-folding. The details on evaluation methodology used in this thesis will be discussed in \Cref{sec:perf_metrics}. \\
 
-\subsection{Performance Metrics for Model Validation}\label{sec:perf_metrics}
+\subsection{Performance Metrics for Validation}\label{sec:perf_metrics}
 
 To gain sensible estimate of model performance and how precise a model is, the model will be cross validated by means of k-folding. K-fold cross validation split the training set into k subsets which is called \emph{folds}, then the model will be trained k times using k-1 subsets and remaining one for validation, this process is illustrated in \Cref{fig:kfold}. For each iteration, each model is evaluated using different performance metrics such as \begin{enumerate*}[label={(\arabic*)}]
     \item  Coefficient of Determination ($R^2$), 
@@ -282,7 +251,7 @@ To gain sensible estimate of model performance and how precise a model is, the m
     \label{fig:kfold}
 \end{figure}
 
-\subsubsection{Coefficient of Determination ({$R^2$})}\label{sec:rsquared}
+\subsubsection*{Coefficient of Determination ({$R^2$})}\label{sec:rsquared}
 
 The coefficient of determination $R^2$ gives a measure on prediction quality, $R^2$ quantifies the ability of the regression model to approximate the actual values. $R^2 $ is defined by \Cref{eqn:rsquared}, where $y$ represents true target output, $\hat{y}$ represents the predictor output and $\overline{y}$ represents the mean. $R^2$ score range between 0 and 1, higher values i.e. $R^2 \rightarrow 1$ indicate better model fit and score of 1 indicate perfect prediction.\\
 
@@ -290,7 +259,7 @@ The coefficient of determination $R^2$ gives a measure on prediction quality, $R
     R^2(y,\hat{y}) = 1 - \frac{\sum_{i = 1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}} )^2 }{\sum_{i = 1}^{n} (y_{\text{i}} - \overline{y}_{\text{i}})^2} \quad \textbf{where} \quad \overline{y} = \frac{1}{n}\sum_{1}^{n} y_\text{i}
 \end{equation}
 
-\subsubsection{Explained Variance (EV)}\label{sec:expVar}
+\subsubsection*{Explained Variance (EV)}\label{sec:expVar}
 
 Explained variance indicate how well a model can capture variance from a dataset. It is defined by \Cref{eqn:expVar}, where $\sigma_x$ represents standard deviation of parameter $x$. EV score range between 0 and 1, where the best score of $EV = 1$ can be obtained if $\sigma^2_{(y-\hat{y})} \rightarrow 0$.\\  
 
@@ -298,7 +267,7 @@ Explained variance indicate how well a model can capture variance from a dataset
     EV(y,\hat{y}) = 1 - \frac{\sigma^2_{(y-\hat{y})}}{\sigma^2_{y}}
 \end{equation}
 
-\subsubsection{Mean Absolute Error (MAE)}\label{sec:MAE}
+\subsubsection*{Mean Absolute Error (MAE)}\label{sec:MAE}
 
 MAE indicated the expected value of absolute ($L^1$ norm) error, and it can be calculated by:
 
@@ -306,7 +275,7 @@ MAE indicated the expected value of absolute ($L^1$ norm) error, and it can be c
     MAE(y,\hat{y}) = \frac{1}{n}\sum_{i=1}^{n} |y_{\text{i}} - \hat{y}_{\text{i}}| 
 \end{equation}
 
-\subsubsection{Root Mean Square Error (RMSE)}\label{sec:RMSE}
+\subsubsection*{Root Mean Square Error (RMSE)}\label{sec:RMSE}
 
 The RMSE describe the expected value of quadratic error. RMSE place large penalty on large deviation between true and estimated values and for this reason, it can be used to as a metric to indicate model performance against outliers. Ideal score is observed when $\text{RMSE} \rightarrow 0$. RMSE can be considered as absolute measure of model fitness. Omitting the root term, RMSE becomes MSE, which is the loss function of \Cref{eqn:costfun} that is used to determine the most optimal split in a regression decision tree.\\
 
@@ -314,7 +283,7 @@ The RMSE describe the expected value of quadratic error. RMSE place large penalt
     RMSE(y,\hat{y}) = \sqrt{\frac{1}{n}\sum_{i=1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}})^2} 
 \end{equation}
 
-\subsubsection{Median Absolute Deviation (MAD)}\label{sec:MAD} 
+\subsubsection*{Median Absolute Deviation (MAD)}\label{sec:MAD} 
 
 MAD is a performance metrics that considers the median of the absolute errors. It is robust to outlier as it only consider median performance
 
@@ -326,6 +295,22 @@ MAD is a performance metrics that considers the median of the absolute errors. I
 \subsection{Model Hyperparameter Optimisation}\label{sec:hpo}
 
 The subject of parameter tuning was briefly discussed in \Cref{sec:dt_theo}. In \Cref{sec:dt_theo} parameter tuning was applied to decision tree regressor to avoid overfitting by changing the minimum amount of samples a leaf node has. This example implies that altering model hyperparameter will affect the model performance. However, the optimisation of the hyperparameter cannot be performed \emph{a priori} and as such iterative process will be performed until best hyperparameter value is found.\\ 
+
+\begin{table}[ht]
+    \scriptsize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.33\textwidth}p{3cm}p{3cm}p{3cm}  }
+    \hline
+    \multicolumn{1}{c}{\textbf{Model}} & \multicolumn{1}{c}{\textbf{Decision Tree}}  & \multicolumn{1}{c} {\textbf{Random Forest}} & \multicolumn{1}{c}{\textbf{Extra-Trees}}\\
+    \hline
+    Number of trees & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{Many} & \multicolumn{1}{c}{Many}\\
+    Features considered for split at each node &   \multicolumn{1}{c}{All features}  & \multicolumn{1}{c}{Random subset of features} & \multicolumn{1}{c}{Random subset of features} \\
+    Bootstrapping & \multicolumn{1}{c}{Not applied} & \multicolumn{1}{c}{Yes} & \multicolumn{1}{c}{No}\\
+    Split Rule  & \multicolumn{1}{c}{Best split} & \multicolumn{1}{c}{Best split}& \multicolumn{1}{c}{Random split}\\
+    \end{tabular}}
+\caption{Comparison of tree based model from \Cref{sec:tree_intro}}\label{tbl:table_trees}
+\end{table}
 
 \scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with its value range is evaluated using cross validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves construction of grids containing all possible combinations of hyperparameter value in specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values.\\ 
 

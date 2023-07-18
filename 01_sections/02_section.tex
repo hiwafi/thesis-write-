@@ -8,11 +8,11 @@ The literature review in \Cref{sec:litreview} presents past and present research
 
 According to \bcitet{MichaelHaranen.2016} and \bcitet{Coraddu.2017}, the modelling strategies to predict fuel consumption are classified into three categories:\\
 
-\textbf{White Box Models (WBM)} are based on \emph{a priori} mechanistic knowledge and physical principles of the vessel's system. This means that the dimensions of the vessel's structure, design parameters, and propulsion plant configuration are known.\\
+\subsubsection*{\textbf{White Box Models (WBM)}} Based on \emph{a priori} mechanistic knowledge and physical principles of the vessel's system. This means that the dimensions of the vessel's structure, design parameters, and propulsion plant configuration are known.\\
 
-\textbf{Black Box Models (BBM)} are purely data driven, and it is developed using data from different sailing journey and historical observations. Contrary to WBM, this approach does not require detailed information on the vessel. This modelling approach can be further split into two categories. \emph{Statistical Modelling} aims to find explanations for relationships between fuel consumption and different factors that affect it. \emph{Machine Learning (ML) Modelling} focuses on the predictive capabilities of the model that could predict fuel consumption at different points in time.\\
+\subsubsection*{\textbf{Black Box Models (BBM)}} Purely data driven, and it is developed using data from different sailing journey and historical observations. Contrary to WBM, this approach does not require detailed information on the vessel. This modelling approach can be further split into two categories. \emph{Statistical Modelling} aims to find explanations for relationships between fuel consumption and different factors that affect it. \emph{Machine Learning (ML) Modelling} focuses on the predictive capabilities of the model that could predict fuel consumption at different points in time.\\
 
-\textbf{Grey Box Models (GBM)} fuse WBM and BBM into a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
+\subsubsection*{\textbf{Grey Box Models (GBM)}} Fuse WBM and BBM into a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
 
 Each of these strategies possesses its strength and limitations. WBMs are developed based on physical and hydrodynamics laws as well as theories of naval architecture, it is transparent and comprehensible, making them the preferred model used by various shipping industries. However, the deterministic nature of WBMs causes them to have poor suitability and generalisability. This is mainly caused due to limited \emph{a priori} knowledge of different vessel dimensions, parameters, and narrow application limits of principle dimensions and form parameters of the vessel. Subsequently, the inability of WBMs to add randomness makes it rigid and restrictive. \bcitep{MichaelHaranen.2016,Yan.2021}\\
 
@@ -22,15 +22,13 @@ Hence, GBMs are introduced to address the limitations of both WBMs and BBMs by c
 
 \subsection{Review of data source used for FOC model}\label{sec:data_use}
 
-The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using machine learning approach, it is especially important to ensure sufficient amount of good quality data to be available for model training to ensure precise and accurate training of the model \bcitep{Halevy.2009}.\\ 
+The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using machine learning approach, it is especially important to ensure sufficient amount of good quality data to be available for model training to ensure precise and accurate training of the model \bcitep{Halevy.2009}. It summarised by \bcitet{Yan.2021}, that the modelling of FOC use the following types of data source:\\
 
-It can be summarised, that the modelling of FOC use the following types of data source \bcitep{Yan.2021}:\\
+\subsubsection*{\textbf{(Daily) Noon Report}} Daily reports manually filed by ship's chief engineer and sent by the ship's masters to the shipping company and shore management. The reports include informations on types of daily fuel consumption, basic voyage information (e.g. ship location, load condition), sailing behaviour information e.g. (average sailing speed, average engine revolution per minute (RPM)), as well as sea and weather conditions. While it provides relevant information regarding the ship operation, the inherent problem of daily and manual data entry means that the quality and quantity of data cannot be guaranteed.\\
 
-\textbf{(Daily) Noon Report}: Daily reports manually filed by ship's chief engineer and sent by the ship's masters to the shipping company and shore management. The reports include informations on types of daily fuel consumption, basic voyage information (e.g. ship location, load condition), sailing behaviour information e.g. (average sailing speed, average engine revolution per minute (RPM)), as well as sea and weather conditions. While it provides relevant information regarding the ship operation, the inherent problem of daily and manual data entry means that the quality and quantity of data cannot be guaranteed.\\
+\subsubsection*{\textbf{Sensor Data}} Data obtained from installed sensor onboard the vessel. This may include fuel flow sensors, Global Positioning System (GPS) receiver and wind speed sensors are among the possible sensors that can be installed onboard a vessel. Sensor data address the issues of data quantity from noon report, as pointed out in the study by \bcitet{Gkerekos.2019} for the prediction of daily FOC. The machine learning models, which are produced by the Automated Data Logging and Monitoring (ADLM) system outperforms the models that used noon data for their training by $5-7\%$ for a collection period of 3 months of the ADLM system and 2.5 years for the noon data. However, installing onboard sensors may be complex and costly \bcitep{JoanPeturPetersen.2011} and the resulting sensor data will need to be handled properly to account for error in the sensors.\\
 
-\textbf{Sensor Data}: Data obtained from installed sensor onboard the vessel. This may include fuel flow sensors, Global Positioning System (GPS) receiver and wind speed sensors are among the possible sensors that can be installed onboard a vessel. Sensor data address the issues of data quantity from noon report, as pointed out in the study by \bcitet{Gkerekos.2019} for the prediction of daily FOC. The machine learning models, which are produced by the Automated Data Logging and Monitoring (ADLM) system outperforms the models that used noon data for their training by $5-7\%$ for a collection period of 3 months of the ADLM system and 2.5 years for the noon data. However, installing onboard sensors may be complex and costly \bcitep{JoanPeturPetersen.2011} and the resulting sensor data will need to be handled properly to account for error in the sensors.\\
-
-\textbf{AIS Data}: Apart from its intended use as collision avoidance system, AIS data have seen potential usage in ship behaviour analysis and environmental analysis. The Green House Gas (GHG) study by IMO \bcitep{IMO.2020,T.W.P.Smith.2015}, uses AIS to estimate global shipping emission inventories. \bcitet{Rakke2016} proposed a methodology termed ECAIS to calculate ship emissions based on the fuel consumption from AIS data. Through Holtrop-Mennen approximation and literature approximation, the ship's power propulsion can be determined which is subsequently used to predict specific fuel consumption. \bcitet{Kim.2020b} used publicly accessible AIS data, ship static data, and environmental data to estimate EEOI using big data technology. Generally, the study using AIS data is done to achieve independence from the need to use commercial databases. The details of AIS data will be discussed in \Cref{sec:ais_theo}\\  
+\subsubsection*{\textbf{AIS Data}} Apart from its intended use as collision avoidance system, AIS data have seen potential usage in ship behaviour analysis and environmental analysis. The Green House Gas (GHG) study by IMO \bcitep{IMO.2020,T.W.P.Smith.2015}, uses AIS to estimate global shipping emission inventories. \bcitet{Rakke2016} proposed a methodology termed ECAIS to calculate ship emissions based on the fuel consumption from AIS data. Through Holtrop-Mennen approximation and literature approximation, the ship's power propulsion can be determined which is subsequently used to predict specific fuel consumption. \bcitet{Kim.2020b} used publicly accessible AIS data, ship static data, and environmental data to estimate EEOI using big data technology. Generally, the study using AIS data is done to achieve independence from the need to use commercial databases. The details of AIS data will be discussed in \Cref{sec:ais_theo}\\  
 
 \subsection{Review of ML approach to predict FOC}\label{sec:ml_var_appl}
 
@@ -145,7 +143,7 @@ To understand the principle of selection for the feature, $k_t$ , of the parent 
 
 \textbf{For the selection of the optimal splitting rule $t_k$}: Given a case with single feature $k$ and response $y$ with $m$ data points present. The algorithm starts by looking for possible splits between two distinct data points $y$. This split results in two distinct partition spaces. For each partition space $S_1$ and $S_2$, the mean is calculated by dividing the sum of response $y$ with the amount of data points $m$ for each respective partition space $S_1$ and $S_2$.\\ 
 
-This step is then followed by calculating the sum of squared error (SSE) of each data point in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produces minimum sum of MSE is found, this threshold will be selected as splitting rule for the parent node and correspond to the threshold that minimise the cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \citep{Geron.2019,Kuhn.2013}:
+This step is then followed by calculating the sum of squared error (SSE) of each data point in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produces minimum sum of MSE is found, this threshold will be selected as splitting rule for the parent node and correspond to the threshold that minimise the cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \bcitep{Geron.2019,Kuhn.2013}:
 
 \begin{equation}\label{eqn:sse}
     \text{MSE}_{S_i} = \frac{1}{m_{S_i}}\text{SSE}_{S_i} \quad \textbf{where} \quad i = (1,2)   
@@ -172,9 +170,9 @@ Once complete, then the partition space is further split into two more regions t
 
 The resulting decisions for the best possible splits can be represented using binary tree, this makes decision tree highly interpretable and easy to implement. The inherent logic structure from {\tt if-then} statements means that it can handle various types of data (sparse, skewed, continuous, categorical, etc.) without the need for data pre-processing. Decision tree implicitly conducts feature selection which is a desirable trait for many modelling problems \bcitep{Kuhn.2013}.\\
 
-However, a single decision tree suffers from overfitting when the model is unconstrained. The logical principle of {\tt if-then} statements means that decision tree will attempt to fit the training data as closely as possible. Furthermore, single decision tree model tends to be unstable, altering the data will cause drastic change in the structure of the tree, there exist possibilities where completely different set of splits might be found resulting in different interpretations. \bcitep{Hastie.2009,Kuhn.2013}.\\
+However, a single decision tree suffers from overfitting when the model is unconstrained. The logical principle of {\tt if-then} statements means that decision tree will attempt to fit the training data as closely as possible. Furthermore, a single decision tree model tends to be unstable, altering the data will cause drastic changes in the structure of the tree, there exist possibilities where completely different sets of splits might be found resulting in different interpretations \bcitep{Hastie.2009,Kuhn.2013}.\\
 
-From \Cref{fig:partitionspace}, it can be implied that each decision boundaries are orthogonal to an axis i.e. all splits are perpendicular to an axis and this form rectangular subspaces for each predicted value. If the relationship between predictors and response cannot be adequately defined by the rectangular subspaces, then tree based model will suffer from larger prediction error than other kinds of models \bcitep{Kuhn.2013}.\\
+From \Cref{fig:partitionspace}, it can be implied that each decision boundaries are orthogonal to an axis i.e. all splits are perpendicular to an axis and this form rectangular subspaces for each predicted value. If the relationship between predictors and response cannot be adequately defined by the rectangular subspaces, then tree based models will suffer from larger prediction error than other kinds of models \bcitep{Kuhn.2013}.\\
 
 Therefore, it is necessary to regularise i.e., restrict the decision tree's freedom to grow during model training. Overfitting could be reduced by controlling how deep the tree can grow through the {\tt max\_depth} parameter. Additionally, setting the amount of minimum number of samples a leaf node has, through {\tt min\_samples\_leaf} can alleviate overfitting as well, as shown in \Cref{fig:geron6_6}. Other regularisation techniques will be discussed in \Cref{sec:hpo}.\\ 
 
@@ -189,114 +187,86 @@ Regularisation of decision tree will help to address the overfitting issues and 
 
 \subsection{Random Forest}\label{sec:rf_theo}
 
-Ensemble learning is one of the possible solution to improve the performance of DT regressors. The main idea of ensemble learning is combining the strengths of a collection of simpler base models \bcitep{Hastie.2009}. This idea is applied to random forest (RF), it involves combination of multiple learning algorithms, known as weak learners. In random forest, each of these learners are single decision tree.\\
+Ensemble learning is one of the possible solutions to improve the performance of DT regressors. The main idea of ensemble learning is combining the strengths of a collection of simpler base models \bcitep{Hastie.2009}. The algorithm, involving the creation of bootstrap samples, random selection of splitting feature and aggregation of the prediction is termed by \bcitet{Breiman.2001} as \textbf{\emph{Random Forest}}. It involves combination of multiple learning algorithms, known as weak learners. In random forest, each of these learners are individual decision tree.\\
 
-The most common ensemble methods are \emph{boosting} and \emph{bagging}. In boosting, the learner evolves over time, where successive trees are dependent on the earlier trees. In bagging (short for \emph{bootstrap aggregating}) each tree is trained using bootstrap sample of the training set i.e. this means that a sample of the training dataset is randomly selected and allowed to appear more than once\footnote{This sampling technique is referred to as sampling \emph{with} replacement}. Each model in the ensemble then generate a prediction from the bootstrapped sample and the predictions are aggregated across the learners \bcitep{TinKamHo.1995,Breiman.2001}.\\
+The most common ensemble methods are \emph{boosting} and \emph{bagging}. In boosting, the learner evolves over time, where successive trees are dependent on the earlier trees. In bagging (short for \emph{bootstrap aggregating}) each tree is trained using bootstrap sample of the training set i.e. this means that a sample of the training dataset is randomly selected and allowed to appear more than once\footnote{This sampling technique is referred to as sampling \emph{with} replacement}. Each model in the ensemble then generates a prediction from the bootstrapped sample and the predictions are aggregated across the learners \bcitep{TinKamHo.1995,Breiman.2001}.\\
 
-The performance of bagging can be further improved by reducing correlation between trees i.e. de-correlating trees. This can be achieved by adding randomness during tree construction process. \bcitet{Dietterich.2000} introduced the idea of random split selection, this means that a feature $k$ will be selected from random subset of feature. From this random subset, the assignment of the feature for the parent node follows the CART algorithm described in \Cref{sec:dt_theo}.\\
+The performance of bagging can be further improved by reducing correlation between trees i.e. de-correlating trees. This can be achieved by adding randomness during tree construction process. \bcitet{Dietterich.2000} introduced the idea of random split selection, which means that a feature $k$ will be selected from a random subset of feature. From this random subset, the assignment of the feature for the parent node follows the CART algorithm described in \Cref{eqn:costfun}. Further randomness is added by exploiting the instability of single decision tree mentioned in \Cref{sec:dt_theo}.\\
 
-This algorithm, involving creation of bootstrap sample, random selection of splitting feature and aggregation of the prediction is termed by \bcitet{Breiman.2001} as \textbf{\emph{Random Forest}}. The methodology introduced in random forest address the tendency of decision tree to overfit and the issue with lack of robustness. De-correlating trees means that each learner are independent of each other, and the combination of many independent, strong learners yields an improvement in error rates i.e. reduction in variance and robustness against noisy response. It is also proven by \bcitet{Breiman.2001} that random forest cannot overfit, that means growing more trees should not affect the performance of random forest, albeit with a greater computational burden.\\
+The methodology introduced in random forest address the tendency of decision tree to overfit and the issue of lack of robustness. De-correlating trees means that each learner is independent of each other, and the combination of many independent, strong learners yields an improvement in error rates i.e. reduction in variance and robustness against noisy response. It is also proven by \bcitet{Breiman.2001} that random forest cannot overfit, that means growing more trees should not affect the performance of random forest, albeit with a greater computational burden. Both \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} reported that remarkable prediction results can be obtained without extensive tuning of tree parameter. \\
 
-
-
-These measures introduced in random forest address the tendency of decision tree to overfit. In fact, the instability of decision tree mentioned in \Cref{sec:dt_theo} is exploited in random forest to gain randomness during construction of the tree. Experience from Hastie et al. \citep{Hastie.2009} shown that random forest requires minimal parameter tuning to achieve satisfactory performance while Kuhn et al. \citep{Kuhn.2013} reported that tuning parameter does not have a drastic effect on performance. \\
-
-However, what random forest gains in predictive performance, loses in interpretability. Random forest is considered as Black Box Model (BBM) \citep{Geron.2019}. \footnotemark{Again, not to be interchanged with the definition described by Haranen et al. \citep{MichaelHaranen.2016} regarding modelling of ship operation.} The randomness means that it is challenging to analyse and describe the decisions made during the selection of the samples and during the selection of the input features. Nevertheless, the interpretability of a single tree in a random forest still holds. As it is still possible to traverse through the tree to reach the predicted value.\\ 
-
+However, random forest loses the benefit of interpretability of tree-based model. Due to ensemble nature of random forest, it is not possible to gain an understanding between the feature and the prediction. Nevertheless, it is still possible to quantify the impact of each feature in the ensemble \bcitep{Kuhn.2013}\footnote{Known as feature importances in \scikit/}. Random forest also tends to perform poorly with small number of samples \bcitep{Hastie.2009}. Nevertheless, it is possible to traverse through a single tree to see the path taken to reach the predicted value.\\
 
 \subsection{Extra-Trees (Extremely Randomised Trees)}\label{sec:et_theo}
 
-Additionally, extra-trees (Extremely Randomised Trees) is introduced by Geurts et al. \citep{Geurts.2006} to further randomise random forest. The key difference lies on how each split is selected; in extra-trees each tree split is selected in random instead of searching for the best split. This technique saves computational power, as searching for best split is one of the tasks that takes up most computational power \citep{Geron.2019}. Extra-trees also do not bootstrap the samples, which mean it samples \emph{without} replacement.\\
-
-% Overview of the tree-based model discussed in \Cref{dt_theo} and \Cref{rf_theo} can be summarised in \Cref{table_trees}:
-
-% \begin{table}[ht]
-%     % \small
-%     \centering
-%     \resizebox {\textwidth}{!}
-%     {\begin{tabular}{ |p{5cm}|p{3cm}|p{3cm}|p{3cm}|  }
-%     \hline
-%     \multicolumn{1}{|c|}{\textbf{Model}} & \multicolumn{1}{|c|}{\textbf{Decision Tree}}  & \multicolumn{1}{|c|} {\textbf{Random Forest}} & \multicolumn{1}{|c|}{\textbf{Extra-Trees}}\\
-%     \hline
-%     Number of trees & \multicolumn{1}{|c|}{1} & \multicolumn{1}{|c|}{Many} & \multicolumn{1}{|c|}{Many}\\
-%     \hline
-%     Features considered for split at each node &   \multicolumn{1}{|c|}{All features}  & \multicolumn{1}{|c|}{Random subset of features} & \multicolumn{1}{|c|}{Random subset of features} \\
-%     \hline
-%     Bootstrapping & \multicolumn{1}{|c|}{Not applied} & \multicolumn{1}{|c|}{Yes} & \multicolumn{1}{|c|}{No}\\
-%     \hline
-%     Split Rule  & \multicolumn{1}{|c|}{Best split} & \multicolumn{1}{|c|}{Best split}& \multicolumn{1}{|c|}{Random split}\\
-%     \hline
-%     \end{tabular}}
-% \caption{Comparison of tree based model}\label{table_trees}
-% \end{table}
+Extra-trees (Extremely Randomised Trees) is introduced by \bcitet{Geurts.2006} to further randomise random forest and further de-correlate the trees in the forest. Unlike random forest, which selects the optimal split by selecting the best feature among randomly selected subset of features, Extra-trees selects a split at random. Extra-trees also does not bootstrap the sample\footnote{This sampling technique is referred to as sampling \emph{without} replacement} and uses the whole training dataset. The random selection of split means that it saves computational power and the increase in variance caused by tree de-correlation can be countered by increasing the number of trees in the ensemble.\\ 
 
 \section{AIS Data}\label{sec:ais_theo}
 
-Automatic Identification System (AIS) is an automated tracking system onboard ships to automatically transmit information about the ship to other ships and coastal authorities. As part of the revised new chapter V of SOLAS\footnote{International convention for the Safety of Lives at Sea} regulation. In 2000, International Maritime Organization (IMO) requires installation of AIS class A equipment on all ships of 300 gross tonnage and upward engaged on international voyages, cargo ships of 500 gross tonnages and upwards not engaged on international voyages and all passenger ships irrespective of size. This requirement is then made compulsory to all ships by 2004. \citep{Rakke2016,webimo.2014}\\
+\subsection{Overview of AIS}
 
-AIS uses Very High Frequency (VHF) with special protocol for communication system for information exchange between the ships. This information will be received by either ships directly, buoys, land based station and satellites. The information transmitted by AIS is distinguished into three different types. \textbf{Static information} which is entered into the AIS on installation. \textbf{Dynamic information}, which is automatically updated from the ship's sensors connected to AIS and \textbf{voyage-related information}, which might need to be manually entered and updated during the voyage. The structure of the AIS data that is relevant to this thesis is summarised in \Cref{tbl:AIS_struct}\citep{webimo.2014}.\\
+Automatic Identification System (AIS) is an automated tracking system onboard ships to automatically transmit information about the ship to other ships and coastal authorities, AIS was developed to avoid ship collision accidents. As part of the revised new chapter V of SOLAS\footnote{International Convention for the Safety of Lives at Sea} regulation, International Maritime Organization (IMO) requires all international voyage ships of 300 gross tonnage (GT) and upwards, cargo ships with 500 GT not engaged on international voyage, and all passenger ships irrespective of size to be equipped of AIS class A equipment \bcitep{Yang.2019,webimo.2014}.\\
 
-AIS is also further differentiated by its equipment class. The classification is based on the reporting interval and the type of information that is conveyed. \textbf{Class A} autonomously report their position within 2-10 seconds interval, depending on the state of ship's movement. The reporting interval is less frequent at 3 minutes, When the ship is at anchor or moored and moving slower than 3 knots. Class A AIS is also capable of sending safety related information, meteorological and hydrological data, electronic broadcast to mariners and marine safety messages. \textbf{Class B} reports at longer interval and at a lower power. They can only receive safety related messages, not send them. \citep{Rakke2016,webimo.2014}\\
+AIS uses Very High Frequency (VHF) with special protocol for communication system for information exchange between the ships. This information will be received by either ships directly, buoys, Land based AIS transceivers (T-AIS) and satellites (S-AIS). The information transmitted by AIS is distinguished into three different types. \textbf{Static information} which is entered into the AIS on installation. \textbf{Dynamic information}, which is automatically updated from the ship's sensors connected to AIS and \textbf{voyage-related information}, which might need to be manually entered and updated during the voyage. The structure of the AIS data that is relevant to this thesis is summarised in \Cref{tbl:AIS_struct}\bcitep{webimo.2014}.\\
+
+AIS is also further differentiated by its equipment class. The classification is based on the reporting interval and the type of information that is conveyed. \textbf{Class A} autonomously report their position within 2-10 seconds interval, depending on the state of ship's movement. The reporting interval is less frequent at 3 minutes, When the ship is at anchor or moored and moving slower than 3 knots. Class A AIS is also capable of sending safety related information, meteorological and hydrological data, electronic broadcast to mariners and marine safety messages. \textbf{Class B} reports at longer interval and at a lower power. They can only receive safety related messages, not send them. \bcitep{Rakke2016,webimo.2014}\\
+
 \begin{table}
-    % \small
-    % \centering
+    \scriptsize
+    \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ |p{6cm}|p{9cm}|  }
+    {\begin{tabular}{ p{0.25\linewidth} p{0.7\linewidth}  }
     \hline
     \textbf{Information Item} & \textbf{Description} \\
     \hline
-    \multicolumn{2}{|l|}{\textbf{Static}}\\
+    \multicolumn{2}{l}{\textbf{Static}}\\
     \hline
     MMSI & MMSI number of vessel\\
-    \hline
     Callsign & Callsign of vessel \\
-    \hline
     Name & Name of the vessel \\
-    \hline
     IMO & IMO number of the vessel \\
-    \hline
     Length & Length of vessel \\
-    \hline
     Width & Width of vessel \\
-    \hline
     Ship Type & Describes the AIS ship type of this vessel \\
     \hline
-    \multicolumn{2}{|l|}{\textbf{Dynamic}}\\
+    \multicolumn{2}{l}{\textbf{Dynamic}}\\
     \hline
     Ship's position & Automatically updated from position sensor connected to AIS. Longitude and Latitude.\\
-    \hline
     Position time stamp in UTC & Automatically updated from ship's main position sensor. Format: DD\slash MM\slash YYYY HH:MM:SS\\
-    \hline
     Course over Ground (COG) & \emph{\textbf{If available}}, automatically updated from ship's main position sensor connected to AIS.\\  
-    \hline
     Speed Over Ground (SOG) & \emph{\textbf{If available}}, automatically updated from the position sensor connected to AIS.\\
-    \hline
     Heading & Automatically updated from the ship's heading sensor connected to AIS\\
-    \hline
     Navigational status & Navigational status information has to be manually entered by the Officer on Watch (OOW) and changed as necessary. For example : ``\emph{underway by engines}'',``\emph{engaged in fishing}'',``\emph{at anchor}''.\\
-    \hline
     Rate of Turn (ROT) & \emph{\textbf{If available}}, Automatically updated from the ship's ROT sensor or derived from
     the gyro.\\
     \hline
-    \multicolumn{2}{|l|}{\textbf{Voyage Related}}\\
+    \multicolumn{2}{l}{\textbf{Voyage Related}}\\
     \hline
     Ship's draught & To be manually entered at the start of the voyage using the
     maximum draft for the voyage and amended as required \\
-    \hline 
     (Hazardous) Cargo Type & Type of cargo from AIS message.\\
-    \hline
     Destination and ETA & To be manually entered at the start of the voyage and kept up to
     date as necessary.\\
-    \hline
     \end{tabular}}
-\caption{Structure of AIS data \citep{webimo.2014}}\label{tbl:AIS_struct}
+\caption{Structure of AIS data \bcitep{webimo.2014}}\label{tbl:AIS_struct}
 \end{table}
 
-\subsection{Current Correction}\label{sec:curr_corr}
+It is also stated by \bcitet{Yang.2019} that AIS data can be combined with data from other databases to provide additional information such as:\\
 
-As indicated in \Cref{tbl:AIS_struct}, the speed shown in AIS is the speed over ground (SOG). However, for calculation of ship's fuel consumption, the actual speed i.e. speed through water (STW) is required. This can be achieved by correcting the SOG for the current speed, in consideration of the research by Zhou et al. \citep{Zhou.2017} which shows the impact of current on ship's SOG. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Similarly, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item Port to port average speed, the voyage time can be calculated from the time stamps reported by AIS data; the voyage distance can be found from corresponding navigation distance tables.
+    \item Cargo weight which can be estimated from draught and ship size.
+    \item Technical ship specification from fleet database which can be derived from IMO number.
+    \item Port to port bunker consumption which can be estimated based on the speed, technical ship specification and distance between two ports.
+\end{itemize}
 
-To calculate the correction, this study will adopt the methodology proposed by Kim et al. \citep{Kim.2020b} and Yang et al. \citep{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{current}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
+\subsection{Speed Correction}\label{sec:SOG_corr}
+
+The speed that is shown in AIS is the speed over ground (SOG). However, the ship actual speed i.e. speed through water (STW) will be required to calculate the bunker fuel consumption. Therefore, the SOG will need to be corrected for STW. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Whereas, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
+
+To calculate the correction, this study will adopt the methodology proposed by Kim et al. \bcitep{Kim.2020b} and Yang et al. \bcitep{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{current}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
+
 \begin{equation}\label{eqn:sogx}
     V_{\text{SOG}}^x = V_{\text{SOG}}\cdot\sin(\alpha)   
 \end{equation}
@@ -320,9 +290,73 @@ Then the resulting equation to determine STW, including the current compensation
     V_{\text{STW}} = \sqrt{(V_{\text{STW}}^x)^2 + (V_{\text{STW}}^y)^2} 
 \end{equation}
 
+\subsection{Source of error in AIS}\label{sec:AIS_error}
+
+Errors and inaccuracies may still exist in AIS data. The main source of errors is caused by data that requires manual entry such as static information and voyage related information which include estimated time of arrival (ETA) and draught. There exist cases where MMSI is shared by different ships even though it is supposed to be unique. The data that is automatically connected by sensors can be erroneous, this may happen when the sensors are faulty or when it is not properly installed \bcitep{Yang.2019}. Therefore, data preprocessing of AIS data is an important step to ensure correct representation of the ship state.\\    
+
 \section{Weather data}\label{sec:weather_theo}
 
-\section{Calculation of Fuel Oil Consumption}\label{sec:foc_calc}
+During voyage, a vessel may encounter winds and waves from different directions with varying degree of magnitude. This may affect the vessel's path taken during the voyage and also ship performance such as speed and engine power, furthermore it may also affect the seakeeping capability of a vessel \bcitep{Molland.2011}. It is important to consider different weather conditions to ensure accurate and precise estimation of required engine power by the vessel. With that in mind, the discussion in this section will focus on definition of wind and wave effects, as well as the relation between some of these parameters. \\  
+
+\subsection{Definitions of weather parameters}\label{sec:weather_definition}
+
+The definitions listed in this section are based on the literature work by \bcitep{Holthuijsen.2007}
+
+\subsubsection*{Wind Waves}
+
+Also known as wind sea, wind waves are generated by local wind, they are irregular and short-crested.
+
+\subsubsection*{Swell}
+
+Waves that travel outside the wave generation area and are no longer the result of wind, they take on regular, long-crested appearance.
+
+\subsubsection*{Significant Wave Height, $H_{1/3}$}
+
+It is defined as the mean of the highest one-third of waves in the wave record. The distribution of wave heights can be represented by probability density function. Hence, the term ``highest one-third of waves'' here means the region of wave heights that belong in the upper one-third of a probability density function, this is illustrated in \Cref{fig:wavestats}. From this distribution, the relation between significant wave height $H_{1/3}$, the highest ten percent of waves $H_{10}$, maximum wave height $H_max$ and average wave height $\overline{H}$ can be summarised as follows \bcitep{bretschneider.1965,Holthuijsen.2007}: 
+
+\begin{figure}
+    \centering
+        \includegraphics[width=.75\textwidth]{02_figures/Bretschneider_1965_wavedist.jpg}
+        \caption{Statistical distribution of wave heights \bcitep{bretschneider.1965}}
+        \label{fig:wavestats}
+\end{figure}
+
+\begin{equation}\label{eqn:Hsig_mean}
+    \overline{H} = 0.625\cdot H_{1/3}
+\end{equation}
+\begin{equation}\label{eqn:Hsig_Hten}
+    H_{10} = 2.03\cdot \overline{H} = 1.27\cdot H_{1/3} 
+\end{equation}
+\begin{equation}\label{eqn:Hsig_max}
+    H_{\text{max}} = 2 \cdot H_{1/3} 
+\end{equation} 
+
+Additionally, \bcitet{BitnerGregersen.2005} and \bcitet{Nielsen.2020} described the relation between the significant wave height, wind wave height and swell height through following equation:
+
+\begin{equation}\label{eqn:H_sig_root}
+    H_{1/3} = \sqrt{(H_{\text{swell}})^2 + (H_{\text{windwave}})^2} 
+\end{equation}
+
+\subsubsection*{Wave Period}
+
+Defined as the time interval between start and end of a wave. Some characteristics of wave period can be derived to define wave spectrum.
+
+\subsubsection*{Wave Spectrum}
+
+The most important form in which ocean waves are described. Wave spectrum characterise all possible observations of the waves which include wave heights, frequencies i.e. period and wave direction. For example, \bcitet{BitnerGregersen.2005} stated that the state of the sea can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak, given average wave spectrum $T_f$ and constant $a_f = 6.6$  \bcitep{K.Torsethaugen.2004}. 
+
+\begin{equation}\label{eqn:T_p_spectralpeak}
+    T_p = a_f\cdot H_{1/3}
+\end{equation}
+\begin{equation}\label{eqn:currdir}
+    \text{Sea State (SS)} = 
+    \begin{cases}
+        \text{Swell dominated} \quad \text{\textbf{if}} \quad T_p > T_f \\ 
+        \text{Wind sea dominated} \quad \text{\textbf{if}} \quad T_p \leqslant T_f \\   
+    \end{cases}   
+\end{equation}
+
+\section{Power Estimation Method}\label{sec:foc_calc}
 
 
 
