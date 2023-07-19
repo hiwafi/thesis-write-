@@ -247,6 +247,7 @@ AIS is also further differentiated by its equipment class. The classification is
     (Hazardous) Cargo Type & Type of cargo from AIS message.\\
     Destination and ETA & To be manually entered at the start of the voyage and kept up to
     date as necessary.\\
+    \hline
     \end{tabular}}
 \caption{Structure of AIS data \bcitep{webimo.2014}}\label{tbl:AIS_struct}
 \end{table}
@@ -349,11 +350,75 @@ The most important form in which ocean waves are described. Wave spectrum charac
     \end{cases}   
 \end{equation}
 
-\section{Holtrop \& Mennen's Method}\label{sec:foc_calc}
+\section{General concept of ship propulsion}\label{sec:power_calc}
+
+A ship's bunker fuel consumption in actual operating conditions are affected by several factors including the operating parameter of the ship's engine, propeller efficiency and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{WIND}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
+
+\begin{equation}\label{eqn:R_tot}
+    R_{TOTAL} = R_{TOTAL} + R_{AW} + R_{AA} 
+\end{equation}
+
+\begin{equation}\label{eqn:P_e}
+    P_e = R_{TOTAL}\cdot v_{S}
+\end{equation}
+
+The effective power $P_e$ is transmitted through the shaft connected to the main engine of the ship which generates power to rotate the propeller of the ship, which is termed as \textbf{brake power of the engine, $P_b$}. The brake power can be calculated through effective power by considering the \textbf{shaft efficiency $\eta_s$, hull efficiency $\eta_h$, relative rotative efficiency $\eta_r$ and open water efficiency $\eta_o$}:
+
+\begin{equation}\label{eqn:P_b}
+    P_b = \frac{P_e}{\eta_s\cdot\eta_h\cdot\eta_r\cdot\eta_o}
+\end{equation}
+
+The bunker fuel consumption then can be calculated by multiplying the brake power $P_b$ with the Specific Fuel Oil Consumption (SFOC) and the operation time:
+
+\begin{equation}\label{eqn:FOC}
+    FOC = P_b\cdot SFOC\cdot \mathcal{T}_{operation} 
+\end{equation}
+
+
+\subsection{Holtrop \& Mennen's Method}\label{sec:foc_calc}
 
 This power prediction method was applied in late 1970s and early 1980s by J. Holtrop and G.G.J Mennen and it was based on regression analysis of vast model tests and trial data of MARIN, the model basin in Wageningen, The Netherlands. This gives Holtrop Mennen wide applicability range and the only method that adopted the use of the ITTC form factor $k$. The resistance in this method are calculated as dimensional force and additionally provides formula to estimate hull-propeller interaction thrust dedudction, full scale wake fraction and relative rotative efficiency \bcitep{Birk.2019}. 
 
-\subsection*{Application Range}
+\begin{table}[ht]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.45\linewidth} p{0.08\linewidth} p{0.38\linewidth}  }
+    \hline
+    \textbf{Parameter} & \textbf{Symbol} & \textbf{Remarks} \\
+    \hline
+    Required Parameters&&\\
+    \hline
+    Length in waterline & $L_{WL}$\\
+    Molded breadth & $B$ \\
+    Molded mean draught & $T$ & typically $T = \frac{1}{2}(T_A+T_F)$ \\
+    Molded draught at aft perpendicular & $T_A$ & \\ 
+    Molded draught at forward perpendicular & $T_F$\\
+    Volumetric displacement (molded) & $V$ & alternatively use the block \mbox{coefficient} as $C_B = V/BTL_{WL}$\\
+    Prismatic coefficient (based on $L_WL$) & $C_P$ \\
+    Midship section coefficient & $C_M$ & or use $C_M=C_B/C_P$ \\
+    Waterplane area coefficient & $C_{WP}$ & $C_{WP} = (1+2C_B)/3$, from \bcitet{Schneekluth.1998}\\
+    Longitudinal Centre of buoyancy & $\ell_{CB}$ & $\ell_{CB} = 0.44Fr_{\text{design}} - 0.094$, from \bcitet{Guldhammer.1974} \\
+    Area of ship and cargo above waterline & $A_V$ & projected in direction of $v_S$\\
+    Immersed transom area & $A_T$ \\
+    Transverse area of bulbous bow & $A_{BT}$ & Measured at forward perpendicular \\
+    Height of centre $A_{BT}$ above basis & $h_B$ & has to be smaller than $0.6T_F$ \\
+    Propeller Diameter & $D$ \\
+    Propeller expanded area ratio & $A_E/A_0$ \\
+    Stern shape parameter & $C_{stern}$ \\
+    \hline
+    Optional Parameters&&\\
+    \hline
+    Wetted surface (hull) & $S$\\
+    Wetted Surface of appendages & $S_{App}$ & bilge keels, stabiliser fins, etc.\\
+    Half angle of waterline entrance & $i_E$ \\
+    Diameter of bow thruster tunnel & $d_TH$ \\
+    \hline
+    \end{tabular}}
+\caption{Required and optional input parameters for Holtrop \& Mennen's method according to \bcitet{Birk.2019}}\label{tbl:holtrop_params}
+\end{table}
+
+\subsubsection*{Application Range}
 
 The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not provide explicit information regarding the application range of the method. However, from experience of \bcitet{Birk.2019}, reasonable estimates from the method can be achieved for the following conditions: \\
 
@@ -367,36 +432,123 @@ The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not pr
     % \end{multlined}
 \end{equation}
 
-\begin{table}
+\subsubsection{Calm water resistance}\label{sec:Calm_Resistance}
+
+The calm water resistance $R_{CALM}$ is broken down into several components and can be approximated using the following relation:
+
+\begin{equation}\label{R_calm}
+    R_{CALM} = R_F(1+k_1) + R_{APP} + R_W + R_B + R_{TR} + R_A
+\end{equation}
+
+\subsubsection*{Frictional Resistance $R_F$}
+
+\textbf{$R_F$} is calculated using the ITTC-1957 frictional resistance correlation line $C_F$ as the basis of a representation of a resistance plate with a wetted surface area $S$ of bare hull. 
+
+\begin{equation}\label{eqn:_R_f}
+    R_F = \frac{1}{2}\rho v_{S}^2 S C_F 
+\end{equation}
+
+The frictional coefficient $C_F$ can be calculated through the Reynold number $Re$ for a given ship speed $v_{S}$ and kinematic viscosity $\nu$:
+
+\begin{equation}\label{eqn: C_F}
+    C_F = \frac{0.075}{[\log_{10}(Re)-2]^2} \quad \textbf{where} \quad Re = \frac{v_{S}L_{WL}}{\nu}
+\end{equation}
+
+If not known, then the wetted surface area of bare hull $S$ can be estimated by the following formula:
+
+\begin{equation}\label{eqn:S_bh}
+    S = c_{23}L_{WL}(2T+B)\sqrt{C_M}+2.38\frac{A_{BT}}{C_B}
+\end{equation}
+
+with the factor $c_{23}$ given as :
+
+\begin{equation}\label{eqn:c_23}
+    c_{23} = \biggl[0.453 + 0.4425C_B - 0.2862C_M - 0.003467\frac{B}{T} + 0.3696C_{WP} \biggr]
+\end{equation}
+
+The flat plate resistance is subsequently adjusted by including a form factor $k$ during the calculation of total resistance. The constant $c_{14}$ must be determined first to calculate form factor $k$, which serves the purpose of capturing the impact of the aft body shape.   
+
+\begin{equation}\label{eqn:c_14}
+    c_{14} = 1.0 + 0.011C_{stern} \quad \textbf{with} \quad \begin{array}{l c}
+        \text{Aft body shape} & C_{stern}\\
+        \hline\\
+        \text{Pram with gondola} & -25 \\
+        \text{V-shaped sections} & -10 \\
+        \text{Normal sections} & 0 \\
+        \text{U-shaped sections} & +10 \\
+    \end{array}
+\end{equation}
+
+Then, the form factor $(1+k_1)$ can be determined with the constant $c_{14}$, the length of run $L_R$ and input values from \Cref{tbl:holtrop_params}.
+
+\begin{multline}\label{eqn:1+k1}
+    1+k_1 = 0.93 + 0.487118c_{14}\Biggl[ \Biggl(\frac{B}{L_{WL}}\Biggr)^{1.06806}  \Biggl(\frac{T}{L_{WL}}\Biggr)^{0.46106} \\ 
+    \Biggl(\frac{L_{WL}}{L_R}\Biggr)^{0.121563} \Biggl(\frac{L_{WL}}{V}\Biggr)^{0.36486} (1-C_p)^{-0.604247} \Biggr] 
+\end{multline}
+
+\subsubsection*{Appendage Resistance}
+
+An appendage is defined as addition to the main part or main structure of a vessel \bcitep{Molland.2011}. Examples of appendages include rudders, shaft brackets, skeg and bilge keels. The form factors associated with these appendages, denoted as $k_{2_i}$ are presented in \Cref{tbl:k2i_values}. In practice, reasonable estimates can be made based on these form factors, as model tests are not the most suitable method for accurately quantifying appendage resistance. Furthermore, effects of appendages are typically considered as a whole and not as individual unit \bcitep{Birk.2019}.\\
+
+\begin{table}[ht]
     \footnotesize
     \centering
-    % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ p{0.45\linewidth} p{0.08\linewidth} p{0.38\linewidth}  }
+    {\begin{tabular}{ p{0.6\linewidth} c}
     \hline
-    \textbf{Parameter} & \textbf{Symbol} & \textbf{Remarks} \\
+    Appendage & $k_{2_i}$ value \\
     \hline
-    Required Parameters&&\\
-    \hline
-    Length in waterline & $L_{WL}$\\
-    Molded Beam & $B$ \\
-    Molded mean draught & $T$ & typically $T = \frac{1}{2}(T_A+T_F)$ \\
-    Molded draught at aft perpendicular & $T_A$ & \\ 
-    Molded draught at forward perpendicular & $T_F$\\
-    Volumetric displacement (molded) & $V$ & alternatively use the block \mbox{coefficient} as $C_B = V/BTL_{WL}$\\
-    Prismatic coefficient (based on $L_WL$) & $C_P$ \\
-    Midship section coefficient & $C_M$ & or use $C_M=C_B/C_P$ \\
-    Waterplane area coefficient & $C_{WP}$ & $C_{WP} = (1+2C_B)/3$, from \bcitet{Schneekluth.1998}\\
-    Longitudinal Centre of buoyancy & $\ell_{CB}$ &positive forward; w.r.t. $L_{WL}/2$ in percent of $L_{WL}$\\
-    Area of ship and cargo above waterline & $A_V$ & projected in direction of $v_S$\\
-    Immersed transom area & $A_T$ & $A_T = 0.051A_M$, from \bcitet{Rakke2016}\\
-    \hline
-    Optional Parameters&&\\
-    Wetted surface (hull) & $S$\\
-    Wetted Surface of appendages & $S_{App}$\\
+    rudder behind skeg & $0.2-0.5$ \\
+    rudder behind stern & $0.5$ \\
+    twin screw rudder (slender) & $1.5$ \\
+    twin screw rudder (thick) & $2.5$ \\
+    shaft brackets & $2.0-4.0$ \\
+    skeg & $2.0-3.0$ \\
+    strut bossing & $2.0-3.0$ \\
+    hull bossing & $1.0$ \\
+    exposed shafts (angle with buttocks about 10 degrees) & $1.0$ \\
+    exposed shafts (angle with buttocks about 20 degrees) & $4.0$ \\
+    stabiliser fins & $1.8$ \\
+    dome & $1.7$ \\
+    bilge keels & $0.4$ \\ 
     \hline
     \end{tabular}}
-\caption{Required and optional input parameters for Holtrop \& Mennen's method}\label{tbl:holtrop_params}
+\caption{Approximate values for appendage form factors $k_{2_i}$}\label{tbl:k2i_values}
 \end{table}
+
+The equivalent form factor for multiple appendages, $(1+k_{2_i})_{eq}$ is given by:
+
+\begin{equation}\label{eqn:k2eq}
+    (1+k_{2_i})_{eq} = \frac{\sum_i(1+k_{2_i})S_{APP_i}}{\sum_iS_{APP_i}}
+\end{equation}
+
+If bow thruster is present, the resistance due to the bow thruster tunnel $R_{TH}$ can be obtained through:
+
+\begin{equation}\label{eqn:R_th}
+    R_{TH} = \rho v_S^2 \pi \d_{TH}^2 C_{D_{TH}} \quad \textbf{where} \quad C_{D_{TH}} = 0.003 + 0.003 \Biggl( \frac{10_{d_{TH}}}{t} - 1 \Biggr) 
+\end{equation}
+
+The coefficient $C_{D_{TH}}$ defines the drag coefficient for the tunnel, and it ranges between $0.003$ and $0.012$. Smaller values indicate thrusters which are in the cylindrical part of bulbous bow. The coefficient can also be estimated using the equation by \bcitet{Hollenbach.1999} in \Cref{eqn:R_th}.\\
+
+With that, the appendage resistance $R_{APP}$ can be calculated using:
+
+\begin{equation}\label{R_app}
+    R_{APP} = \frac{1}{2}\rho v_S^2 (1+k_{2_i})_{eq} C_F \sum_i S_{APP_i} + \sum R_{TH}
+\end{equation}
+
+\subsubsection*{Wave Resistance}
+
+The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$, and it is subdivided into three categories.\footnote{Due to the length of the equations, only the case for $Fr \leqslant 0.4$ will be discussed in this thesis. The formulation for $R_W$ for other Froude number range, can be found in the work by \bcitet{Holtrop.1984} and \bcitet{Birk.2019}}:
+
+\begin{equation}
+    R_W(Fr) = \begin{cases}
+        R_{W_a}(Fr) \quad \textbf{if} \quad Fr \leqslant 0.4 \\
+        \text{Interpolation} \quad \textbf{if} \quad 0.4 < Fr \leqslant 0.55 \\
+        R_{W_a}(Fr) \quad \textbf{if} \quad Fr > 0.5 \\
+    \end{cases}
+\end{equation}
+
+
+
 
 
 
