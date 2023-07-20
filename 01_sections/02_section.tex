@@ -342,12 +342,15 @@ The most important form in which ocean waves are described. Wave spectrum charac
 \begin{equation}\label{eqn:T_p_spectralpeak}
     T_p = a_f\cdot H_{1/3}
 \end{equation}
-\begin{equation}\label{eqn:currdir}
+\begin{equation}
+    \label{eqn:H_s_and_Tp}
     \text{Sea State (SS)} = 
     \begin{cases}
-        \text{Swell dominated} \quad \text{\textbf{if}} \quad T_p > T_f \\ 
-        \text{Wind sea dominated} \quad \text{\textbf{if}} \quad T_p \leqslant T_f \\   
-    \end{cases}   
+        \begin{aligned}
+            &\text{Swell dominated}  &&\text{\textbf{if}} \quad T_p > T_f \\ 
+            &\text{Wind sea dominated} && \text{\textbf{if}} \quad T_p \leqslant T_f 
+        \end{aligned}     
+    \end{cases} 
 \end{equation}
 
 \section{General concept of ship propulsion}\label{sec:power_calc}
@@ -479,6 +482,12 @@ The flat plate resistance is subsequently adjusted by including a form factor $k
     \end{array}
 \end{equation}
 
+To complete the required input for the calculation of $(1+k_1)$, the length of run $L_R$ can be estimated from the following equation:
+
+\begin{equation}\label{eqn:L_R}
+    L_R = L_{WL}(\frac{1-C_P+0.06C_P\ell_{CB}}{4C_P-1})
+\end{equation}
+
 Then, the form factor $(1+k_1)$ can be determined with the constant $c_{14}$, the length of run $L_R$ and input values from \Cref{tbl:holtrop_params}.
 
 \begin{multline}\label{eqn:1+k1}
@@ -537,15 +546,125 @@ With that, the appendage resistance $R_{APP}$ can be calculated using:
 
 \subsubsection*{Wave Resistance}
 
-The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$, and it is subdivided into three categories.\footnote{Due to the length of the equations, only the case for $Fr \leqslant 0.4$ will be discussed in this thesis. The formulation for $R_W$ for other Froude number range, can be found in the work by \bcitet{Holtrop.1984} and \bcitet{Birk.2019}}:
+The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$, and it is subdivided into three categories.\footnote{Considering the length of the equations, only the scenario where $Fr \leqslant 0.4$ will be thoroughly examined in this thesis. The formulations of $R_W$ for other ranges of Froude number, can be referenced in the studies by \bcitet{Holtrop.1984} and \bcitet{Birk.2019}}:
 
 \begin{equation}
-    R_W(Fr) = \begin{cases}
-        R_{W_a}(Fr) \quad \textbf{if} \quad Fr \leqslant 0.4 \\
-        \text{Interpolation} \quad \textbf{if} \quad 0.4 < Fr \leqslant 0.55 \\
-        R_{W_a}(Fr) \quad \textbf{if} \quad Fr > 0.5 \\
+    \label{eqn:case_Rw}
+    R_W(Fr) = 
+    \begin{cases}
+        \begin{aligned}
+        &R_{W_a}(Fr) && \textbf{if} \quad Fr \leqslant 0.4 \\
+        &\text{Interpolation} && \textbf{if} \quad 0.4 < Fr \leqslant 0.55 \\
+        &R_{W_b}(Fr) && \textbf{if} \quad Fr > 0.5 \\
+    \end{aligned}
     \end{cases}
 \end{equation}
+
+The wave resistance for $R_{W_a}(Fr)$ can be calculated using:
+
+\begin{equation}\label{eqn:R_w_low}
+    R_{W_a}(Fr) = c_1 c_2 c_5 \rho g V  \exp \biggl[ m_1 Fr^d + m_4 \cos(\lambda Fr ^{-2}) \biggr]
+\end{equation}
+
+And consequently for $R_{W_b}(Fr)$:
+
+\begin{equation}\label{eqn:R_w_high}
+    R_{W_b}(Fr) = c_{17} c_2 c_5 \rho g V  \exp \biggl[ m_3 Fr^d + m_4 \cos(\lambda Fr ^{-2}) \biggr]
+\end{equation}
+
+The remaining range of Froude number between $0.4 < Fr \leqslant 0.55 $ are calculated by mean of interpolation between equation \Cref{eqn:R_w_low} and \Cref{eqn:R_w_high}. However, this range of Froude number is considered uneconomical and ship does not operate in this speed range for extended durations \bcitep{Birk.2019}.
+
+\begin{equation}\label{eqn_R_w_mid}
+    R_W(Fr) = R_{W_a}(0.4) + \frac{20Fr-0.8}{3} \biggl[ R_{W_b}(0.55) - R_{W_a}(0.4)\biggr]
+\end{equation}
+
+To compute each of the constants in \Cref{eqn:R_w_low}, The following equations are presented, note that the calculations for the \textbf{$\cos (\lambda Fr^{-2})$} are in \textbf{Radians}:
+
+\begin{equation}\label{c_17}
+    c_7 = \begin{cases}
+        \begin{aligned}
+        &0.229577\biggl(\frac{B}{L_{WL}} \biggr)^\frac{1}{3}  &&\textbf{if} \quad \frac{B}{L_{WL}} \leqslant 0.11 \\
+        &\frac{B}{L_{WL}}  &&\textbf{if}  \quad 0.11 < B/L_{WL} \leqslant 0.25\\
+        &0.5 - 0.0625\frac{L_{WL}}{B}  &&\textbf{if}  \quad B/L_{WL}>0.25 
+        \end{aligned} 
+    \end{cases}
+\end{equation}
+
+\begin{equation}\label{c_1}
+    c_1 = 2223105c_7^{3.78613}\biggl( \frac{T}{B}\biggr)^{1.07961}(90-i_e)^{1.37565}
+\end{equation}
+
+$i_e$ is defined as half angle of the waterline entrance and the estimation can be calculated by:
+
+\begin{equation}\label{i_e}
+    i_e = 1+89 e^{a}
+\end{equation}
+
+and $a$ can be obtained through:
+
+\begin{multline}\label{eqn:a_const_ie}
+    a = -\biggl[ \biggl(\frac{L_{WL}}{B}\biggr)^{0.80856} \biggl(1 - C_{WP}\biggr)^{0.30484} \biggl[1 - C_P - 0.0225\ell_{CB}\biggr]^{0.6367} \\
+    \biggl(\frac{L_R}{B}\biggr)^{0.34574} \biggl(\frac{100V}{L_{WL}^3}\biggr)^{0.16302} \biggr]
+\end{multline}
+
+\begin{equation}\label{eqn:c3}
+    c_3 = 0.56 \frac{A_{BT}}{\left[BT\left(0.31 \sqrt{A_{BT}} + T_F + h_B\right)\right]}
+\end{equation}
+
+\begin{equation}\label{eqn:c2}
+    c_2 = e^{(-1.89\sqrt{c_3})}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:c15}
+    c_{15} =
+    \begin{cases}
+        \begin{aligned}
+            & -1.69385 && \textbf{if} \quad \frac{L_{WL}^2}{V} \leqslant 512 \\
+            & -1.69385 + \frac{\frac{L_{WL}}{V^{(1/3)}}-8}{2.36}&& \textbf{if} \quad 512 < \frac{L_{WL}^2}{V} \leqslant 1726.91 \\
+            & 0 && \textbf{if} \quad \frac{L_{WL}^2}{V} > 1726.91
+        \end{aligned}
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:c16}
+    c_{16} = 
+    \begin{cases}
+        \begin{aligned}
+            & 8.07981C_P - 13.8673C_P^2 + 6.984338C_P^3 && \textbf{if} \quad C_P \leqslant 0.8 \\
+            & 1.73014 - 0.7067C_P && \textbf{if} \quad C_P > 0.8
+        \end{aligned}
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:d}
+    d = -0.9
+\end{equation}
+
+\begin{equation}
+    \label{eqn:lambda}
+    \lambda = 
+    \begin{cases}
+        \begin{aligned}
+            &1.446C_P - 0.03\frac{L_{WL}}{B} && \textbf{if} \quad \frac{L_{WL}}{B} \leqslant 12 \\
+            &1.446C_P - 0.36 && \textbf{if} \quad \frac{L_{WL}}{B} > 12 \\
+        \end{aligned}
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:m1}
+    m_1 = 0.0140407C_P - 0.03\frac{L_{WL}}{B} - 1.75254\frac{V^{(1/3)}}{L_{WL}} - 4.79323\frac{B}{L_{WL}} - c{16}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:m4}
+    m_4 = 0.4 c_{15} \exp{(-0.034Fr^{-3.29})}
+\end{equation}
+
+\subsubsection*{Resistance of bulbous bow}
 
 
 
