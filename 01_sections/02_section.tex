@@ -355,7 +355,7 @@ The most important form in which ocean waves are described. Wave spectrum charac
 
 \section{General concept of ship propulsion}\label{sec:power_calc}
 
-A ship's bunker fuel consumption in actual operating conditions are affected by several factors including the operating parameter of the ship's engine, propeller efficiency and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{WIND}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
+A ship's bunker fuel consumption in actual operating conditions are affected by several factors including the operating parameter of the ship's engine, propeller efficiency and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{AA}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
 
 \begin{equation}\label{eqn:R_tot}
     R_{TOTAL} = R_{TOTAL} + R_{AW} + R_{AA} 
@@ -377,6 +377,88 @@ The bunker fuel consumption then can be calculated by multiplying the brake powe
     FOC = P_b\cdot SFOC\cdot \mathcal{T}_{operation} 
 \end{equation}
 
+\subsection{Ship dimensions and form coefficients}\label{sec:Ship_design_param}
+
+\subsubsection*{Principal Dimension of a vessel}
+
+The summary of important ship dimensions and parameters are shown in \Cref{fig:biran14_shipside} and \Cref{fig:biran14_shipfront} \bcitep{Biran.2014}:
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[b]{0.5\linewidth}
+        \includegraphics[width=\linewidth]{02_figures/biran14_shipside .jpg}
+        \caption{Side view of a vessel}
+        \label{fig:biran14_shipside}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\linewidth}
+        \includegraphics[width=\linewidth]{02_figures/biran14_frontship .jpg}
+        \caption{Front view of a vessel}
+        \label{fig:biran14_shipfront}
+    \end{minipage}
+\end{figure}
+
+The outer surface of the ship is usually not uniform as not all plates have the same thickness, Therefore the hull surface is measured with respect to the inner surface of the plating which is termed as \emph{moulded surface} of the hull. All dimensions measured to this surface is defined as \emph{moulded} dimensions whereas dimensions measured to the outer surface of the hull or of an appendage are qualified as \emph{extreme} \bcitep{Biran.2014}.
+
+\subsubsection*{Coefficients of form}
+
+The form coefficients are non-dimensional numbers required to classify the hulls and to find relationships between forms and their properties, the summary of some importan form coefficients are summarised in \Cref{fig:man_formcoeff} 
+
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=.6\textwidth]{02_figures/man11_shipcoeff.jpg}
+        \caption{Form coefficients \bcitep{Diesel.2011}}
+        \label{fig:man_formcoeff}
+\end{figure}
+
+\textbf{Block Coefficient $C_B$} is defined as the ratio of moulded displacement volume to the volume of parallelepiped (rectangular block) with dimension $L,B$ and $T$. Alternatively, \bcitet{Schneekluth.1998} provided and estimation of the value using the Froude number within range of $0.15 < Fr < 0.32$
+
+\begin{equation}
+    \label{eqn:Cb_Schneekluth}
+    C_b = -4.22 + 27.8\sqrt{Fr} - 39.1Fr + 46.6Fr^3
+\end{equation}
+
+\textbf{Midship Coefficient $C_M$} is defined as the ratio of the midship-section area $A_M$ to the product of breadth and draught, $BT$. According to \bcitet{Schneekluth.1998}, changing $C_M$ value will have an effect on separation resistance and wave resistance. \bcitet{jensen1994moderne} presented a method based on regression equation on a graph to calculate $C_M$:  
+
+\begin{equation}
+    \label{eqn:CM_jensen}
+    C_M = \frac{1}{1+(1-C_B)^{3.5}}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=.5\textwidth]{02_figures/biran14_cm.jpg}
+        \caption{Definition of $C_M$ \bcitep{Biran.2014}}
+        \label{fig:biran_cm}
+\end{figure}
+
+\textbf{Prismatic Coefficient $C_P$} is defined as the ratio of moulded displacement volume\footnote{In some notations it is denoted as $\nabla$} $V$. It is an indicator on how much of a cylinder with constant section $A_M$ and length $L$ is filled with submerged hull as shown in \Cref{fig:biran_cp}.
+
+\begin{equation}
+    \label{eqn:cp_ratio}
+    C_P = \frac{C_B}{C_M}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=.5\textwidth]{02_figures/biran14_cp.jpg}
+        \caption{Definition of $C_P$ \bcitep{Biran.2014}}
+        \label{fig:biran_cp}
+\end{figure}
+
+\textbf{Waterplane area coefficient $C_{WP}$} is defined as the ratio between the ship's waterline area $A_{W}$ and the product of $L$ and $B$. In ship design, $C_{WP}$ significantly impacts resistance and stability \bcitep{Schneekluth.1998}. \bcitet{Diesel.2011} approximated that $C_{WP}$ is 0.10 higher than $C_B$, alternatively \bcitet{Schneekluth.1998} provided the following formulation for $C_{WP}$:
+
+\begin{equation}
+    \label{eqn:cwp_Schneekluth}
+    C_{WP} = \frac{1+2C_B}{3}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=.5\textwidth]{02_figures/biran14_cwp.jpg}
+        \caption{Definition of $C_{WP}$ \bcitep{Biran.2014}}
+        \label{fig:biran_cwp}
+\end{figure}
 
 \subsection{Holtrop \& Mennen's Method}\label{sec:foc_calc}
 
@@ -393,17 +475,17 @@ This power prediction method was applied in late 1970s and early 1980s by J. Hol
     Required Parameters&&\\
     \hline
     Length in waterline & $L_{WL}$\\
-    Molded breadth & $B$ \\
-    Molded mean draught & $T$ & typically $T = \frac{1}{2}(T_A+T_F)$ \\
-    Molded draught at aft perpendicular & $T_A$ & \\ 
-    Molded draught at forward perpendicular & $T_F$\\
+    Moulded breadth & $B$ \\
+    Moulded mean draught & $T$ & typically $T = \frac{1}{2}(T_A+T_F)$ \\
+    Moulded draught at aft perpendicular & $T_A$ & \\ 
+    Moulded draught at forward perpendicular & $T_F$\\
     Volumetric displacement (molded) & $V$ & alternatively use the block \mbox{coefficient} as $C_B = V/BTL_{WL}$\\
-    Prismatic coefficient (based on $L_WL$) & $C_P$ \\
+    Prismatic coefficient (based on $L_{WL}$) & $C_P$ \\
     Midship section coefficient & $C_M$ & or use $C_M=C_B/C_P$ \\
-    Waterplane area coefficient & $C_{WP}$ & $C_{WP} = (1+2C_B)/3$, from \bcitet{Schneekluth.1998}\\
-    Longitudinal Centre of buoyancy & $\ell_{CB}$ & $\ell_{CB} = 0.44Fr_{\text{design}} - 0.094$, from \bcitet{Guldhammer.1974} \\
+    Waterplane area coefficient & $C_{WP}$ & may have to be estimated in early design stages\\
+    Longitudinal Centre of buoyancy & $\ell_{CB}$ &positive forward; with respect to $L_{WL}/2$ in percent of $L_{WL}$\\
     Area of ship and cargo above waterline & $A_V$ & projected in direction of $v_S$\\
-    Immersed transom area & $A_T$ \\
+    Immersed transom area & $A_T$ & measured at rest\\
     Transverse area of bulbous bow & $A_{BT}$ & Measured at forward perpendicular \\
     Height of centre $A_{BT}$ above basis & $h_B$ & has to be smaller than $0.6T_F$ \\
     Propeller Diameter & $D$ \\
@@ -415,7 +497,7 @@ This power prediction method was applied in late 1970s and early 1980s by J. Hol
     Wetted surface (hull) & $S$\\
     Wetted Surface of appendages & $S_{App}$ & bilge keels, stabiliser fins, etc.\\
     Half angle of waterline entrance & $i_E$ \\
-    Diameter of bow thruster tunnel & $d_TH$ \\
+    Diameter of bow thruster tunnel & $d_{TH}$ \\
     \hline
     \end{tabular}}
 \caption{Required and optional input parameters for Holtrop \& Mennen's method according to \bcitet{Birk.2019}}\label{tbl:holtrop_params}
@@ -665,6 +747,232 @@ and $a$ can be obtained through:
 \end{equation}
 
 \subsubsection*{Resistance of bulbous bow}
+
+The approximation of the resistance due to bulbous bow $R_B$ can be obtained through the immersion Froude number $F_{r_i}$ for the bulbous bow and the constant $P_B$ which is a measure of the emergence of the bow: 
+
+\begin{equation}
+    \label{Fr_immersion}
+    Fr_i = \frac{v_S}{\sqrt{g(T_F-h_b-0.25 \sqrt{A_{BT}})+0.15v_S^2}}
+\end{equation}
+
+\begin{equation}
+    \label{Pb}
+    P_B = 0.56 \frac{\sqrt{A_{BT}}}{T_F-1.5h_B+h_F}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:Rbulb}
+    R_B = 0.11 \rho g (\sqrt{A_{BT}})^3 \frac{Fr_{i}^3}{1+Fr_{i}^2}e^{(-3.0P_B^-2)}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \includegraphics[width=\linewidth]{02_figures/Molland11_bulb.jpg}
+        \caption{Bulbous bow definition \bcitep{Molland.2011}}
+        \label{fig:molland11_bow}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\linewidth}
+        \includegraphics[width=\linewidth]{02_figures/molland11_transom.jpg}
+        \caption{Flow around immersed transom stern \bcitep{Molland.2011}}
+        \label{fig:molland1_transom}
+    \end{minipage}
+\end{figure}
+
+\subsubsection*{(Immersed) Transom Resistance}
+
+The flat section at ship stern is termed as transom and the immersion of the transom causes pressure loss, the resulting resistance from the pressure loss are considered using the term $R_{TR}$ for immersed transom area $A_T > 0$. The transom resistance is a function of the depth Froude number $Fr_{T}$:
+
+\begin{equation}
+    \label{eqn:Fr_t}
+    Fr_T = \frac{v_S}{\sqrt{\frac{2gA_T}{(B+BC_{WP})}}}
+\end{equation}
+
+The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the transom. When the average draught is smaller than the speed, there will be clean separation of the flow at transom edge and the resistance due to transom vanishes. Immersion resistance $R_{TR}$ is considered if $Fr_{T} > 5$ 
+
+\begin{equation}
+    \label{eqn:c6}
+        c_6 = 
+        \begin{cases}
+            \begin{aligned}
+              &0.2(1-0.2Fr_T) && \textbf{if} \quad Fr_T < 5 \\
+              & 0 && \textbf{if} \quad Fr_T > 5  
+            \end{aligned}
+        \end{cases}
+\end{equation}
+
+\begin{equation}
+    \label{R_transom}
+    R_{TR} = \frac{1}{2}\rho v_S^2 A_T c_6
+\end{equation}
+
+\subsubsection*{Correlation allowance resistance}
+
+The resistance term $R_A$ considers other effects that are not captured by other resistance components. 
+
+\begin{equation}
+    \label{eqn:c4}
+    c_6 =
+    \begin{cases}
+        \begin{aligned}
+            &\frac{T_F}{L_{WL}} && \textbf{if} \quad \frac{T_F}{L_{WL}} \leqslant 0.04 \\
+            &0.04 && \textbf{if} \quad \frac{T_F}{L_{WL}} >0.04 
+        \end{aligned}
+    \end{cases}
+\end{equation}
+
+The correlation allowance coefficient $C_A$ and subsequent correlation resistance is defined as:
+
+\begin{equation}
+    \label{eqn:Ca_correlation}
+    C_A = 0.00546(L_{WL}+100)^{-0.16} - 0.00205 + 0.003\frac{L_{WL}}{7.5}C_{B}^4c_2(0.04-c_4)
+\end{equation}
+
+\begin{equation}
+    \label{eqn:R_a}
+    R_A = \frac{1}{2}\rho v_S^2 C_A (S+\sum S_{APP})
+\end{equation}
+
+\subsubsection{Added resistance due to wind}\label{sec:wind_resistance}
+
+The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the area of the ship superstructure and relative wind. Therefore, for a ship with large lateral areas above the water level, this added resistance due to wind can be significant. The estimation of added resistance due to wind in this thesis consider the method by \bcitet{Blendermann.1994}:
+
+\begin{equation}
+    \label{eqn:Raa_blendermann}
+    R_{AA} = \frac{\rho_{air}}{2}u^2A_{L}CD_l \frac{\cos{(\varepsilon)}}{1-\frac{\delta}{2}(1-\frac{CD_l}{CD_t}\sin^2{(2\varepsilon)})}
+\end{equation}
+
+Where $u$ is the apparent wind velocity, $A_L$ the lateral plane, $\epsilon$ the apparent wind angle ($\epsilon = 0$ in headwind). $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle $\text{TWA}$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
+
+\begin{equation}
+    \label{eqn:u_AW}
+    u = \sqrt{u_{\text{TW}}^2 + v_S^2 + 2 \cdot u_{\text{TW}} \cdot v_S \cdot \cos(\text{TWA})}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:epsilon_AWA}
+    \frac{u_{TW}}{\sin(\varepsilon)} = \frac{u}{\sin({\text{TWA}})}
+\end{equation}
+
+\begin{figure}
+    \centering
+        \includegraphics[width=.6\textwidth]{02_figures/AWA_TWAc.png}
+        \caption{Apparent and true wind \bcitep{Knudsen.2013}}
+        \label{fig:AWA_TWA}
+\end{figure}
+
+According to \bcitet{Schneekluth.1998}, maximum wind resistance is encountered when $0^\circ<\varepsilon<20^\circ$ and it is more convenient to express the longitudinal drag with respect to the frontal area $A_F$. Typical values for the constants are summarised in \Cref{tbl:BlendermannCoeff}
+
+\begin{equation}
+    \label{eqn:CDlaf}
+    CD_{lAF} = CD_l \frac{A_L}{A_F}
+\end{equation}
+
+\begin{table}[ht]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.4\linewidth} c c c }
+    \hline
+    &\textbf{$CD_t$} & \textbf{$CD_{lAF}$} & \textbf{$\delta$} \\
+    \hline
+    Car carrier & 0.95 & 0.55 & 0.8 \\
+    Cargo ship, container on deck, bridge aft & 0.85 & 0.65/0.55 & 0.40 \\
+    Containership, loaded & 0.90 & 0.55 & 0.40 \\
+    Ferry & 0.90 & 0.45 & 0.80\\
+    LNG Tanker & 0.70 & 0.60 & 0.50 \\
+    Passenger liner & 0.90 & 0.40 & 0.80 \\
+    Speed boat & 0.90 & 0.55 & 0.60 \\
+    Tanker, loaded & 0.70 & 0.90 & 0.40 \\
+    Tanker, in ballast & 0.70 & 0.75 & 0.40 \\
+    \hline        
+    \end{tabular}}
+\caption{Coefficients to estimate wind resistance}\label{tbl:BlendermannCoeff}
+\end{table}
+
+\subsubsection{Added resistance due to wave}\label{sec:wave_resistance}
+
+The added resistance due to wave, $R_{AW}$ is estimated using the STAWAVE-1 method recommended by \bcitet{ITTCProcedures.2014}. This method only considers waves encountered within the bow sector i.e. within $\pm 45^\circ$ off bow and does not consider wave correction for other encounters. Also, STAWAVE-1 is valid for the following condition:
+
+\begin{equation}
+    \label{eqn:stawave_cond1}
+    \text {Significant wave height:} \quad H_{1/3} = 2.25\leqslant\sqrt{L_{PP}/100} 
+\end{equation}
+
+\begin{equation}
+    \label{eqn:stawave1}
+    R_{AWL} = \frac{1}{16}\rho g H_{1/3}^2 B \sqrt{\frac{B}{L_{BWL}}} 
+\end{equation}
+
+In which, $L_{BWL}$ is the length of bow on the water line to $95\%$ of maximum breadth.
+
+\subsubsection{Efficiencies affecting brake power}\label{sec:Pb_efficiency}
+
+\subsubsection*{Open water efficiency}
+
+The open water efficiency $\eta_O$, can be understood as the propeller working in open water conditions i.e. the propeller operates in a homogenous wake field with no hull in front of it. The curve of different propulsion devices with its respective efficiencies is summarised in the work of \bcitet{Breslin.1994}:
+
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=.8\textwidth]{02_figures/Breslin94_openwater_eff.jpg}
+        \caption{Efficiencies of various propulsion devices \bcitep{Breslin.1994}}
+        \label{fig:breslin_open water efficiencies}
+\end{figure}
+
+
+\subsubsection*{Hull efficiency}
+
+The Hull efficiency $\eta_H$ can be calculated using the following equation:
+
+\begin{equation}
+    \label{eqn:hull_eff}
+    \eta_H = \frac{1 - t}{1 - w_S}
+\end{equation}
+
+The term $t$ refers the thrust deduction fraction, which represents the thrust force required to overcome the towing resistance of the ship $R_{TOTAL}$ and the additional resistance caused by the propeller's interaction with the hull. On the other hand, the term $w_S$ corresponds to the wake fraction, characterising the influence of the ship's hull on the water flow into the propeller \bcitep{Diesel.2011,Birk.2019}. The following equations are presented for twin-screw vessels\footnote{Considering the length of the equations, the equations for single screw vessels can be obtained from \bcitet{Holtrop.1982} and \bcitet{Birk.2019}} to calculate $w_S$ and $t$.
+
+\begin{equation}
+    \label{eqn:wake_ws}
+    w_S = 0.3095 C_B + 10 C_V C_B -0.23 \frac{D}{\sqrt{BT}}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:thrust_t}
+    t = 0.325 C_B - 0.1885 \frac{D}{\sqrt{BT}}
+\end{equation}
+
+where $C_V$ is the viscous resistance coefficient, which combines all friction related components of the resistance and the correlation resistance:
+
+\begin{equation}
+    \label{eqn:C_V}
+    C_V = \frac{(1+k_1)R_F+R_{APP}+R_A}{\frac{1}{2}\rho v_S^2 (S+\sum_i S_{APP_i})}
+\end{equation}
+
+\subsubsection*{Relative rotative efficiency}
+
+The relative rotative efficiency $\eta_R$ can be expressed by the following ratio, with $V_A$ defined as the arriving water velocity to propeller \bcitep{Diesel.2011}:
+
+\begin{equation}
+    \label{eqn: n_rot_MAN}
+    \eta_R = \frac{\text{Power absorbed in open water at }V_A}{\text{Power absorbed in wake behind the ship at }V_A}
+\end{equation}
+
+According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estimated using the following formula, with $\frac{P}{D}$ defined as the propeller pitch to diameter ratio:
+
+\begin{equation}
+    \label{eqn: eta_rot_holtrop}
+    \eta_R = 0.9737 + 0.111(C_P-0.0225\ell_{CB}) - 0.06325\frac{P}{D}
+\end{equation}
+
+\subsubsection*{Shaft efficiency}
+
+The shaft efficiency $\eta_S$ is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
+
+
+
+
+
 
 
 
