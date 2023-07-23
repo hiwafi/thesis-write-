@@ -355,7 +355,7 @@ The most important form in which ocean waves are described. Wave spectrum charac
 
 \section{General concept of ship propulsion}\label{sec:power_calc}
 
-A ship's bunker fuel consumption in actual operating conditions are affected by several factors including the operating parameter of the ship's engine, propeller efficiency and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{AA}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
+A ship's bunker fuel consumption in actual operating conditions is affected by several factors including the operating parameter of the ship's engine, propeller efficiency, and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{AA}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
 
 \begin{equation}\label{eqn:R_tot}
     R_{TOTAL} = R_{TOTAL} + R_{AW} + R_{AA} 
@@ -371,7 +371,7 @@ The effective power $P_e$ is transmitted through the shaft connected to the main
     P_b = \frac{P_e}{\eta_s\cdot\eta_h\cdot\eta_r\cdot\eta_o}
 \end{equation}
 
-The bunker fuel consumption then can be calculated by multiplying the brake power $P_b$ with the Specific Fuel Oil Consumption (SFOC) and the operation time:
+The bunker fuel consumption can then be calculated by multiplying the brake power $P_b$ with the Specific Fuel Oil Consumption (SFOC) and the operation time:
 
 \begin{equation}\label{eqn:FOC}
     FOC = P_b\cdot SFOC\cdot \mathcal{T}_{operation} 
@@ -398,11 +398,11 @@ The summary of important ship dimensions and parameters are shown in \Cref{fig:b
     \end{minipage}
 \end{figure}
 
-The outer surface of the ship is usually not uniform as not all plates have the same thickness, Therefore the hull surface is measured with respect to the inner surface of the plating which is termed as \emph{moulded surface} of the hull. All dimensions measured to this surface is defined as \emph{moulded} dimensions whereas dimensions measured to the outer surface of the hull or of an appendage are qualified as \emph{extreme} \bcitep{Biran.2014}.
+The outer surface of the ship is usually not uniform as not all plates have the same thickness, Therefore the hull surface is measured with respect to the inner surface of the plating which is termed as \emph{moulded surface} of the hull. All dimensions measured to this surface are defined as \emph{moulded} dimensions whereas dimensions measured to the outer surface of the hull or of an appendage are qualified as \emph{extreme} dimensions \bcitep{Biran.2014}.
 
 \subsubsection*{Coefficients of form}
 
-The form coefficients are non-dimensional numbers required to classify the hulls and to find relationships between forms and their properties, the summary of some importan form coefficients are summarised in \Cref{fig:man_formcoeff} 
+The form coefficients are non-dimensional numbers required to classify the hulls and to find relationships between forms and their properties, the summary of some important form coefficients are summarised in \Cref{fig:man_formcoeff} 
 
 \begin{figure}[ht]
     \centering
@@ -411,13 +411,15 @@ The form coefficients are non-dimensional numbers required to classify the hulls
         \label{fig:man_formcoeff}
 \end{figure}
 
-\textbf{Block Coefficient $C_B$} is defined as the ratio of moulded displacement volume to the volume of parallelepiped (rectangular block) with dimension $L,B$ and $T$. Alternatively, \bcitet{Schneekluth.1998} provided and estimation of the value using the Froude number within range of $0.15 < Fr < 0.32$
+\subsubsection*{Block Coefficient}
+\textbf{Block Coefficient $C_B$} is defined as the ratio of moulded displacement volume to the volume of parallelepiped (rectangular block) with dimensions $L,B$ and $T$. Alternatively, \bcitet{Schneekluth.1998} provided an estimation of the value using the Froude number within the range of $0.15 < Fr < 0.32$
 
 \begin{equation}
     \label{eqn:Cb_Schneekluth}
     C_b = -4.22 + 27.8\sqrt{Fr} - 39.1Fr + 46.6Fr^3
 \end{equation}
 
+\subsubsection*{Midship Coefficient}
 \textbf{Midship Coefficient $C_M$} is defined as the ratio of the midship-section area $A_M$ to the product of breadth and draught, $BT$. According to \bcitet{Schneekluth.1998}, changing $C_M$ value will have an effect on separation resistance and wave resistance. \bcitet{jensen1994moderne} presented a method based on regression equation on a graph to calculate $C_M$:  
 
 \begin{equation}
@@ -427,10 +429,12 @@ The form coefficients are non-dimensional numbers required to classify the hulls
 
 \begin{figure}[ht]
     \centering
-        \includegraphics[width=.5\textwidth]{02_figures/biran14_cm.jpg}
+        \includegraphics[width=.4\textwidth]{02_figures/biran14_cm.jpg}
         \caption{Definition of $C_M$ \bcitep{Biran.2014}}
         \label{fig:biran_cm}
 \end{figure}
+
+\subsubsection*{Prismatic Coefficient}
 
 \textbf{Prismatic Coefficient $C_P$} is defined as the ratio of moulded displacement volume\footnote{In some notations it is denoted as $\nabla$} $V$. It is an indicator on how much of a cylinder with constant section $A_M$ and length $L$ is filled with submerged hull as shown in \Cref{fig:biran_cp}.
 
@@ -445,6 +449,8 @@ The form coefficients are non-dimensional numbers required to classify the hulls
         \caption{Definition of $C_P$ \bcitep{Biran.2014}}
         \label{fig:biran_cp}
 \end{figure}
+
+\subsubsection*{Waterplane area coefficient}
 
 \textbf{Waterplane area coefficient $C_{WP}$} is defined as the ratio between the ship's waterline area $A_{W}$ and the product of $L$ and $B$. In ship design, $C_{WP}$ significantly impacts resistance and stability \bcitep{Schneekluth.1998}. \bcitet{Diesel.2011} approximated that $C_{WP}$ is 0.10 higher than $C_B$, alternatively \bcitet{Schneekluth.1998} provided the following formulation for $C_{WP}$:
 
@@ -462,7 +468,7 @@ The form coefficients are non-dimensional numbers required to classify the hulls
 
 \subsection{Holtrop \& Mennen's Method}\label{sec:foc_calc}
 
-This power prediction method was applied in late 1970s and early 1980s by J. Holtrop and G.G.J Mennen and it was based on regression analysis of vast model tests and trial data of MARIN, the model basin in Wageningen, The Netherlands. This gives Holtrop Mennen wide applicability range and the only method that adopted the use of the ITTC form factor $k$. The resistance in this method are calculated as dimensional force and additionally provides formula to estimate hull-propeller interaction thrust dedudction, full scale wake fraction and relative rotative efficiency \bcitep{Birk.2019}. 
+This power prediction method was applied in the late 1970s and early 1980s by J. Holtrop and G.G.J Mennen and it was based on regression analysis of vast model tests and trial data of MARIN, the model basin in Wageningen, The Netherlands. This gives Holtrop-Mennen method a wide applicability range and the only method that adopted the use of the ITTC form factor $k$. The resistances in this method are calculated as dimensional force. Furthermore, the method also gives estimates of hull-propeller interaction, thrust deduction, full-scale wake fraction and relative rotative efficiency \bcitep{Birk.2019}. 
 
 \begin{table}[ht]
     \footnotesize
@@ -505,7 +511,7 @@ This power prediction method was applied in late 1970s and early 1980s by J. Hol
 
 \subsubsection*{Application Range}
 
-The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not provide explicit information regarding the application range of the method. However, from experience of \bcitet{Birk.2019}, reasonable estimates from the method can be achieved for the following conditions: \\
+The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not provide explicit information regarding the application range of the method. However, from the experience of \bcitet{Birk.2019}, reasonable estimates from the method can be achieved for the following conditions: \\
 
 \begin{equation}
     % \begin{multlined}
@@ -628,7 +634,7 @@ With that, the appendage resistance $R_{APP}$ can be calculated using:
 
 \subsubsection*{Wave Resistance}
 
-The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$, and it is subdivided into three categories.\footnote{Considering the length of the equations, only the scenario where $Fr \leqslant 0.4$ will be thoroughly examined in this thesis. The formulations of $R_W$ for other ranges of Froude number, can be referenced in the studies by \bcitet{Holtrop.1984} and \bcitet{Birk.2019}}:
+The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$, and it is subdivided into three categories.\footnote{Considering the length of the equations, only the scenario where $Fr \leqslant 0.4$ will be thoroughly examined in this thesis. The formulations of $R_W$ for other ranges of Froude number can be referenced in the studies by \bcitet{Holtrop.1984} and \bcitet{Birk.2019}}:
 
 \begin{equation}
     \label{eqn:case_Rw}
@@ -843,7 +849,7 @@ The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the
     R_{AA} = \frac{\rho_{air}}{2}u^2A_{L}CD_l \frac{\cos{(\varepsilon)}}{1-\frac{\delta}{2}(1-\frac{CD_l}{CD_t}\sin^2{(2\varepsilon)})}
 \end{equation}
 
-Where $u$ is the apparent wind velocity, $A_L$ the lateral plane, $\epsilon$ the apparent wind angle ($\epsilon = 0$ in headwind). $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle $\text{TWA}$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
+Where $u$ is the apparent wind velocity, $A_L$ the lateral plane area, $\varepsilon$ the apparent wind angle ($\epsilon = 0$ in headwind). $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle $\text{TWA}$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
 
 \begin{equation}
     \label{eqn:u_AW}
@@ -930,7 +936,7 @@ The Hull efficiency $\eta_H$ can be calculated using the following equation:
     \eta_H = \frac{1 - t}{1 - w_S}
 \end{equation}
 
-The term $t$ refers the thrust deduction fraction, which represents the thrust force required to overcome the towing resistance of the ship $R_{TOTAL}$ and the additional resistance caused by the propeller's interaction with the hull. On the other hand, the term $w_S$ corresponds to the wake fraction, characterising the influence of the ship's hull on the water flow into the propeller \bcitep{Diesel.2011,Birk.2019}. The following equations are presented for twin-screw vessels\footnote{Considering the length of the equations, the equations for single screw vessels can be obtained from \bcitet{Holtrop.1982} and \bcitet{Birk.2019}} to calculate $w_S$ and $t$.
+The term $t$ refers to the thrust deduction fraction, which represents the thrust force required to overcome the towing resistance of the ship $R_{TOTAL}$ and the additional resistance caused by the propeller's interaction with the hull. On the other hand, the term $w_S$ corresponds to the wake fraction, characterising the influence of the ship's hull on the water flow into the propeller \bcitep{Diesel.2011,Birk.2019}. The following equations are presented for twin-screw vessels\footnote{Considering the length of the equations, the equations for single screw vessels can be obtained from \bcitet{Holtrop.1982} and \bcitet{Birk.2019}} to calculate $w_S$ and $t$.
 
 \begin{equation}
     \label{eqn:wake_ws}
@@ -942,7 +948,7 @@ The term $t$ refers the thrust deduction fraction, which represents the thrust f
     t = 0.325 C_B - 0.1885 \frac{D}{\sqrt{BT}}
 \end{equation}
 
-where $C_V$ is the viscous resistance coefficient, which combines all friction related components of the resistance and the correlation resistance:
+where $C_V$ is the viscous resistance coefficient, which combines all friction-related components of the resistance and the correlation resistance:
 
 \begin{equation}
     \label{eqn:C_V}
@@ -968,23 +974,6 @@ According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estim
 \subsubsection*{Shaft efficiency}
 
 The shaft efficiency $\eta_S$ is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
