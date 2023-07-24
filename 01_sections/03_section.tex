@@ -1,17 +1,32 @@
 \chapter{Research Methodology} \label{chp:method}
 
-The methodology used to develop the grey box model will be discussed in this chapter. The grey box modelling approach in this thesis falls under the category of sequential GBM. Hence, the development process is divided into two stage. The first stage of the modelling focus on machine learning modelling using tree-based model. This includes the process of data acquisition, data preprocessing, hyperparameter optimisation and model evaluation and validation. Different features are considered to predict the SOG.\\
-
-The second stage of the modelling focus on WBM aspect of the GBM. 
-
-In this chapter, the methodology used to develop random forest model will be discussed. The details of fusion between AIS data, ECMWF and CMEMS data source used for training the model will be presented in \Cref{sec:data_acquisition}. Suitable methodology application during data pre-processing will be described in \Cref{sec:data_prep}. The selection for appropriate, domain knowledge based, feature selection will be explained in \Cref{sec:feature_select}. The selection of the most optimal model hyperparameter for different tree-based model will be explained in \Cref{sec:hpo}. Different performance metrics is used to validate the model's generalisation capability, The underlying principle of the metrics is elaborated in \Cref{sec:perf_metrics}. Summary of methodology application in this study is summarised in \Cref{sec:methodology_application} and visually represented in figure \Cref{fig:flowchart}. 
+The methodology used to develop the grey box model will be discussed in this chapter. The grey box modelling approach in this thesis falls under the category of sequential GBM. Hence, the development process is divided into two stage. The first stage of the modelling focus on machine learning modelling i.e. BBM using tree-based model. This includes the process of data acquisition, data preprocessing, hyperparameter optimisation and model evaluation. The training of the models utilises a fusion of T-AIS data and weather data, incorporating relevant features to predict the SOG. These processes are visually presented in \Cref{fig:flowchart_BBM}.\\
 
 \begin{figure}[h]
     \centering
         \includegraphics[width=\textwidth]{02_figures/flowmethod.png}
-        \caption{Scheme of proposed methodology}
-        \label{fig:flowchart}
+        \caption{Scheme of proposed BBM methodology}
+        \label{fig:flowchart_BBM}
 \end{figure}
+
+The second stage of the modelling focus on WBM aspect of the GBM. The predicted SOG will be fed into the WBM to predict the required brake power required to propulse the ship. The SOG will need to be first converted into STW for the resistance calculations and consequently power calculations. The framework presented in \Cref{fig:flowchart_WBM} refers is a graphical summary of \Cref{sec:power_calc}. 
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=\textwidth]{02_figures/flowmethod_WBM.png}
+        \caption{Scheme of proposed WBM methodology}
+        \label{fig:flowchart_WBM}
+\end{figure}
+
+The development process of GBM is summarised in \Cref{fig:flowchart_GBM}. Detailed discussion regarding the development of BBM and WBM model will be discussed in the following sections of this chapter.
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=\textwidth]{02_figures/flowmethod_GBM.png}
+        \caption{Scheme of proposed GBM methodology}
+        \label{fig:flowchart_GBM}
+\end{figure}
+
 
 \section{Data Acquisition}\label{sec:data_acquisition}
 
