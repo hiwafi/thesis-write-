@@ -181,14 +181,20 @@ To ensure that the dataset represents the actual operating condition of ship in 
 %         \caption{Journey of the ship in a year}
 %         \label{fig:YearJourney}
 % \end{figure}
-
-From preliminary analysis, possible source of error is identified for data points representing current speed. In range of current speed between $0.01$ and $0.03$ [m/s], noticeable peak in data points is observed as shown in \Cref{fig:anomalies_sog_curspeed}. This peak attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in single random error value for current speed which resulted in the peak observed in the histogram.\\ 
-
 \begin{figure}[h]
     \centering
         \includegraphics[width=0.9\textwidth]{02_figures/sog_curspeed_anomalies.png}
         \caption{Histogram plot of pre-filtered SOG and current speed}
         \label{fig:anomalies_sog_curspeed}
+\end{figure}
+
+From preliminary analysis, possible source of error is identified for data points representing current speed. In range of current speed between 0.01 and 0.03 [m/s], noticeable peak in data points is observed as shown in \Cref{fig:anomalies_sog_curspeed}. This peak attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in single random error value for current speed which resulted in the peak observed in the histogram.\\ 
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=0.6\textwidth]{02_figures/hist_init_sog_postfilter.png}
+        \caption{Histogram plot of SOG after threshold}
+        \label{fig:SOG_greater_five}
 \end{figure}
 
 To address the missing values, the missing values for eastward current and northward current are imputed using {\tt KNNImputer} feature from \scikit/. This is necessary as modelling package by \scikit/ cannot handle missing values. During imputing, each sample's missing values are imputed using the mean of nearest neighbour found in training dataset \bcitep{FabianPedregosa.2011}. Imputing strategy using k-nearest neighbour is considered as it should reflect the weather conditions within the region of missing values. Once the missing values of northward and southward current are imputed, the current speed for the missing values will be recalculated. The imputing approach using k-nearest neighbour is also applied to other weather features that contained missing values i.e. {\tt NaN} values.\\
@@ -199,7 +205,7 @@ To select appropriate features for the model, correlation between the features i
 
 From AIS data, the information on \emph{time, latitude, longitude, width and length} are not included for training. Time, latitude and longitude only describe the location of the ship at a particular position and the width and length of ship are constant dimensions. As discussed in \Cref{sec:weather_definition}, the features \emph{combined wind wave swell height, swell height, maximum wave height and wind wave height} are physically correlated. The combined wind wave swell height defines the significant wave height $H_{1/3}$ and can be described using \Cref{eqn:H_sig_root}, \Cref{eqn:H_s_and_Tp} shows that the significant wave height also can be used to identify weather the sea is swell or wind sea dominated.\\
 
-With that, it is clear that significant wave height should be retained for modelling, as many wave properties can be derived from it. The features swell height, wind wave height and maximum wave height will be dropped as it can be defined through significant wave height $H_{1/3}$. This decision is also statistically supported through the high correlation filter method. As shown in \Cref{fig:heatmap1}, high correlation are obtained between the $H_{1/3}$, swell height, wind wave height and maximum wave height.\\
+With that, it is clear that significant wave height should be retained for modelling, as many wave properties can be derived from it. The features swell height, wind wave height and maximum wave height will be dropped as it can be defined through significant wave height $H_{1/3}$. This decision is also statistically supported through the high correlation filter method. As shown in \Cref{fig:heatmap_ovr}, high correlation are obtained between the $H_{1/3}$, swell height, wind wave height and maximum wave height.\\
 
 \begin{figure}[ht]
     \centering
@@ -208,11 +214,10 @@ With that, it is clear that significant wave height should be retained for model
     \label{fig:heatmap_ovr}
 \end{figure}
 
-From \Cref{fig:heatmap1}, high correlation is observed between wave period, swell period and wind wave period. As discussed in \Cref{sec:weather_definition}, the sea state can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak \bcitep{K.Torsethaugen.2004}. Hence, the features swell period and wind wave period are discarded as it only distinguish whether the sea is dominated by swell or by wind. The feature wave period will still be retained. As a result, the features ``true wind wave direction'' and ``true swell direction'' will be excluded from consideration since the features that account for their magnitude have been discarded.\\
+From \Cref{fig:heatmap_ovr}, high correlation is observed between wave period, swell period and wind wave period. As discussed in \Cref{sec:weather_definition}, the sea state can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak \bcitep{K.Torsethaugen.2004}. Hence, the features swell period and wind wave period are discarded as it only distinguish whether the sea is dominated by swell or by wind. The feature wave period will still be retained. As a result, the features ``true wind wave direction'' and ``true swell direction'' will be excluded from consideration since the features that account for their magnitude have been discarded.\\
 
-Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current.\\
+Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current. From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{tbl:struct_train_final}.
 
-From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{tbl:dataset_train_struct}.
 \begin{table}
     \footnotesize
     \centering
@@ -240,10 +245,17 @@ From feature selection, 5 features from AIS data are discarded while 11 features
     True Wave Direction [°] & {\tt truewavedir} \\
     \hline
     \end{tabular}}
-\caption{Structure of fused dataset}\label{tbl:dataset_train_struct}
+\caption{Structure of final training dataset}\label{tbl:struct_train_final}
 \end{table}
 
-\section{Modelling}\label{sec:modelling}
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/hist_init_preprocessing.png}
+    \caption{Histogram of training features}
+    \label{fig:hist_training_ftr_label}
+\end{figure}
+
+\section{Black Box Modelling}\label{sec:BBM_modelling}
 
 In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor, random forest regressor and extra-tree regressor. In addition, the tree-based models are compared against multiple linear regressor for benchmarking. For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. The trained model will be evaluated using k-fold cross validation, if the best model is not obtained, then the parameter of the tree-based regressor will be tuned until no further improvements of the model can be made.\\
 
@@ -351,6 +363,17 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
         \label{fig:hpo_n_features}
 \end{figure}
 
+\subsubsection*{Minimum samples to split a node}\label{sec:min_samples_split}
+
+Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hyperparameter controls the minimum number of samples i.e. data points required to split a node. The default value of {\tt 2} is the least number of sample required to split a node i.e. 1 sample is split to the left and right branch respectively. The plot at \Cref{fig:hpo_min_samples_leaf} indicates that neither RF nor ET benefits from this tuning parameter, as they constructed based on ensemble of uncorrelated tree and this parameter will affect the performance of individual tree in the forest. Whereas, the break even point for the tuning value is found at {\tt min\_samples\_split=20}.  
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/hpo_min_samples_split.png}
+        \caption{Hyperparameter tuning of {\tt min\_samples\_split}}
+        \label{fig:hpo_min_samples_split}
+\end{figure}
+
+
 \subsubsection*{Number of sample in a leaf node}\label{sec:min_samples_leaf}
 
 Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls number of samples required to be at leaf node, where split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at certain breakeven point, in this case, it is found to be at {\tt min\_samples\_leaf=4}. But after this breakeven point, the model's performance degrades. It is also observed that RFR and ETR does not benefit from any form of regularisation.  
@@ -385,163 +408,156 @@ Defined with default value as {\tt n\_estimators=100}. This hyperparameter contr
 \end{figure}
 
 
-\begin{figure}
+% \begin{figure}
+%     \centering
+%         \includegraphics[width=.85\textwidth]{02_figures/JuneFilter.png}
+%         \caption{Journey of the ship in June}
+%         \label{fig:JuneJourney}
+% \end{figure}
+
+\section{White Box Modelling}\label{sec:WBM_modelling}
+
+In this section, the predicted SOG from the BBM will be fed into the WBM to predict the fuel consumption (FOC). Using Holtrop-Mennen approximation method, the resistance encountered by the ship will be estimated to find the total resistance which will be used to calculate the power required to propel the ship. However, during resistance calculation, some form coefficients and ship parameters are not readily available and may need to be assumed based on other literature studies, this assumption will be indicated throughout this section. The resulting brake power $P_B$ is plotted against the STW $v_S$ to obtain a power speed curve model which can be used to predict FOC. 
+
+\subsection{Calculation of Total Resistance}\label{sec:Rtot_calc}
+
+The formula used to calculate total resistance $R_{TOTAL}$ in this section are presented in \Cref{sec:holtrop_mennen_calc} with principle dimension of the ship which was given in \Cref{tbl:Hammershus_Data}. Some assumptions are made for the sea state and the values of some form coefficients are calculated based on empirical formulas presented in \Cref{sec:Ship_design_param}. In this case study, Holtrop-Mennen method can be used as it fulfills the condition set in \Cref{eqn:holtrop_cond}:
+\begin{equation}
+    \label{eqn:holtrop_cond_fulfill}
+    % \begin{multlined}
+    \begin{gathered}
+        Fr = 0.2417  \leqslant 0.45 \\
+        0.55 \leqslant C_P = 0.6707 \leqslant 0.85 \\
+        3.9 \leqslant \frac{L}{B} = 5.91 \leqslant 9.5
+    \end{gathered}
+    % \end{multlined}
+\end{equation}
+
+The calculations of resistance are dynamics as the Froude number $Fr$ is based on $v_S$, the design Froude number $Fr_{DESIGN}$ is used to check use cases for some equations.
+
+\subsubsection*{Calculation of frictional resistance $R_F$}
+
+For the calculation of surface area of bare hull $S$, it is assumed that the aft has a U-shaped section. Then the appropriate $C_{stern}$ can be calculated to obtain the constant $c_{14}$ \Cref{eqn:c_14}. For the calculation of length of run $L_R$, approximation for $\ell_{CB}$ are made based on \Cref{eqn:lcb}. The constants $c_{14}$ and $L_R$ are used to calculate the form factor $1+k_1$ which will be used to calculate $R_F$.
+
+\subsubsection*{Calculation of appendage resistance $R_{APP}$}
+
+From known ship information and ship schematics shown in \Cref{fig:Hammershus_Pict}, it can be deducted that the ship consists of the following appendages:
+
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item Two high-lift flap rudders
+    \item Single centre skeg
+    \item Twin shafts supported by two brackets
+\end{itemize}
+
+The assumptions for the appendage area are made by scaling the schematics to known measurements (e.g. the $L_{WL}$). From here, the appropriate $k_{2_i}$ constants for individual appendages will be selected to obtain the $(1+k_{2_i})_{eq}$ from \Cref{eqn:k2eq}.
+
+\begin{table}[ht]
+    \footnotesize
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/JuneFilter.png}
-        \caption{Journey of the ship in June}
-        \label{fig:JuneJourney}
-\end{figure}
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.2\linewidth} c c}
+    \hline
+    Appendage type & Value & $(1+k_{2_i})$ \\
+    \hline
+    \multicolumn{2}{l}{\textbf{Two high-lift flap rudders}} & 3\\
+    \hline
+    $h_{\text{RUDDER}}$ & 4.06 $m$\\
+    $B_{\text{RUDDER}}$ & 1.99 $m$\\
+    $S_{\text{RUDDER}}$ & 16.16 $m^2$\\
+    \hline
+    \multicolumn{2}{l}{\textbf{Single centre skeg}} & 1.5\\
+    \hline
+    $h_{\text{SKEG}}$ & 4.41 $m$\\
+    $B_{\text{SKEG}}$ & 26.23 $m$\\
+    $S_{\text{SKEG}}$ & 115.67 $m^2$\\
+    \hline
+    \multicolumn{2}{l}{\textbf{Twin shafts supported by two brackets}} & 3\\
+    \hline
+    $D_{\text{SHAFT}}$ & 0.55 $m$\\
+    $L_{\text{SHAFT}}$ & 13.54 $m$\\
+    $S_{\text{SHAFT}}$ & 46.79 $m^2$\\
+    \hline
+    \multicolumn{1}{l}{\textbf{$S_{APP_{tot}}$}} & \textbf{178.62} $m^2$ \\
+    \multicolumn{2}{l}{\textbf{$(1+k_{2_i})_{eq}$}} & \textbf{2.03} \\
+    \end{tabular}}
+\caption{Assumed appendage values}\label{tbl:assume_appendage_dimension}
+\end{table}
 
-\subsection{Methodology Application}\label{sec:methodology_application}
+Additionally, there are two bow thrusters installed with approximated diameter of $d_{TH}= 2.15 m$, from here, the constant $C_{D_TH}$ can be approximated using \Cref{eqn:R_th}. Hence, the appendage resistance $R_{APP}$ can be calculated using \Cref{eqn:R_app}.
 
-As such, this thesis aims to find optimisation possibilities for the BBM to extract maximum prediction performance from tree-based model. The estimation of engine power using Holtrop-Mennen method involves a lot of The approximations. To ensure correctness during estimation of engine power, the approximations are based on   of ship dimensions and mechanical data are based  
+\subsubsection*{Calculation of wave resistance $R_{W}$}
 
-\begin{itemize}
-    \item Two data sources are imported. {\tt AIS\_weather\_H\_ok2\_copy.csv} \\ and {\tt AIS\_weather\_h\_rename\_copy.csv}. The information from the latter comma delimited 
-    file will be used for calculating the ship Speed Through Water (STW).  
-    The information required is the true north current direction. Which is obtained from the vector component of the Northward and Southward current.
-    \item This dataframe will be merged with the main dataframe from \\ the file {\tt AIS\_weather\_H\_ok2\_copy.csv}.
-    \item Omission of the journey data between Ronne and Sassnitz
-    \item SOG threshold is applied to omit ship mooring and maneuvering to accurately represent the ship's steady state operation 
-    \cite{Abebe.2020,BalBesikci.2016,Gkerekos.2019,Yang.2020}. This threshold is selected as 5 knots according to \cite{Abebe.2020}
-    \item The AIS data from June is filtered. This data will be used as validation data to check the model's performance.
-\end{itemize}
- 
-\subsection{Data Analysis}
-\begin{itemize}
-    \item The features are represented in a histogram plot. For the feature Current speed, anomaly is detected. Certain spike is detected around $0.01 - 0.03$ \verb|m/s|. Reasons unknown. The data is retained, including the spike, until a definitive answer can be found.
-    \item OPEN QUESTION : What is the necessity of feature standardization / normalization ? Normalization is required for ANN as model training requires the value between 0 and 1. But in case of RFR, there is no such requirement. Through testing, data standardization also does not seem to improve the model's performance. 
-\end{itemize}
+The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using equation \Cref{eqn:R_w_low}. The estimation is done by adding the constants presented between \Cref{eqn:c_7} and \Cref{eqn:m4}. There are some use cases for some equations, which is summarised in \Cref{tbl:R_w_use_case}.
 
+\begin{table}[ht]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.2\linewidth} c c }
+    \hline
+    Constant & Use Case & Equation \\
+    \hline
+    $c_7$ &  $0.11 < \frac{B}{L_{WL}} \leq 0.25$ & \Cref{eqn:c_7} \\
+    $c_{15}$ & $\frac{L_{WL}^2}{V} \leq 512$ & \Cref{eqn:c15} \\
+    $c_{16}$ & $C_P \leq 0.8$ & \Cref{eqn:c16} \\
+    $\lambda$ & $L_{WL} \leq 12$ & \Cref{eqn:lambda} \\
+    \hline
+    \end{tabular}}
+\caption{Use case of constants for $R_W$}\label{tbl:R_w_use_case}
+\end{table}
 
+\subsubsection*{Calculation of bulbous bow resistance $R_B$}
+The area $A_{BT}$ used to calculate is approximated based on \bcitet{Kracht.78} with:
 
+\begin{equation}
+    \label{eqn:A_BT}
+    A_{BT} = 0.085 A_M
+\end{equation}
 
-\begin{sidewaysfigure}
-    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/outputhist.png}
-    \caption{Histogram of the features}
-    \label{sidewaysfig:hist1}
-\end{sidewaysfigure}
+For the height $h_B$, the upper limit of $h_B = 0.6T_{DESIGN}$ is selected, and it is assumed that $T_F = T_{DESIGN}$.
 
-\newpage
+\subsubsection*{Calculation of (immersed) transom resistance $R_{TR}$}
 
-\begin{itemize}
-    \item The correlation of the features against SOG are determined. It is found that :
-    \begin{itemize}
-        \item Draught
-        \item Course Over Ground (COG)
-        \item heading
-        \item Wind Speed
-        \item Current Speed
-        \item True Current direction
-    \end{itemize}
-    Have relatively stronger correlation to SOG compared to other features, albeit the correlation is a weak one
-    \item The correlation between the features is displayed using the following the heat map. From the heat map it can be observed that between these features:
-    \begin{itemize}
-        \item Waveheight and wind wave swell height
-        \item Waveheight and wind wave height
-        \item Windwaveswellheight and wave period
-    \end{itemize}
-    Have a strong correlation between each other.  
-    \item Open topic: 
-    \begin{itemize}
-        \item Feature reduction is possible, \cite{Abebe.2020} suggested high feature correlation filter, the filter suggest that two features which has a high correlation $(>90\%)$ is to be combined into a single feature. But the author is unsure whether this combination is physically sensible. Hence, this filter is yet to be applied for feature reduction. 
-        \item Some of these features can be connected through wave equations, but the author has not found an equation which could relate these features.
-    \end{itemize}
-    \item The random forest regressor could not function when \verb|NaN| values are present. With that, the missing values are filled in using the {\tt imputer} function. The missing values are filled in by means of \verb|KNN|.
-\end{itemize}
+Since the immersed transom area is unknown, \bcitet{Rakke2016} approximated the immersed transom area based on correlation of ship dimension from literature review of \bcitet{Holtrop.1982}:
 
-\newpage
+\begin{equation}
+    \label{eqn:A_M}
+    A_{TR} = 0.051 A_M
+\end{equation}
 
-\begin{figure}[h]
-    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/heatmap_corr.png}
-    \caption{Correlation Heat Map}
-    \label{fig:heatmap1}
-\end{figure}
-
-\subsection{Modelling}
-
-\begin{itemize}
-    \item The data is split into 80:20 ratio. But considering the validation data, it is split into approximately 73:18:9.
-    \item The model is then trained using Random Forest Regression (RFR). Additional training is also performed using Decision Tree Regressor (DTR). DTR model performance will be used as a benchmark as it is also a tree-based modelling method with similar methodology to RFR.
-    \item The computational time of DTR is significantly faster than RFR
-    Model Evaluation    
-\end{itemize}
-
-\subsection{Predicting STW}
-\begin{itemize}
-    \item The ship's Speed Through Water STW can be calculated using vector component of the SOG and current speed. The direction used will be according to True North. \cite{Yang.2020,Zhou.2020}
-    \item SOG represents the speed of the ship with reference to the ground, while the STW represent the ship's speed with reference to water.
-    \item SOG also can be termed by the ship's speed that is captured by the GPS, and does not consider any effect of the current
-    \item This means that the ship's STW will be greater than the ship's SOG when there is current moving against the ship's movement direction and vice versa 
-    \item The vector decomposition can be defined from the following equations, which is based on the equation by \cite{Yang.2020}:
-    \begin{itemize}
-        \item The ship's SOG $V_g$ can be decomposed into $V_{g}^x$ and $V_{g}^y$, which represents the $x$ and $y$ components of the SOG respectively using the ship's course heading (COG) $\beta$ \emph{with respect to True North}:
-        \begin{equation}\label{eqvgx}
-            V_{g}^x = V_g\sin(\beta)   
-        \end{equation}
-        \begin{equation}\label{eqvgy}
-            V_{g}^y = V_g\cos(\beta)   
-        \end{equation}
-        \item To consider the effect of sea current. The current speed $V_c$ will also be decomposed to $x$ and $y$ components respectively using the current direction $\gamma$ \emph{with respect to True North}:
-        \begin{equation}\label{eqvcx}
-            V_{c}^x = V_g\sin(\gamma)   
-        \end{equation}
-        \begin{equation}\label{eqvcy}
-            V_{c}^y = V_g\cos(\gamma)   
-        \end{equation}
-        \item from here the ship' STW $V_{wx}$ and $V_{wy}$ component can be found from the following equation: 
-        \begin{equation}
-            V_{w}^x = V_{g}^x - V_{c}^x    
-        \end{equation}
-        \begin{equation}
-            V_{w}^y = V_{g}^y - V_{c}^y 
-        \end{equation}
-        \item The magnitude of the STW can be readily obtained from the following vector synthesis
-        \begin{equation}
-            V_w = \sqrt{(V_{w}^x)^2 + (V_{w}^y)^2} 
-        \end{equation}
-    \end{itemize}
-    \newpage
-
-    \item This principle is applied to the following Python script. \ref{eqvcx}
-
-\begin{python}
-       
-        # Convert SOG from [Knots] to [m/s]
-    
-        dfprog["vgms"] = dfprog["sog_pred"]/1.9438
-        
-        # Convert the angles from [Degrees] to [Radians]
-
-        rad_gamma = np.deg2rad(dfprog["gamma"])
-        rad_cog = np.deg2rad(dfprog["cog"])
-
-        # Decomposition in x-component
-
-        dfprog["vgx"] = dfprog["vgms"] * np.sin(rad_cog)
-        dfprog["vcx"] = dfprog["curspeed"] * np.sin(rad_gamma)
-        dfprog["stw_x"] = (dfprog["vgx"] - dfprog["vcx"])
-
-        # Decomposition in y-component
-
-        dfprog["vgy"] = dfprog["vgms"] * np.cos(rad_cog)
-        dfprog["vcy"] = dfprog["curspeed"] * np.cos(rad_gamma)
-        dfprog["stw_y"] = (dfprog["vgy"] - dfprog["vcy"])
-
-        # Vector synthesis and reconversion to [Knots] from [m/s]
-
-        dfprog["vwms_p"] = np.sqrt(dfprog["stw_x"]**2 + dfprog["stw_y"]**2)
-        dfprog["stw_pred"] = dfprog["vwms_p"]*1.9438  
-
-    \end{python}
-\newpage
-
-\begin{sidewaysfigure}
-    \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{02_figures/rfrftree.png}
-    \caption{Correlation Heat Map}
-    \label{fig:Random Forest Regression Tree}
-\end{sidewaysfigure}
+This approximation must be used with caution as it is only based on case study of \bcitet{Holtrop.1982}. However, to author's best knowledge, there are no other literature that provide empirical estimation of $A_{TR}$. Therefore, this estimation will be selected in this case study.
 
 
-\end{itemize}
+\begin{table}
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth} p{0.6\linewidth}}
+    \hline
+    Parameter & Value & Remarks \\
+    \hline
+    $g$ & 9.805 $kg/ms^2$ \\
+    $\rho_{sea}$ & 1025 $kg/m^3$ \\
+    $\nu_{sea}$ & 0.00000118 $m^2/s$ \\
+    $\rho_{air}$ & 1.25 $kg/m^3$ \\
+    1 m/s & 1.9438 knots \\
+    \hline
+    \multicolumn{3}{l}{\textbf{Required Parameters for Holtrop-Mennen}}\\
+    \hline
+    $L_{WL}$ & 144.80 m & From \Cref{tbl:Hammershus_Data} \\
+    $B$ & 24.50 m & From \Cref{tbl:Hammershus_Data} \\
+    $T$ & 5.85 m & Assume $T_A = T_F = T$ for initial phase, otherwise use $T$ from dataset \\
+    $Fr_{N}$ & 0.2417 & From \Cref{eqn:Froude_Number} \\
+    $C_B$ & 0.6549 & From \Cref{eqn:Cb_Schneekluth}\\
+    $C_M$ & 0.9764 & From \Cref{eqn:CM_jensen} \\
+    $C_P$ & 0.6707 & From \Cref{eqn:cp_ratio}\\
+    $C_{WP}$ & 0.7700 & From \Cref{eqn:cwp_Schneekluth}\\
+    $V$ & 13592.1413 $m^3$ & $V = C_B \cdot L_{WL} \cdot T_{MAX}$\\
+    $\frac{L_{WL}}{B}$ & 5.9102 \\
+    \hline
+    \end{tabular}}
+\caption{Assumed value for some constants}\label{tbl:assume_sea_constants}
+\end{table}
+
 

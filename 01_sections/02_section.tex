@@ -419,6 +419,13 @@ The form coefficients are non-dimensional numbers required to classify the hulls
     C_b = -4.22 + 27.8\sqrt{Fr} - 39.1Fr + 46.6Fr^3
 \end{equation}
 
+The Froude number $Fr$ is defined with the following equation:
+
+\begin{equation}
+    \label{eqn:Froude_Number}
+    Fr = \frac{v}{\sqrt{gL_{WL}}}
+\end{equation}
+
 \subsubsection*{Midship Coefficient}
 \textbf{Midship Coefficient $C_M$} is defined as the ratio of the midship-section area $A_M$ to the product of breadth and draught, $BT$. According to \bcitet{Schneekluth.1998}, changing $C_M$ value will have an effect on separation resistance and wave resistance. \bcitet{jensen1994moderne} presented a method based on regression equation on a graph to calculate $C_M$:  
 
@@ -466,7 +473,7 @@ The form coefficients are non-dimensional numbers required to classify the hulls
         \label{fig:biran_cwp}
 \end{figure}
 
-\subsection{Holtrop \& Mennen's Method}\label{sec:foc_calc}
+\subsection{Holtrop \& Mennen's Method}\label{sec:holtrop_mennen_calc}
 
 This power prediction method was applied in the late 1970s and early 1980s by J. Holtrop and G.G.J Mennen and it was based on regression analysis of vast model tests and trial data of MARIN, the model basin in Wageningen, The Netherlands. This gives Holtrop-Mennen method a wide applicability range and the only method that adopted the use of the ITTC form factor $k$. The resistances in this method are calculated as dimensional force. Furthermore, the method also gives estimates of hull-propeller interaction, thrust deduction, full-scale wake fraction and relative rotative efficiency \bcitep{Birk.2019}. 
 
@@ -506,7 +513,8 @@ This power prediction method was applied in the late 1970s and early 1980s by J.
     Diameter of bow thruster tunnel & $d_{TH}$ \\
     \hline
     \end{tabular}}
-\caption{Required and optional input parameters for Holtrop \& Mennen's method according to \bcitet{Birk.2019}}\label{tbl:holtrop_params}
+\caption{Required and optional input parameters for Holtrop \& Mennen's method according to \bcitet{Birk.2019}}
+\label{tbl:holtrop_params}
 \end{table}
 
 \subsubsection*{Application Range}
@@ -514,6 +522,7 @@ This power prediction method was applied in the late 1970s and early 1980s by J.
 The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not provide explicit information regarding the application range of the method. However, from the experience of \bcitet{Birk.2019}, reasonable estimates from the method can be achieved for the following conditions: \\
 
 \begin{equation}
+    \label{eqn:holtrop_cond}
     % \begin{multlined}
     \begin{gathered}
         Fr \leqslant 0.45 \\
@@ -527,7 +536,7 @@ The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not pr
 
 The calm water resistance $R_{CALM}$ is broken down into several components and can be approximated using the following relation:
 
-\begin{equation}\label{R_calm}
+\begin{equation}\label{eqn:R_calm}
     R_{CALM} = R_F(1+k_1) + R_{APP} + R_W + R_B + R_{TR} + R_A
 \end{equation}
 
@@ -535,13 +544,13 @@ The calm water resistance $R_{CALM}$ is broken down into several components and 
 
 \textbf{$R_F$} is calculated using the ITTC-1957 frictional resistance correlation line $C_F$ as the basis of a representation of a resistance plate with a wetted surface area $S$ of bare hull. 
 
-\begin{equation}\label{eqn:_R_f}
+\begin{equation}\label{eqn:R_f}
     R_F = \frac{1}{2}\rho v_{S}^2 S C_F 
 \end{equation}
 
 The frictional coefficient $C_F$ can be calculated through the Reynold number $Re$ for a given ship speed $v_{S}$ and kinematic viscosity $\nu$:
 
-\begin{equation}\label{eqn: C_F}
+\begin{equation}\label{eqn:C_F}
     C_F = \frac{0.075}{[\log_{10}(Re)-2]^2} \quad \textbf{where} \quad Re = \frac{v_{S}L_{WL}}{\nu}
 \end{equation}
 
@@ -576,6 +585,13 @@ To complete the required input for the calculation of $(1+k_1)$, the length of r
     L_R = L_{WL}(\frac{1-C_P+0.06C_P\ell_{CB}}{4C_P-1})
 \end{equation}
 
+The formula by \bcitet{Guldhammer.1974} can be used if $\ell_{CB}$ is not known:
+
+\begin{equation}
+    \label{eqn:lcb}
+    \ell_{CB} = -(0.44Fr - 0.094)
+\end{equation}
+
 Then, the form factor $(1+k_1)$ can be determined with the constant $c_{14}$, the length of run $L_R$ and input values from \Cref{tbl:holtrop_params}.
 
 \begin{multline}\label{eqn:1+k1}
@@ -599,7 +615,7 @@ An appendage is defined as addition to the main part or main structure of a vess
     twin screw rudder (slender) & $1.5$ \\
     twin screw rudder (thick) & $2.5$ \\
     shaft brackets & $2.0-4.0$ \\
-    skeg & $2.0-3.0$ \\
+    skeg & $0.5-1.0$ \\
     strut bossing & $2.0-3.0$ \\
     hull bossing & $1.0$ \\
     exposed shafts (angle with buttocks about 10 degrees) & $1.0$ \\
@@ -628,7 +644,7 @@ The coefficient $C_{D_{TH}}$ defines the drag coefficient for the tunnel, and it
 
 With that, the appendage resistance $R_{APP}$ can be calculated using:
 
-\begin{equation}\label{R_app}
+\begin{equation}\label{eqn:R_app}
     R_{APP} = \frac{1}{2}\rho v_S^2 (1+k_{2_i})_{eq} C_F \sum_i S_{APP_i} + \sum R_{TH}
 \end{equation}
 
@@ -662,13 +678,13 @@ And consequently for $R_{W_b}(Fr)$:
 
 The remaining range of Froude number between $0.4 < Fr \leqslant 0.55 $ are calculated by mean of interpolation between equation \Cref{eqn:R_w_low} and \Cref{eqn:R_w_high}. However, this range of Froude number is considered uneconomical and ship does not operate in this speed range for extended durations \bcitep{Birk.2019}.
 
-\begin{equation}\label{eqn_R_w_mid}
+\begin{equation}\label{eqn:R_w_mid}
     R_W(Fr) = R_{W_a}(0.4) + \frac{20Fr-0.8}{3} \biggl[ R_{W_b}(0.55) - R_{W_a}(0.4)\biggr]
 \end{equation}
 
 To compute each of the constants in \Cref{eqn:R_w_low}, The following equations are presented, note that the calculations for the \textbf{$\cos (\lambda Fr^{-2})$} are in \textbf{Radians}:
 
-\begin{equation}\label{eqn:c_17}
+\begin{equation}\label{eqn:c_7}
     c_7 = \begin{cases}
         \begin{aligned}
         &0.229577\biggl(\frac{B}{L_{WL}} \biggr)^\frac{1}{3}  &&\textbf{if} \quad \frac{B}{L_{WL}} \leqslant 0.11 \\
