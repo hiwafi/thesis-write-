@@ -1,54 +1,51 @@
 \chapter{Result and Discussion} \label{chp:result}
 
-The result of the research is discussed in this chapter. 
-This comprises model validation and how different statistical metrics are used to analyze the model's performance. 
+The performance of GBM will be evaluated by means of a case study using the test dataset. The test dataset comprises journey data from the month of June. The first part will focus on performance evaluation of BBM, where the trained model will be used to predict the SOG. The second part focus on the power estimation method using Holtrop-Mennen method. The output of BBM, which is the ship SOG, will be fed to the WBM to estimate the power. The generated power speed curve models the journey in the month of June which considered the weather effects and the dynamics of the ship.
 
-\subsection{Model Evaluation}
+\section{Evaluation of Tree-based model}\label{sec:BBM_tree_evaluate}
 
-The model are tested against four metrics, namely:
+\subsection*{Model Training and Selection of Optimal Parameter}\label{sec:hpo_select_train}
 
-\begin{itemize}
-    \item $R^2$ : Indicate model fit. Best Score = 1
-    \item Explained Variance \verb|EV| : Indicate amount of variance in model. Best Score = 1
-    \item Mean Absolute Error \verb|MAE| : Indicate how much error a model makes in its prediction. Best Score = 0
-    \item Root Mean Square Error \verb|RMSE| : Same as MAE, more sensitive to outlier. Best Score = 0
-    \item Median Absolute Error \verb|MAD| : Check robustness against outlier. Best Score = 1
-\end{itemize}
+Putting aside the test dataset, the training and validation dataset is split to 80:20 ratio which correspond to 2804 training data and 702 validation data. The initial training uses default hyperparameter and the performance of the model is evaluated using the validation dataset by means of k-cross validation. To help narrow the search range of each hyperparameter, RMSE plots against different values of hyperparameters will be performed. This method was presented in \Cref{sec:hpo}. The hyperparameter will be iteratively tuned until best model is obtained. The result of the optimal parameter is found in \Cref{tbl:hpo_optimal}.
 
-The result is summarized in the following table
 
 \begin{table}[ht]
-    % \small
+    \footnotesize
     \centering
-    \resizebox {\textwidth}{!}{\begin{tabular}{cccc}
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth} p{0.3\linewidth}}
     \hline
-    Model & RFR & DTR & LR\\
+    Model & Training time [s] & Optimal Hyperparameter \\
     \hline
-    $R^2$ & 0.9328181446941499    &0.8526085810220092 &1\\
-    EV &   0.932872958708872  &0.8526260247615258 &2 \\
-    MAE &0.5546347329650284 &0.8108982427834758 &3\\
-    RMSE  &0.7095480848510665 &1.5566896535262504&4\\
-    MAD    &0.38484635910000087 & 0.5475717149999983&5\\
+    DTR & 0.044 & None \\
+    $\text{DTR}_{OPT}$ & 0.021  & {\tt min\_samples\_split = 7}\\
+    &&{\tt min\_samples\_leaf = 10}\\
+    &&{\tt max\_features = 12}\\
+    &&{\tt max\_depth = 8}\\
+    RFR & 4.112 & None \\
+    $\text{RFR}_{OPT}$ & 3.431  & {\tt min\_samples\_split = 2}\\
+    &&{\tt min\_samples\_leaf = 1}\\
+    &&{\tt max\_features = 10}\\
+    &&{\tt max\_depth = 120}\\
+    &&{\tt n\_estimators = 100}\\
+    ETR & 0.944 & None \\
+    $\text{ETR}_{OPT}$ & 4.390  & {\tt min\_samples\_split = 9}\\
+    &&{\tt min\_samples\_leaf = 1}\\
+    &&{\tt max\_features = 12}\\
+    &&{\tt max\_depth = 120}\\
+    &&{\tt n\_estimators = 800}\\
+    MLR & 0.004  & None\\
     \hline
     \end{tabular}}
-\caption{Model performance}\label{table1}
+\caption{Optimal hyperparameter with training time of each model}\label{tbl:hpo_optimal}
 \end{table}
- 
-\begin{table}[!ht]
-    \centering
-    \begin{adjustbox}{width=.7\textwidth}
-    \footnotesize
-    \begin{tabular}{cccc}
-    \hline
-    Model & RFR & DTR & LR\\
-    \hline
-    $R^2$ & 0.9328181446941499    &0.8526085810220092&1\\
-    EV &   0.932872958708872  &0.8526260247615258 &2 \\
-    MAE &0.5546347329650284 &0.8108982427834758 &3\\
-    RMSE  &0.7095480848510665 &1.5566896535262504&4\\
-    MAD    &0.38484635910000087 & 0.5475717149999983&5\\
-    \hline
-\end{tabular}
-\end{adjustbox}
-\caption{Model performance}\label{table2}
-\end{table}
+
+With default hyperparameter, RFR takes the longest training time followed by ETR and DTR. This is expected as RFR uses greedy algorithm i.e. it looks for the best possible feature when splitting the node. ETR takes significantly shorter time to train as ETR randomly select for features when splitting the.node. DTR takes the shortest training time as it generate a single tree.\\
+
+However, in the case of optimised model, ETR takes the longer time to train compared to RFR. This is caused by the number of trees in the optimised model which is controlled by the parameter {\tt n\_estimator}, the optimised ETR model has 800 trees in comparison to 100 trees of RFR. It is also observed that the training time of optimised DTR model is halved as pruning the tree resulted in a simpler model to train. \\
+
+To further investigate the effect of hyperparameter optimisation, the learning curve of each tree-based model is plotted. For DTR, generated model with default model will result in a model that overfits the training data, this can be seen in the high variance   Regularisation of DTR model trades bias for better variance 
+
+\subsection{Evaluation of trained model}\label{sec:BBM_model_eval}
+
+The 

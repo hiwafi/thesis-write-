@@ -567,9 +567,10 @@ The value of shaft efficiency is estimated as $\eta_S =$ \textbf{0.99} based on 
 
 \subsection{Calculation of FOC}\label{sec:FOC_calc_method}
 
-Once $R_{TOTAL}$ and $\eta_{TOTAL}$ is obtained, then the brake power of the ship $P_B$ can be calculated using \Cref{eqn:P_b}. The resulting $P_B$ will be plotted against $v_S$ to obtain a power-speed curve, then regression line will be constructed to fit the data points. Each of the BBM model will generate different prediction for SOG, the resulting equation of the regression line represents the model performance for different BBM model will be compared against the real data to assess the performance of the model.\\
+Once $R_{TOTAL}$ and $\eta_{TOTAL}$ is obtained, then the brake power of the ship $P_B$ can be calculated using \Cref{eqn:P_b}. The resulting $P_B$ will be plotted against $v_S$ to obtain a power-speed curve, then regression line will be constructed to fit the data points. Each of the BBM model will generate different prediction for SOG, the resulting equation of the regression line represents the characteristic of different BBM model. To compare the performance, the regression model from each BBM will be compared against the regression model generated from real data to assess the predictive performance of each model.\\
 
-Well
+The FOC can be calculated using \Cref{eqn:FOC}. The information of the SFOC can be obtained from \Cref{tbl:Hammershus_Data}. Without the multiplication with operation time, $\mathcal{T}_{operation}$, The fuel consumption of the fuel in $T/h$ can be obtained by dividing the value by \textbf{$1 \cdot 10^6$}.\\  
+
 
 \begin{table}
     \footnotesize
