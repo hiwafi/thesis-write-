@@ -419,7 +419,7 @@ Defined with default value as {\tt n\_estimators=100}. This hyperparameter contr
 
 In this section, the predicted SOG from the BBM will be fed into the WBM to predict the fuel consumption (FOC). Using Holtrop-Mennen approximation method, the resistance encountered by the ship will be estimated to find the total resistance which will be used to calculate the power required to propel the ship. However, during resistance calculation, some form coefficients and ship parameters are not readily available and may need to be assumed based on other literature studies, this assumption will be indicated throughout this section. The resulting brake power $P_B$ is plotted against the STW $v_S$ to obtain a power speed curve model which can be used to predict FOC. 
 
-\subsection{Calculation of Total Resistance}\label{sec:Rtot_calc}
+\subsection{Calculation of Total Resistance}\label{sec:Rtot_calc_method}
 
 The formula used to calculate total resistance $R_{TOTAL}$ in this section are presented in \Cref{sec:holtrop_mennen_calc} with principle dimension of the ship which was given in \Cref{tbl:Hammershus_Data}. Some assumptions are made for the sea state and the values of some form coefficients are calculated based on empirical formulas presented in \Cref{sec:Ship_design_param}. In this case study, Holtrop-Mennen method can be used as it fulfills the condition set in \Cref{eqn:holtrop_cond}:
 \begin{equation}
@@ -534,13 +534,13 @@ The selection of constant $c_4$ in equation \Cref{eqn:c4} is based on the $T_F$,
 
 \subsubsection*{Calculation of added resistance due to wind $R_{AA}$}
 
-Two assumptions are made during the calculation of $R_{AA}$, since the information of lateral area $A_L$ and $A_F$ are not readily available, these values are assumed based on the dimension of similar ferry in the case study of \bcitet{Blendermann.1994}. It is assumed that the ferry has an $A_L$ of 2125.80 $m^2$ and $A_F$ of 325.30 $m^2$. From \Cref{tbl:BlendermannCoeff}, the case for ferry ship is taken to get the necessary constants for the calculation of $R_{AA}$. 
+Two assumptions are made during the calculation of $R_{AA}$, since the information of lateral area $A_L$ and $A_F$ are not readily available, these values are assumed based on the dimension of similar ferry in the case study of \bcitet{Blendermann.1994}. It is assumed that the ferry has an $A_L$ of \textbf{2125.80} $m^2$ and $A_F$ of \textbf{325.30} $m^2$. From \Cref{tbl:BlendermannCoeff}, the case for ferry ship is taken to get the necessary constants for the calculation of $R_{AA}$. 
 
 \subsubsection*{Calculation of added resistance due to wave $R_{AW}$ }
 
-This part of the equation is relatively straightforward, $L_{BWL}$ will be approximated to about 43.75 m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
+This part of the equation is relatively straightforward, $L_{BWL}$ will be approximated to about \textbf{43.75} m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
 
-\subsection{Calculation of total efficiency $\eta_{TOT}$}
+\subsection{Calculation of total efficiency $\eta_{TOT}$}\label{sec:eta_tot_method}
 
 \subsubsection*{Calculation of open water efficiency $\eta_O$}
 
@@ -552,7 +552,7 @@ For the calculation of $\eta_H$, the value of the propeller diameter $D$ is appr
 
 \subsubsection*{Calculation of relative rotative efficiency $\eta_R$}
 
-The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-diameter propeller ratio. This value will be estimated as $P/D = 1.135$, which is obtained from the work of \bcitet{Bertram.2000}.
+The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-diameter propeller ratio. This value will be estimated as $P/D =$ \textbf{1.135}, which is obtained from the work of \bcitet{Bertram.2000}.
 
 \begin{figure}[h]
     \centering
@@ -563,10 +563,13 @@ The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-d
 
 \subsubsection*{Calculation of shaft efficiency $\eta_S$}
 
-The value of shaft efficiency is estimated as $\eta_S = 0.99$ based on \bcitet{Diesel.2011} and \bcitet{Holtrop.1982}.
+The value of shaft efficiency is estimated as $\eta_S =$ \textbf{0.99} based on \bcitet{Diesel.2011} and \bcitet{Holtrop.1982}.
 
+\subsection{Calculation of FOC}\label{sec:FOC_calc_method}
 
+Once $R_{TOTAL}$ and $\eta_{TOTAL}$ is obtained, then the brake power of the ship $P_B$ can be calculated using \Cref{eqn:P_b}. The resulting $P_B$ will be plotted against $v_S$ to obtain a power-speed curve, then regression line will be constructed to fit the data points. Each of the BBM model will generate different prediction for SOG, the resulting equation of the regression line represents the model performance for different BBM model will be compared against the real data to assess the performance of the model.\\
 
+Well
 
 \begin{table}
     \footnotesize
