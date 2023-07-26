@@ -825,7 +825,7 @@ The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the tra
 \end{equation}
 
 \begin{equation}
-    \label{R_transom}
+    \label{eqn:R_transom}
     R_{TR} = \frac{1}{2}\rho v_S^2 A_T c_6
 \end{equation}
 
@@ -835,7 +835,7 @@ The resistance term $R_A$ considers other effects that are not captured by other
 
 \begin{equation}
     \label{eqn:c4}
-    c_6 =
+    c_4 =
     \begin{cases}
         \begin{aligned}
             &\frac{T_F}{L_{WL}} && \textbf{if} \quad \frac{T_F}{L_{WL}} \leqslant 0.04 \\
@@ -933,7 +933,7 @@ In which, $L_{BWL}$ is the length of bow on the water line to $95\%$ of maximum 
 
 \subsubsection*{Open water efficiency}
 
-The open water efficiency $\eta_O$, can be understood as the propeller working in open water conditions i.e. the propeller operates in a homogenous wake field with no hull in front of it. The curve of different propulsion devices with its respective efficiencies is summarised in the work of \bcitet{Breslin.1994}:
+The open water efficiency \begin{math}\eta_O\end{math}, can be understood as the propeller working in open water conditions i.e. the propeller operates in a homogenous wake field with no hull in front of it. The curve of different propulsion devices with its respective efficiencies is summarised in the work of \bcitet{Breslin.1994}:
 
 \begin{figure}[ht]
     \centering
@@ -973,14 +973,14 @@ where $C_V$ is the viscous resistance coefficient, which combines all friction-r
 
 \subsubsection*{Relative rotative efficiency}
 
-The relative rotative efficiency $\eta_R$ can be expressed by the following ratio, with $V_A$ defined as the arriving water velocity to propeller \bcitep{Diesel.2011}:
+The relative rotative efficiency \begin{math} \eta_R \end{math} can be expressed by the following ratio, with $V_A$ defined as the arriving water velocity to propeller \bcitep{Diesel.2011}:
 
 \begin{equation}
     \label{eqn: n_rot_MAN}
     \eta_R = \frac{\text{Power absorbed in open water at }V_A}{\text{Power absorbed in wake behind the ship at }V_A}
 \end{equation}
 
-According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estimated using the following formula, with $\frac{P}{D}$ defined as the propeller pitch to diameter ratio:
+According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estimated using the following formula, with $P/D$ defined as the propeller pitch to diameter ratio:
 
 \begin{equation}
     \label{eqn: eta_rot_holtrop}
@@ -989,9 +989,7 @@ According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estim
 
 \subsubsection*{Shaft efficiency}
 
-The shaft efficiency $\eta_S$ is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
-
-
+The shaft efficiency \begin{math}\eta_S\end{math} is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
 
 
 % \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]

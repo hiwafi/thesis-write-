@@ -23,3 +23,4 @@ SOLAS
 Bitner-Gregersen
 Holtrop-Mennen
 propulse
+Froude
