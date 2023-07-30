@@ -1,10 +1,10 @@
 \chapter{Research Methodology} \label{chp:method}
 
-The methodology used to develop the grey box model will be discussed in this chapter. The grey box modelling approach in this thesis falls under the category of sequential GBM. Hence, the development process is divided into two stage. The first stage of the modelling focus on machine learning modelling i.e. BBM using tree-based model using python with help of \scikit/ \bcitep{FabianPedregosa.2011}. This includes the process of data acquisition, data preprocessing, hyperparameter optimisation and model evaluation. The training of the models utilises a fusion of T-AIS data and weather data, incorporating relevant features to predict the SOG. These processes are visually presented in \Cref{fig:flowchart_BBM}.\\
+The methodology used to develop the grey box model will be discussed in this chapter. The grey box modelling approach in this thesis falls under the category of sequential GBM. Hence, the development process is divided into two stage. The first stage of the modelling focus on machine learning modelling i.e. BBM using tree-based model using python with help of \scikit/ \bcitep{FabianPedregosa.2011}. This includes the process of data acquisition, data preprocessing, hyperparameter optimisation and model evaluation. The training of the models utilises a fusion of T-AIS data and weather data, then, relevant features are selected to predict the SOG. These processes are visually presented in \Cref{fig:flowchart_BBM}.\\
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=\textwidth]{02_figures/flowmethod.png}
+        \includegraphics[width=\textwidth]{02_figures/flowmethod_BBM_alt.png}
         \caption{Scheme of proposed BBM methodology}
         \label{fig:flowchart_BBM}
 \end{figure}
@@ -22,7 +22,7 @@ The development process of GBM is summarised in \Cref{fig:flowchart_GBM}. Detail
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=\textwidth]{02_figures/flowmethod_GBM.png}
+        \includegraphics[width=.85\textwidth]{02_figures/flowmethod_GBM_alt.png}
         \caption{Scheme of proposed GBM methodology}
         \label{fig:flowchart_GBM}
 \end{figure}
@@ -173,7 +173,7 @@ The plot of the journey indicates that the journey between R{\o}nne and Sassnitz
 
 In its initial state, the dataset contains 7453 data points which described the journey of the ship in one year. The initial data points represented all navigational status of the ship, which include ``mooring'', ``anchoring'' and ``underway using engine''. This is clearly observed in the histogram for the SOG \Cref{fig:anomalies_sog_curspeed}.\\ 
 
-To ensure that the dataset represents the actual operating condition of ship in steady state, a threshold for SOG must be applied. SOG can vary due to changing sea state, but it can also be reduced by the ship's operator around the port when it departs from port of origin or arriving at port of arrival. Therefore, any data points with SOG less than 5 knots will be discarded which is considered as manoeuvring \bcitep{Abebe.2020,Yan.2020}. Post filtering, the amount of data points decrease significantly from 7453 data points to 3506 data points. This indicated that about half of the total data points represented the ship's stationary behaviour.\\
+To ensure that the dataset represents the actual operating condition of ship in steady state, a threshold for SOG must be applied. SOG can vary due to changing sea state, but it can also be reduced by the ship's operator around the port when it departs from port of origin or arriving at port of arrival. Therefore, any data points with SOG less than 5 knots will be discarded which is considered as manoeuvring \bcitep{Abebe.2020,Yan.2020}. Post filtering, the amount of data points decrease significantly from 7453 data points to 3828 data points. This indicated that about half of the total data points represented the ship's stationary behaviour.\\
 
 % \begin{figure}
 %     \centering
@@ -188,7 +188,7 @@ To ensure that the dataset represents the actual operating condition of ship in 
         \label{fig:anomalies_sog_curspeed}
 \end{figure}
 
-From preliminary analysis, possible source of error is identified for data points representing current speed. In range of current speed between 0.01 and 0.03 [m/s], noticeable peak in data points is observed as shown in \Cref{fig:anomalies_sog_curspeed}. This peak attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in single random error value for current speed which resulted in the peak observed in the histogram.\\ 
+From preliminary analysis, possible source of error is identified for data points representing current speed. In range of current speed between 0.01 and 0.03 $m/s$, noticeable peak in data points is observed as shown in \Cref{fig:anomalies_sog_curspeed}. This peak attributed to missing information on northward and eastward current speed in some data points from the provided dataset. This resulted in single random error value for current speed which resulted in the peak observed in the histogram.\\ 
 
 \begin{figure}[h]
     \centering
@@ -216,7 +216,7 @@ With that, it is clear that significant wave height should be retained for model
 
 From \Cref{fig:heatmap_ovr}, high correlation is observed between wave period, swell period and wind wave period. As discussed in \Cref{sec:weather_definition}, the sea state can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with help of Torsethaugen peak \bcitep{K.Torsethaugen.2004}. Hence, the features swell period and wind wave period are discarded as it only distinguish whether the sea is dominated by swell or by wind. The feature wave period will still be retained. As a result, the features ``true wind wave direction'' and ``true swell direction'' will be excluded from consideration since the features that account for their magnitude have been discarded.\\
 
-Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current. From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{tbl:struct_train_final}.
+Statistically, the heading and COG are highly correlated, but both features are retained as it explain two different parameters of the ship. Course Over Ground reflects the ship course heading while heading represented the actual heading of the ship at a particular point of time. Same principle also apply between air temperature above ocean and sea surface temperature. Air temperature above oceans represents the temperature of wind while sea surface temperature represents current temperature of current. From feature selection, 5 features from AIS data are discarded while 11 features are removed from the weather data. To predict the ship speed, The SOG will be selected as the label to train the model. The remaining attributes will be selected as training features. This is summarised in \Cref{tbl:struct_train_final}.\\
 
 \begin{table}
     \footnotesize
@@ -230,12 +230,12 @@ Statistically, the heading and COG are highly correlated, but both features are 
     \hline
     \multicolumn{2}{l}{\textbf{Training Features}}\\
     \hline
-    COG [m/s] & {\tt cog}  \\
+    COG [°] & {\tt cog}  \\
     Heading [°] & {\tt heading}  \\
     Draught [m] & {\tt draught} \\
     Wind Speed [m/s] & {\tt windspeed} \\
     Air Temperature Above Oceans [K] & {\tt oceantemperature} \\
-    Maximum Wave Height [m] & {\tt waveheight} \\
+    % Maximum Wave Height [m] & {\tt waveheight} \\
     Wave Period [s] & {\tt waveperiod}\\
     Sea Surface Temperature [K] & {\tt surftemp}\\
     Combined Wind Wave Swell Height [m] &  {\tt windwaveswellheight} \\
@@ -245,7 +245,34 @@ Statistically, the heading and COG are highly correlated, but both features are 
     True Wave Direction [°] & {\tt truewavedir} \\
     \hline
     \end{tabular}}
-\caption{Structure of final training dataset}\label{tbl:struct_train_final}
+\caption{Structure of training dataset}\label{tbl:struct_train_final}
+\end{table}
+
+\begin{table}
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.23\linewidth} c c c c c c c c }
+    \hline
+    Features & Count & Mean & Std. & Min & 25\% & 50\% & 75\% & Max \\
+    \hline
+    \textbf{{\tt sog}} & 2871 & 16.91 & 3.18 & 5.03 & 16.56 & 17.94 & 18.72 & 21.07\\
+    \hline
+    {\tt cog} & 2871 & 196.47 & 85.93&	69.77 & 102.58& 188.01& 282.26& 355.07\\ 
+    {\tt heading} & 2871 & 187.88&	88.47&	67.90&	100.86&	124.65&	279.19&	355.07\\
+    {\tt draught} & 2871 &5.22& 0.18& 4.74& 5.11& 5.28& 5.38&5.67\\
+    {\tt windspeed} & 2871 & 6.42 & 2.97 & 0.25 & 4.13 & 6.15 &	8.36 & 16.01\\
+    {\tt oceantemperature}\tablefootnote{Air temperature above oceans}& 2871 & 282.71 & 6.49 & 264.08& 277.13& 282.64& 288.82& 296.83 \\
+    {\tt waveperiod} & 2871& 3.66& 0.82& 1.86& 3.07& 3.57& 4.14& 7.05\\
+    {\tt surftemp}\tablefootnote{Sea Surface Temperature}&2871 &283.40& 5.73& 273.05& 278.13& 282.83& 288.86 &294.75\\
+    {\tt windwaveswellheight}\tablefootnote{Significant wave height}  &  2871 & 0.75 & 0.51 & 0.07 &0.38 &	0.64 &	0.95 &  3.70  \\
+    {\tt curspeed} & 2871 &0.10& 0.07& 0.00 & 0.05& 0.08 & 0.13 & 0.53\\
+    {\tt truewinddir} & 2871 & 87.14 & 55.96 &	0.00 & 34.19 &	84.79 & 140.58 & 179.77	\\
+    {\tt truecurrentdir} & 2871 & 89.15 & 57.53 & 0.25 & 31.01 & 86.78 & 143.32 & 179.99 \\
+    {\tt truewavedir} & 2871 & 91.74 & 55.53& 0.13& 39.12 & 92.28 & 143.33 & 179.92 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of preprocessed dataset}\label{tbl:dataset_descriptive_pretraining}
 \end{table}
 
 \begin{figure}
@@ -257,7 +284,7 @@ Statistically, the heading and COG are highly correlated, but both features are 
 
 \section{Black Box Modelling}\label{sec:BBM_modelling}
 
-In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor, random forest regressor and extra-tree regressor. In addition, the tree-based models are compared against multiple linear regressor for benchmarking. For training, the dataset is split into training, validation and test dataset in ratio of 73:18:9. Journey data from the month of June is arbitrarily selected as test dataset. The remaining dataset will be split into training and validation dataset in 80:20 ratio. The trained model will be evaluated using k-fold cross validation, if the best model is not obtained, then the parameter of the tree-based regressor will be tuned until no further improvements of the model can be made.\\
+In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor (DTR), random forest regressor (RFR) and extra-tree regressor (ETR). The tree-based models are compared against multiple linear regressor (MLR) for benchmarking. For training, the dataset is split into training and test dataset in ratio of 75:25. This corresponds to 2871 data points for training and 957 data points for testing. The training dataset will be subjected to 10-fold splitting, this k-fold splitting is performed as the model will be evaluated using k-fold cross validation. The hyperparameter of the tree-based regressor will be iteratively tuned until no further improvements of the model can be made.\\
 
 
 \subsection{Performance Metrics for Validation}\label{sec:perf_metrics}
@@ -358,7 +385,7 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/hpo_n_features.png}
+        \includegraphics[width=.9\textwidth]{02_figures/hpo_n_features.png}
         \caption{Hyperparameter tuning of {\tt max\_features}}
         \label{fig:hpo_n_features}
 \end{figure}
@@ -368,7 +395,7 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
 Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hyperparameter controls the minimum number of samples i.e. data points required to split a node. The default value of {\tt 2} is the least number of sample required to split a node i.e. 1 sample is split to the left and right branch respectively. The plot at \Cref{fig:hpo_min_samples_leaf} indicates that neither RF nor ET benefits from this tuning parameter, as they constructed based on ensemble of uncorrelated tree and this parameter will affect the performance of individual tree in the forest. Whereas, the break even point for the tuning value is found at {\tt min\_samples\_split=20}.  
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/hpo_min_samples_split.png}
+        \includegraphics[width=.9\textwidth]{02_figures/hpo_min_samples_split.png}
         \caption{Hyperparameter tuning of {\tt min\_samples\_split}}
         \label{fig:hpo_min_samples_split}
 \end{figure}
@@ -380,7 +407,7 @@ Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This param
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/hpo_min_samples_leaf.png}
+        \includegraphics[width=.9\textwidth]{02_figures/hpo_min_samples_leaf.png}
         \caption{Hyperparameter tuning of {\tt min\_samples\_leaf}}
         \label{fig:hpo_min_samples_leaf}
 \end{figure}
@@ -391,7 +418,7 @@ Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparam
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/hpo_max_depth.png}
+        \includegraphics[width=.9\textwidth]{02_figures/hpo_max_depth.png}
         \caption{Hyperparameter tuning of {\tt max\_depth}}
         \label{fig:hpo_max_depth}
 \end{figure}
@@ -402,7 +429,7 @@ Defined with default value as {\tt n\_estimators=100}. This hyperparameter contr
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/hpo_n_estimators.png}
+        \includegraphics[width=.65\textwidth]{02_figures/hpo_n_estimators.png}
         \caption{Hyperparameter tuning of {\tt n\_estimators}}
         \label{fig:n_estimators}
 \end{figure}
