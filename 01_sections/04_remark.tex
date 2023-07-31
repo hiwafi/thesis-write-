@@ -83,7 +83,7 @@ To further investigate the effect of hyperparameter optimisation, the learning c
         \label{fig:learn_curve_DTR_RMSE}
 \end{figure}
 
-The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The most notable improvement on model performance is observed until around 750 points, after which the model appears to reach a plateau. Furthermore, there is noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit.
+The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The most notable improvement on model performance is observed until around 750 points, after which the model appears to reach a plateau. Furthermore, there is noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit.\\
 
 \begin{figure}[h]
     \centering
@@ -92,7 +92,7 @@ The process of hyperparameter tuning for the Random Forest Regressor (RFR) model
         \label{fig:learn_curve_RFR_RMSE}
 \end{figure}
 
-Hyperparameter tuning helps to reduce variance in the ETR model. But it does not have any major impact on model's performance. The ETR model reaches plateau beyond 1000 data points. Suggesting that adding more data points will not result in any significant increase in model performance.
+Hyperparameter tuning helps to reduce variance in the ETR model. But it does not have any major impact on model's performance. The ETR model reaches plateau beyond 1000 data points. Suggesting that adding more data points will not result in any significant increase in model performance.\\
 
 \begin{figure}[h]
     \centering
@@ -101,7 +101,7 @@ Hyperparameter tuning helps to reduce variance in the ETR model. But it does not
         \label{fig:learn_curve_ETR_RMSE}
 \end{figure}
 
-In addition to the initial exploration in \Cref{sec:hpo}, it can be concluded that hyperparameter tuning for number of features and tree depth will have the biggest impact in affecting the model's performance. To improve training time, lower number of trees should be considered for RFR and ETR model.
+In addition to the initial exploration in \Cref{sec:hpo}, it can be concluded that hyperparameter tuning for number of features and tree depth will have the biggest impact in affecting the model's performance. To improve training time, lower number of trees should be considered for RFR and ETR model.\\
 
 
 \subsection*{Evaluation of trained model}\label{sec:BBM_model_eval}
@@ -118,4 +118,44 @@ The performance of the model is evaluated using the training dataset using 10-fo
 
 The box plots indicated that ETR achieved the best performance, the model is able to achieve $R^2$ score of around $91\%$ and RMSE of around 0.96 knots. The model is also relatively stable, which is indicated by the narrow box plots. RFR also achieved similar performance, achieving $R^2$ score of about $89\%$ and RMSE of approximately 1.00 knots and slightly worse stability. This behaviour may be caused due to the high variance shown from the learning curves shown in \Cref{fig:learn_curve_RFR_RMSE} and \Cref{fig:learn_curve_ETR_RMSE}. This means that the model will have slight tendency to overfit.\\
 
-DTR greatly benefits from regularisation, the model achieve an increase of about $5\%$ for the $R^2$ score and a reduction from about 1.2 knots to 1.1 knots for the RMSE. To summarise, all tree based models exhibited good performance, all models achieved good fit with mean/median $R^2$ scores above $80\%$. However, the RMSE is quite significant at range of 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
+DTR greatly benefits from regularisation, the model achieve an increase of about $5\%$ for the $R^2$ score and a reduction from about 1.2 knots to 1.1 knots for the RMSE. To summarise, all tree based models exhibited good performance, all models achieved good fit with mean/median $R^2$ scores above $80\%$. However, the value of RMSE range is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
+
+\subsection*{Analysing the testing dataset}
+
+Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, the summer dataset,$DS_{summer}$, corresponds to testing datasets between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present are also imputed using {\tt KNNImputer}.\\
+
+\subsection*{Evaluation of testing datasets}
+
+To evaluate the model performance, the testing datasets $DS_{year}$, $DS_{summer}$ and $DS_{winter}$ will be passed through the optimised model with hyperparameter values presented in \Cref{tbl:hpo_optimal}. The model performance is summarised in \Cref{tbl:testing_dataset_sog_result}   
+
+\begin{table}[ht]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.1\linewidth} p{0.1\linewidth} c c c c c c }
+    \hline
+    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+    & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 90.10 & 90.12 & 0.629 & 0.975  & 0.420 & 4.21  \\
+    & $DS_{winter}$ & 93.18 & 93.19 & 0.561 & 0.846 & 0.390 & 3.92 \\
+    & $DS_{summer}$ & 85.69 & 84.90 & 0.704 & 1.100 & 0.451 & 4.52 \\
+    \hline
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 96.59 & 96.60 & 0.335 & 0.572 & 0.187 & 2.29 \\
+    & $DS_{winter}$ & 98.41 & 98.42 & 0.265 & 0.409 & 0.173 & 1.94 \\
+    & $DS_{summer}$ & 94.02 & 94.14 & 0.412 & 0.710 & 0.215 & 2.68 \\
+    \hline
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 96.82 & 96.82 & 0.347 & 0.553 & 0.214 & 2.35 \\
+    & $DS_{winter}$ & 98.40 & 98.40 & 0.287 & 0.410 & 0.196 & 2.03 \\
+    & $DS_{summer}$ & 95.49 & 94.68 & 0.413 & 0.676 & 0.239 & 2.70 \\
+    \hline
+    MLR & $DS_{year}$ & 69.75 & 69.85 & 1.139 & 1.704 & 0.908 & 7.64 \\
+    & $DS_{winter}$ & 68.16 & 68.17 & 1.129 & 1.828 & 0.871 & 7.94 \\
+    & $DS_{summer}$ & 71.43 & 71.87 & 1.150 & 1.554 & 0.951 & 7.32 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for different modelling approach and different testing datasets}\label{tbl:testing_dataset_sog_result}
+\end{table}
+
+The results show that ETR and RFR have nearly identical  performance for SOG prediction. Both of the model achieved model fit score $R^2$ of about $96\%$ and RMSE of about 0.56 knots. However, RFR performs slightly better 
+
