@@ -381,7 +381,7 @@ For this reason, the {\tt RandomizedSearchCV} will be employed to search for bes
 
 \subsubsection*{Number of features}\label{sec:max_features}
 
-Defined with default value as {\tt max\_features=None} in \scikit/. This hyperparameter controls the number of features to be considered when looking for the best split, the default {\tt None} option means it will consider all features. This parameter tuning is available for Decision Tree Regressor, Random Forest Regressor and Extra-Tree Regressor. Initial exploration indicated Random Forest Regressor and Extra Tree Regressor benefit from considering more features, Decision Tree Regressor requires further fine-tuning to optimise the model as the default {\tt None} means it will consider all features when searching for best split.\\ 
+Defined with default value as {\tt max\_features=None} in \scikit/. This hyperparameter controls the number of features to be considered when looking for the best split, the default {\tt None} option means it will consider all features. This parameter tuning is available for Decision Tree Regressor, Random Forest Regressor and Extra-Tree Regressor. Initial exploration indicated Random Forest Regressor and Extra Tree Regressor benefit from considering more features. Decision Tree Regressor also benefits from considering all features for determining the split.\\ 
 
 \begin{figure}[h]
     \centering
@@ -392,7 +392,7 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
 
 \subsubsection*{Minimum samples to split a node}\label{sec:min_samples_split}
 
-Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hyperparameter controls the minimum number of samples i.e. data points required to split a node. The default value of {\tt 2} is the least number of sample required to split a node i.e. 1 sample is split to the left and right branch respectively. The plot at \Cref{fig:hpo_min_samples_leaf} indicates that neither RF nor ET benefits from this tuning parameter, as they constructed based on ensemble of uncorrelated tree and this parameter will affect the performance of individual tree in the forest. Whereas, the break even point for the tuning value is found at {\tt min\_samples\_split=20}.  
+Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hyperparameter controls the minimum number of samples i.e. data points required to split a node. The default value of {\tt 2} is the least number of sample required to split a node i.e. 1 sample is split to the left and right branch respectively. The plot at \Cref{fig:hpo_min_samples_leaf} indicates that tuning this hyperparameter will not have any major impact on any model's performance.\\
 \begin{figure}[h]
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/hpo_min_samples_split.png}
@@ -403,7 +403,7 @@ Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hype
 
 \subsubsection*{Number of sample in a leaf node}\label{sec:min_samples_leaf}
 
-Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls number of samples required to be at leaf node, where split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at certain breakeven point, in this case, it is found to be at {\tt min\_samples\_leaf=4}. But after this breakeven point, the model's performance degrades. It is also observed that RFR and ETR does not benefit from any form of regularisation.  
+Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls number of samples required to be at leaf node, where split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at certain breakeven point. But, after this breakeven point, the model's performance degrades. It is also observed that tuning this parameter will have a negative impact on RFR and ETR model's performance-  
 
 \begin{figure}[h]
     \centering
@@ -414,7 +414,7 @@ Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This param
 
 \subsubsection*{Depth of Tree}\label{sec:max_depth}
 
-Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at certain depth while ETR benefits from allowing full growth of the tree. The results are summarised in \Cref{fig:hpo_max_depth}  
+Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at certain depth while ETR benefits from allowing full growth of the tree. It can also be observed that the model's performance are identical for {\tt max\_depth=1}, which is evident as shown in \Cref{fig:hpo_max_depth}  
 
 \begin{figure}[h]
     \centering
@@ -425,7 +425,7 @@ Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparam
 
 \subsubsection*{Number of Trees}\label{sec:n_estimators}
 
-Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}. 
+Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time, and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}. 
 
 \begin{figure}[h]
     \centering
@@ -549,7 +549,7 @@ For the height $h_B$, the upper limit of $h_B = 0.6T_{DESIGN}$ is selected, and 
 Since the immersed transom area is unknown, \bcitet{Rakke2016} approximated the immersed transom area based on correlation of ship dimension from literature review of \bcitet{Holtrop.1982}:
 
 \begin{equation}
-    \label{eqn:A_M}
+    \label{eqn:A_TR}
     A_{TR} = 0.051 A_M
 \end{equation}
 
@@ -584,7 +584,7 @@ The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-d
 \begin{figure}[h]
     \centering
         \includegraphics[width=.95\textwidth]{02_figures/betram_wolff_ratiomodel .jpg}
-        \caption{Estimated value of propeller dimensions}
+        \caption{Estimated value of propeller dimensions \bcitep{Bertram.2000}}
         \label{fig:betram_wolff_propellerdimensions}
 \end{figure}
 
@@ -617,14 +617,27 @@ The FOC can be calculated using \Cref{eqn:FOC}. The information of the SFOC can 
     \hline
     $L_{WL}$ & 144.80 m & From \Cref{tbl:Hammershus_Data} \\
     $B$ & 24.50 m & From \Cref{tbl:Hammershus_Data} \\
-    $T$ & 5.85 m & Assume $T_A = T_F = T$ for initial phase, otherwise use $T$ from dataset \\
+    $T$ & 5.85 m & Assume $T_A = T_F = T$ for initial phase, otherwise use $T$ from dataset, also assume maximum draught \\
+    $V$ & 13592.1413 $m^3$ & $V = C_B \cdot L_{WL} \cdot T_{MAX}$\\
     $Fr_{N}$ & 0.2417 & From \Cref{eqn:Froude_Number} \\
     $C_B$ & 0.6549 & From \Cref{eqn:Cb_Schneekluth}\\
     $C_M$ & 0.9764 & From \Cref{eqn:CM_jensen} \\
     $C_P$ & 0.6707 & From \Cref{eqn:cp_ratio}\\
     $C_{WP}$ & 0.7700 & From \Cref{eqn:cwp_Schneekluth}\\
-    $V$ & 13592.1413 $m^3$ & $V = C_B \cdot L_{WL} \cdot T_{MAX}$\\
-    $\frac{L_{WL}}{B}$ & 5.9102 \\
+    $\ell_{CB}$ & -0.0123 & \Cref{eqn:lcb}\\
+    $A_{TR}$ & 7.3581 $m^2$ & \Cref{eqn:A_TR}\\
+    $A_{BT}$ & 12.2634 $m^2$ &\Cref{eqn:A_BT}\\
+    $h_B$ & 3.5100 m & Assume upper limit $h_{B} = 0.6T_F$\\
+    $D$ & 4 m & Approximated from schematics \Cref{fig:Hammershus_Pict}\\
+    $A_E / A_0$ & 1.135 & Value assumed from \Cref{fig:betram_wolff_propellerdimensions}\\
+    $C_{stern}$ & 10 & Assume u-shaped section \Cref{eqn:c_14}\\
+    \hline
+    \multicolumn{3}{l}{\textbf{Optional Parameters for Holtrop-Mennen}}\\
+    \hline
+    $S$ & 3881.0231 $m^2$& approximated from \Cref{eqn:S_bh}\\
+    $S_{APP}$ & $178.62 m^2$ & approximated from schematics \Cref{fig:Hammershus_Pict}\\
+    $i_E$ & 21.6014° & \Cref{eqn:i_e}\\
+    $d_{TH}$ & 2.15 m & Approximated from schematics \Cref{fig:Hammershus_Pict}\\
     \hline
     \end{tabular}}
 \caption{Assumed value for some constants}\label{tbl:assume_sea_constants}
