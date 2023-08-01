@@ -22,6 +22,7 @@ Subsequently, for FOC calculation, the following steps are taken:
 \begin{enumerate}
     \setlength\itemsep{0em}
     \item The test dataset is split into seasonal data. Summer-Fall season and Winter-Spring season which correspond to data for 6 months respectively.
+    \item Impute missing values using {\tt KNNImputer}.
     \item SOG is converted to STW.
     \item Calculate calm water resistance $R_{CALM}$.
     \item Calculate added resistance due to wave $R_{AW}$.
@@ -104,7 +105,57 @@ Hyperparameter tuning helps to reduce variance in the ETR model. But it does not
 In addition to the initial exploration in \Cref{sec:hpo}, it can be concluded that hyperparameter tuning for number of features and tree depth will have the biggest impact in affecting the model's performance. To improve training time, lower number of trees should be considered for RFR and ETR model.\\
 
 
-\subsection*{Evaluation of trained model}\label{sec:BBM_model_eval}
+\subsection*{Analysis of trained model}\label{sec:BBM_model_eval}
+
+\subsubsection*{Feature Importance}
+
+As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the impact of each feature during the split process, this is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, it is computed as the mean and the standard deviation of accumulation of the impurity decrease within each tree i.e. total reduction of the criterion brought by a feature. Alternatively, it can be defined as how much a feature is used in each tree.\\
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/dtr_ftr_importance.png}
+        \caption{Feature importance of DTR}
+        \label{fig:ftr_impo_dtr}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/rfr_ftr_importance.png}
+        \caption{Feature importance of RFR}
+        \label{fig:ftr_impo_rfr}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/etr_ftr_importance.png}
+        \caption{Feature importance of ETR}
+        \label{fig:ftr_impo_etr}
+\end{figure}
+
+The feature importances for all tree-based models indicated that the structure of the model is significantly influenced by the feature type {\tt heading} and {\tt cog}. This finding indicated that the models predicted the SOG by basis of ship movement direction i.e. heading and COG for a particular location. However, in a physical sense, it will be more insightful to consider the ship state and weather conditions that affect the prediction of the SOG.\\
+
+Excluding ship heading and COG. It is generally fou
+
+It is then followed by the feature type {\tt draught}. The ranking for subsequent features then differs for each type of tree-based models, DTR models considers temperature type features  
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/rfr_ftr_importance.png}
+        \caption{Feature importance of RFR}
+        \label{fig:ftr_impo_rfr}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.85\textwidth]{02_figures/etr_ftr_importance.png}
+        \caption{Feature importance of ETR}
+        \label{fig:ftr_impo_etr}
+\end{figure}
+
+
+
+
+\subsubsection*{Evaluation of k-fold cross-validation}
 
 The performance of the model is evaluated using the training dataset using 10-fold cross validation. This means that the training will be repeated 10 times using 9 of the folds as training dataset, the remaining fold will be used as validation dataset. The results from k-folding validation process is shown in \Cref{fig:train_boxplot_r2_rmse}. The inside (orange) line represents the median i.e. $50\%$ of the score in k-folding. The top and the bottom of the box correspond to the first i.e. $25\%$ and third quartile i.e. $75\%$ respectively. The whiskers represent the lowest data point within the 1.5 Interquartile Range (IQR) of the lowest quartile and the highest point of data within 1.5 IQR of the upper quartile. The mean is indicated by the (green) triangle. Data points beyond the whisker range is shown as hollow circle.\\
 
@@ -122,11 +173,11 @@ DTR greatly benefits from regularisation, the model achieve an increase of about
 
 \subsection*{Analysing the testing dataset}
 
-Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, the summer dataset,$DS_{summer}$, corresponds to testing datasets between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present are also imputed using {\tt KNNImputer}.\\
+Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, the summer dataset,$DS_{summer}$, corresponds to testing datasets between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
 
 \subsection*{Evaluation of testing datasets}
 
-To evaluate the model performance, the testing datasets $DS_{year}$, $DS_{summer}$ and $DS_{winter}$ will be passed through the optimised model with hyperparameter values presented in \Cref{tbl:hpo_optimal}. The model performance is summarised in \Cref{tbl:testing_dataset_sog_result}   
+To evaluate model performance, the testing datasets $DS_{year}$, $DS_{summer}$ and $DS_{winter}$ will be passed through the optimised model with hyperparameter values presented in \Cref{tbl:hpo_optimal}. The model performance is summarised in \Cref{tbl:testing_dataset_sog_result}   
 
 \begin{table}[ht]
     \footnotesize
@@ -135,20 +186,17 @@ To evaluate the model performance, the testing datasets $DS_{year}$, $DS_{summer
     {\begin{tabular}{ p{0.1\linewidth} p{0.1\linewidth} c c c c c c }
     \hline
     Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
-    & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
     \hline
+    & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
     $\text{DTR}_{OPT}$ & $DS_{year}$ & 90.10 & 90.12 & 0.629 & 0.975  & 0.420 & 4.21  \\
     & $DS_{winter}$ & 93.18 & 93.19 & 0.561 & 0.846 & 0.390 & 3.92 \\
     & $DS_{summer}$ & 85.69 & 84.90 & 0.704 & 1.100 & 0.451 & 4.52 \\
-    \hline
     $\text{RFR}_{OPT}$ & $DS_{year}$  & 96.59 & 96.60 & 0.335 & 0.572 & 0.187 & 2.29 \\
-    & $DS_{winter}$ & 98.41 & 98.42 & 0.265 & 0.409 & 0.173 & 1.94 \\
+    & $DS_{winter}$ & \textbf{98.41} & \textbf{98.42} & \textbf{0.265} & \textbf{0.409} & \textbf{0.173} & \textbf{1.94} \\
     & $DS_{summer}$ & 94.02 & 94.14 & 0.412 & 0.710 & 0.215 & 2.68 \\
-    \hline
     $\text{ETR}_{OPT}$ & $DS_{year}$ & 96.82 & 96.82 & 0.347 & 0.553 & 0.214 & 2.35 \\
     & $DS_{winter}$ & 98.40 & 98.40 & 0.287 & 0.410 & 0.196 & 2.03 \\
     & $DS_{summer}$ & 95.49 & 94.68 & 0.413 & 0.676 & 0.239 & 2.70 \\
-    \hline
     MLR & $DS_{year}$ & 69.75 & 69.85 & 1.139 & 1.704 & 0.908 & 7.64 \\
     & $DS_{winter}$ & 68.16 & 68.17 & 1.129 & 1.828 & 0.871 & 7.94 \\
     & $DS_{summer}$ & 71.43 & 71.87 & 1.150 & 1.554 & 0.951 & 7.32 \\
@@ -157,5 +205,7 @@ To evaluate the model performance, the testing datasets $DS_{year}$, $DS_{summer
 \caption{Performance indices for different modelling approach and different testing datasets}\label{tbl:testing_dataset_sog_result}
 \end{table}
 
-The results show that ETR and RFR have nearly identical  performance for SOG prediction. Both of the model achieved model fit score $R^2$ of about $96\%$ and RMSE of about 0.56 knots. However, RFR performs slightly better 
+From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good results on testing datasets. All tree-based model obtained $R^2$ scores above $90\%$ and is also able to obtain RMSE as low as 0.409 knots. In general, all tree based models performs better when $DS_{winter}$ datasets are used for testing. The results also show that ETR and RFR have nearly identical performance for SOG prediction. Both of the model achieved model fit score $R^2$ of about $96\%$ and RMSE of about $0.5-0.6$ knots. While the fit performance of DTR is comparable to both RFR and ETR, DTR makes more substantial errors during predictions, this can be seen from the MAE of DTR from figure \Cref{tbl:testing_dataset_sog_result}, DTR model makes larger error during the prediction, this pattern is consistent for all error metrics such as MAE, RMSE, MAD and MAPE, where DTR model exhibits errors that are twice as large as those of other models with exception to MLR.\\
+
+
 
