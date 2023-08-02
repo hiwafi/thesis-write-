@@ -111,49 +111,90 @@ In addition to the initial exploration in \Cref{sec:hpo}, it can be concluded th
 
 As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the impact of each feature during the split process, this is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, it is computed as the mean and the standard deviation of accumulation of the impurity decrease within each tree i.e. total reduction of the criterion brought by a feature. Alternatively, it can be defined as how much a feature is used in each tree.\\
 
+\begin{table}[ht]
+    \scriptsize
+    \centering
+    \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.15\linewidth} c| p{0.15\linewidth} c| p{0.15\linewidth} c}
+    \hline
+    $\text{DTR}_{OPT}$ & & $\text{RFR}_{OPT}$ & & $\text{ETR}_{OPT}$\\
+    \hline
+    Feature & Importance & Feature & Importance & Feature & Importance\\
+    \hline
+    {\tt heading} & 0.6563 & {\tt heading} & 0.4927 & {\tt cog} & 0.6410 \\
+    {\tt cog} & 0.3183 & {\tt cog} & 0.4183 & {\tt heading} & 0.2707 \\
+    {\tt draught} & 0.0105 & {\tt draught} & 0.0210 & {\tt truecurrentdir} & 0.0200\\
+    {\tt truewinddir} & 0.0047 & {\tt curspeed} & 0.0104 & {\tt draught} & 0.0144 \\
+    {\tt oceantemperature} & 0.0029 & {\tt waveperiod} & 0.0093& {\tt windwaveswellheight} & 0.0112\\
+    {\tt surftemp} & 0.0025&{\tt truecurrentdir} & 0.0092 & {\tt curspeed} & 0.0110\\
+    {\tt waveperiod} & 0.0019 & {\tt windwaveswellheight} & 0.0084& {\tt waveperiod} & 0.0095 \\
+    {\tt truecurrentdir} & 0.0010 & {\tt surftemp} & 0.0075& {\tt windspeed} & 0.0053\\
+    {\tt windwaveswellheight} & 0.0008 & {\tt truewinddir} & 0.0075& {\tt surftemp} & 0.0046 \\
+    {\tt curspeed} & 0.0004 & {\tt truewavedir} & 0.0058& {\tt truewavedir} & 0.0045 \\
+    {\tt windspeed} & 0.0004 & {\tt oceantemperature} & 0.0057& {\tt oceantemperature} & 0.0044\\
+    {\tt truwavedir} & 0.0001 & {\tt windspeed} & 0.0056& {\tt truewinddir} & 0.0033\\
+    \end{tabular}}
+\caption{Feature importance of different models}\label{tbl:feature_importances}
+\end{table}
+
+The feature importances for all tree-based models shown in \Cref{tbl:feature_importances} indicated that the structure of the model is significantly influenced by the features {\tt heading} and {\tt cog}. This finding indicated that the models predicted the SOG by basis of ship movement direction i.e. heading and COG for a particular location. However, in a physical sense, it will be more insightful to consider the ship state and weather conditions that affect the prediction of the SOG.\\
+
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/dtr_ftr_importance.png}
+        \includegraphics[width=.9\textwidth]{02_figures/dtr_ftr_importance_nodir.png}
         \caption{Feature importance of DTR}
         \label{fig:ftr_impo_dtr}
 \end{figure}
 
+Excluding ship heading and COG. The ship draught $T$ is regarded as the significant factors that affect the SOG prediction. This aligns with the theory of frictional resistance $R_F$ encountered by the ship, which is discussed in \Cref{sec:Calm_Resistance}. \Cref{eqn:R_f} is a function of wetted surface area of bare hull $S$. Deeper draught $T$ will result in more submerged area of the hull and this will consequently increase the frictional force $R_F$ of the ship. Given a constant supply of power to the ship propulsion system, the speed of the ship will decrease which is shown in \Cref{eqn:P_e}.\\
+
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/rfr_ftr_importance.png}
+        \includegraphics[width=.9\textwidth]{02_figures/rfr_ftr_importance_nodir.png}
         \caption{Feature importance of RFR}
         \label{fig:ftr_impo_rfr}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/etr_ftr_importance.png}
+        \includegraphics[width=.9\textwidth]{02_figures/etr_ftr_importance_nodir.png}
         \caption{Feature importance of ETR}
         \label{fig:ftr_impo_etr}
 \end{figure}
 
-The feature importances for all tree-based models indicated that the structure of the model is significantly influenced by the feature type {\tt heading} and {\tt cog}. This finding indicated that the models predicted the SOG by basis of ship movement direction i.e. heading and COG for a particular location. However, in a physical sense, it will be more insightful to consider the ship state and weather conditions that affect the prediction of the SOG.\\
+For weather states, both RFR and ETR considered current based information such as current speed and true current direction as the most significant weather factor that affect SOG prediction. This aligns to the proposed current correction methodology presented in \Cref{sec:SOG_corr} which states that the process of current correction to convert SOG to STW requires both the magnitude and direction of the current. The next influencing feature ranked by RFR and ETR model are wave related features which are significant wave height $H_{1/3}$, true wave direction, and the wave period {\tt waveperiod}. This corresponds to the added resistance due to wave $R_{AW}$ in the calculation of total resistance $R_{TOTAL}$ encountered by the ship. The wind related features, which are wind speed and its true direction, corresponds to added resistance due to wind force $R_{AA}$ and is found to be the least influential in SOG prediction in RFR and ETR model.\\
 
-Excluding ship heading and COG. It is generally fou
+Based on the behaviour of the Random Forest Regressor (RFR) and Extra Trees Regressor (ETR) models, it can be inferred that waves have a more significant impact on the Speed Over Ground (SOG) compared to the influence of wind during the ship's journey. However, the Decision Tree Regressor (DTR) model demonstrates that temperature-related features, such as Sea Surface Temperature (SST) and air temperature above the ocean, have a more significant effect on SOG predictions than most other features. While the importance of temperature is not as pronounced as in RFR or ETR models, this finding suggests that the ship's SOG is implicitly influenced by the time of the travel or the season in which the journey takes place.\\
 
-It is then followed by the feature type {\tt draught}. The ranking for subsequent features then differs for each type of tree-based models, DTR models considers temperature type features  
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.85\textwidth]{02_figures/rfr_ftr_importance.png}
-        \caption{Feature importance of RFR}
-        \label{fig:ftr_impo_rfr}
-\end{figure}
+\subsubsection*{Structure of generated tree-based model}
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.85\textwidth]{02_figures/etr_ftr_importance.png}
-        \caption{Feature importance of ETR}
-        \label{fig:ftr_impo_etr}
+        \includegraphics[width=.9\textwidth]{02_figures/dtr_mod_1tree.png}
+        \caption{Structure of DTR}
+        \label{fig:dtr_tree_hpov}
 \end{figure}
 
+To understand the effect of hyperparameter optimisation and feature importance, analysis on the structure of generated tree-based models will be performed. The shading in the nodes indicated the likelihood of the decision, where darker shading means greater likelihood. Each node indicates information on the splitting feature with the threshold, the SSR score, amount of samples and the predicted SOG value. Even after pruning, the tree can grow relatively large, therefore, the illustration of the trees is limited to a depth of {\tt max\_depth = 3} and for RFR and ETR, only the illustration of a specific tree in the forest will be shown.\\
 
+The structure of the optimised decision tree shown in \Cref{fig:dtr_tree_hpov} show the effect of regularisation at the leaf node. For example, the leaf nodes that splits the feature, ocean temperature, does not completely minimise the SSR. This is caused by the hyperparameter tuning of the minimum samples at the leaf node, which was set at {\t min\_samples\_leaf = 10}, splitting these nodes further will cause subsequent leaf nodes that have less than 10 samples. In this figure, the significance of COG and ship heading can be clearly seen, as it is used to split many of the internal nodes in the tree.\\
 
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.9\textwidth]{02_figures/rfr_mod_it1.png}
+        \caption{Structure of RFR}
+        \label{fig:rfr_tree1_hpov}
+\end{figure}
+
+The illustration of the first RFR tree is shown in \Cref{fig:rfr_tree1_hpov}. Similar to DTR, both COG and ship heading are regarded as the best features to split the internal node. In this tree of the forest, the effect of allowing full tree growth can be observed in the leaf node when splitting the feature current speed. This tree is able to minimise the SSR to its possible minimum value 0, and the leaf node cannot be further split as there are no more available samples. The effect of bagging for the dataset and feature selection in RFR can also be observed in this tree as the structure of this tree is completely different to DTR tree shown in \Cref{fig:dtr_tree_hpov}.\\
+
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.9\textwidth]{02_figures/etr_mod_it1.png}
+        \caption{Structure of ETR}
+        \label{fig:etr_tree1_etr}
+\end{figure}
+The random selection of the feature to split of ETR can be seen in the structure of the first tree in an ETR in \Cref{fig:etr_tree1_etr}. Since both DTR and RFR uses greedy algorithm, i.e. it finds the possible splits which minimise the cost function, both model selected COG as the parent node. However, the randomness in feature selection of ETR can be clearly observed in this illustration, the model selects the true current direction as the parent node. Also, due to regularisation of ETR, the leaf node when splitting COG does not completely minimise the SSR. The split is not allowed since it does not meet the tuning criteria of {\tt min\_samples\_split = 9}.\\ 
 
 \subsubsection*{Evaluation of k-fold cross-validation}
 
@@ -169,11 +210,38 @@ The performance of the model is evaluated using the training dataset using 10-fo
 
 The box plots indicated that ETR achieved the best performance, the model is able to achieve $R^2$ score of around $91\%$ and RMSE of around 0.96 knots. The model is also relatively stable, which is indicated by the narrow box plots. RFR also achieved similar performance, achieving $R^2$ score of about $89\%$ and RMSE of approximately 1.00 knots and slightly worse stability. This behaviour may be caused due to the high variance shown from the learning curves shown in \Cref{fig:learn_curve_RFR_RMSE} and \Cref{fig:learn_curve_ETR_RMSE}. This means that the model will have slight tendency to overfit.\\
 
-DTR greatly benefits from regularisation, the model achieve an increase of about $5\%$ for the $R^2$ score and a reduction from about 1.2 knots to 1.1 knots for the RMSE. To summarise, all tree based models exhibited good performance, all models achieved good fit with mean/median $R^2$ scores above $80\%$. However, the value of RMSE range is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
+DTR greatly benefits from regularisation, the model achieves an increase of about $5\%$ for the $R^2$ score and a reduction from about 1.2 knots to 1.1 knots for the RMSE. To summarise, all tree-based models exhibited good fit performance with mean/median $R^2$ scores above $80\%$. However, the value of RMSE range is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
 
 \subsection*{Analysing the testing dataset}
 
-Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, the summer dataset,$DS_{summer}$, corresponds to testing datasets between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
+Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, $DS_{summer}$, which corresponds to summer datasets and it represents data between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
+
+\begin{table}
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.21\linewidth} c c c c c c c c }
+    \hline
+    Features & Count & Mean & Std. & Min & 25\% & 50\% & 75\% & Max \\
+    \hline
+    \textbf{{\tt sog}} & 957 & 16.99 & 3.10 & 5.10 & 16.68 & 18.05 & 18.72 & 21.00\\
+    \hline
+    {\tt cog} & 957 & 196.73 & 86.72&	56.02 & 102.32& 185.22& 282.18& 319.85\\ 
+    {\tt heading} & 957 & 187.88&	88.47&	67.90&	100.86&	124.65&	279.19&	319.85\\
+    {\tt draught} & 957 & 5.23 & 0.19& 4.74& 5.11& 5.29& 5.38&5.66\\
+    {\tt windspeed} & 957 & 6.45 & 3.04 & 0.40 & 4.11 & 6.13 &	8.21 & 15.85\\
+    {\tt oceantemperature} & 957 & 282.27 & 6.48 & 267.25& 276.80& 281.91& 288.42& 295.70 \\
+    {\tt waveperiod} & 957 & 3.40 & 0.88 & 1.67 & 3.06& 3.62& 4.22& 7.01\\
+    {\tt surftemp} & 957 &283.22& 5.72& 273.15& 277.98& 282.73& 288.82 &294.92\\
+    {\tt windwaveswellheight} &  957 & 0.77 & 0.54 & 0.08 &0.37 &	0.66 &	0.94 &  3.24  \\
+    {\tt curspeed} & 957 &0.09 & 0.07& 0.00 & 0.05& 0.07 & 0.13 & 0.50\\
+    {\tt truewinddir} & 957 & 91.39 & 56.23 &	0.03 & 38.80 &	95.25 & 142.83 & 179.86\\
+    {\tt truecurrentdir} & 957 & 90.75 & 57.76 & 0.26 & 31.52 & 90.44 & 144.65 & 179.95 \\
+    {\tt truewavedir} & 957 & 86.90 & 55.74& 0.06& 36.24 & 81.54 & 138.04 & 179.81 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of $DS_{year}$}\label{tbl:testyear_dataset_descriptive}
+\end{table}
 
 \subsection*{Evaluation of testing datasets}
 
