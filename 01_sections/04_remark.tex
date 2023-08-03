@@ -186,7 +186,7 @@ The structure of the optimised decision tree shown in \Cref{fig:dtr_tree_hpov} s
         \label{fig:rfr_tree1_hpov}
 \end{figure}
 
-The illustration of the first RFR tree is shown in \Cref{fig:rfr_tree1_hpov}. Similar to DTR, both COG and ship heading are regarded as the best features to split the internal node. In this tree of the forest, the effect of allowing full tree growth can be observed in the leaf node when splitting the feature current speed. This tree is able to minimise the SSR to its possible minimum value 0, and the leaf node cannot be further split as there are no more available samples. The effect of bagging for the dataset and feature selection in RFR can also be observed in this tree as the structure of this tree is completely different to DTR tree shown in \Cref{fig:dtr_tree_hpov}.\\
+The illustration of the first RFR tree is shown in \Cref{fig:rfr_tree1_hpov}. Similar to DTR, both COG and ship heading are regarded as the best features to split the internal node. In this tree of the forest, the effect of allowing full tree growth can be observed in the leaf node when splitting the feature current speed. This tree is able to minimise the SSR to its possible minimum value, and the leaf node cannot be further split as there are no more available samples. The effect of bagging for the dataset and feature selection in RFR can also be observed in this tree as the structure of this tree is completely different to DTR tree shown in \Cref{fig:dtr_tree_hpov}.\\
 
 \begin{figure}[h]
     \centering
@@ -216,7 +216,7 @@ DTR greatly benefits from regularisation, the model achieves an increase of abou
 
 Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, $DS_{summer}$, which corresponds to summer datasets and it represents data between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
 
-\begin{table}
+\begin{table}[h]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -224,56 +224,176 @@ Once the best model is determined, the model will be tested against the testing 
     \hline
     Features & Count & Mean & Std. & Min & 25\% & 50\% & 75\% & Max \\
     \hline
-    \textbf{{\tt sog}} & 957 & 16.99 & 3.10 & 5.10 & 16.68 & 18.05 & 18.72 & 21.00\\
+    \textbf{{\tt sog}} & 957.00 & 16.99 & 3.10 & 5.10 & 16.68 & 18.05 & 18.72 & 21.00\\
     \hline
-    {\tt cog} & 957 & 196.73 & 86.72&	56.02 & 102.32& 185.22& 282.18& 319.85\\ 
-    {\tt heading} & 957 & 187.88&	88.47&	67.90&	100.86&	124.65&	279.19&	319.85\\
-    {\tt draught} & 957 & 5.23 & 0.19& 4.74& 5.11& 5.29& 5.38&5.66\\
-    {\tt windspeed} & 957 & 6.45 & 3.04 & 0.40 & 4.11 & 6.13 &	8.21 & 15.85\\
-    {\tt oceantemperature} & 957 & 282.27 & 6.48 & 267.25& 276.80& 281.91& 288.42& 295.70 \\
-    {\tt waveperiod} & 957 & 3.40 & 0.88 & 1.67 & 3.06& 3.62& 4.22& 7.01\\
-    {\tt surftemp} & 957 &283.22& 5.72& 273.15& 277.98& 282.73& 288.82 &294.92\\
-    {\tt windwaveswellheight} &  957 & 0.77 & 0.54 & 0.08 &0.37 &	0.66 &	0.94 &  3.24  \\
-    {\tt curspeed} & 957 &0.09 & 0.07& 0.00 & 0.05& 0.07 & 0.13 & 0.50\\
-    {\tt truewinddir} & 957 & 91.39 & 56.23 &	0.03 & 38.80 &	95.25 & 142.83 & 179.86\\
-    {\tt truecurrentdir} & 957 & 90.75 & 57.76 & 0.26 & 31.52 & 90.44 & 144.65 & 179.95 \\
-    {\tt truewavedir} & 957 & 86.90 & 55.74& 0.06& 36.24 & 81.54 & 138.04 & 179.81 \\
+    {\tt cog} & 957.00 & 196.73 & 86.72&	56.02 & 102.32& 185.22& 282.18& 319.85\\ 
+    {\tt heading} & 957.00 & 188.30&	89.17&	63.49&	100.86&	124.24&	279.38&	308.04\\
+    {\tt draught} & 957.00 & 5.23 & 0.19& 4.74& 5.11& 5.29& 5.38&5.66\\
+    {\tt windspeed} & 957.00 & 6.45 & 3.04 & 0.40 & 4.11 & 6.13 &	8.21 & 15.85\\
+    {\tt oceantemperature} & 957.00 & 282.28 & 6.48 & 267.25& 276.80& 281.91& 288.42& 295.70 \\
+    {\tt waveperiod} & 957.00 & 3.70 & 0.88 & 1.67 & 3.06& 3.62& 4.22& 7.01\\
+    {\tt surftemp} & 957.00 &283.22& 5.72& 273.15& 277.98& 282.73& 288.82 &294.93\\
+    {\tt windwaveswellheight} &  957.00 & 0.77 & 0.54 & 0.08 &0.37 &	0.66 &	0.94 &  3.24  \\
+    {\tt curspeed} & 957.00 &0.09 & 0.07& 0.00 & 0.05& 0.07 & 0.13 & 0.50\\
+    {\tt truewinddir} & 957.00 & 91.39 & 56.23 &	0.03 & 38.80 &	95.25 & 142.83 & 179.86\\
+    {\tt truecurrentdir} & 957.00 & 90.75 & 57.76 & 0.26 & 31.52 & 90.44 & 144.65 & 179.95 \\
+    {\tt truewavedir} & 957.00 & 86.90 & 55.74& 0.06& 36.24 & 81.54 & 138.04 & 179.81 \\
     \hline
     \end{tabular}}
 \caption{Descriptive statistics of $DS_{year}$}\label{tbl:testyear_dataset_descriptive}
 \end{table}
 
+\begin{table}[h]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.21\linewidth} c c c c c c c c }
+    \hline
+    Features & Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
+    \hline 
+    \textbf{{\tt sog}} & 454.00 & 17.26 & 2.91 & 5.22 & 16.74 & 18.17 & 18.95 & 21.01\\
+    \hline
+    {\tt cog} & 454.00 & 196.06 & 87.55 &  56.02 & 102.80 & 182.79 & 282.03 & 319.85 \\ 
+    {\tt heading} & 454.00 & 188.08 & 89.02 &  63.49 & 100.75 & 124.68 & 278.07 & 303.30 \\
+    {\tt draught} & 454.00 &   5.30 &  0.17 &   4.74 &   5.20 &   5.29 &   5.38 &   5.66 \\
+    {\tt windspeed} & 454.00 &   6.64 &  3.33 &   0.40 &   4.08 &   6.30 &   8.71 &  15.85 \\
+    {\tt oceantemperature} & 454.00 & 285.59 &  5.90 & 269.27 & 282.90 & 286.70 & 290.04 & 295.70 \\
+    {\tt waveperiod} & 454.00 & 3.73 &  0.99 &   2.02 &   2.95 &   3.60 &   4.36 &   7.01 \\
+    {\tt surftemp} & 454.00 & 286.33 &  5.10 & 274.75 & 283.05 & 287.58 & 290.18 & 294.93 \\
+    {\tt windwaveswellheight} & 454.00 &   0.82 &  0.63 &   0.08 &   0.36 &   0.67 &   1.02 &   3.24 \\
+    {\tt curspeed} & 454.00 &   0.10 &  0.07 &   0.00 &   0.04 &   0.07 &   0.13 &   0.50 \\
+    {\tt truewinddir} & 454.00 &  90.94 & 58.05 &   0.60 &  38.40 &  89.86 & 145.86 & 179.58 \\
+    {\tt truecurrentdir} & 454.00 &  83.65 & 59.53 &   0.26 &  26.68 &  70.51 & 143.73 & 179.33 \\
+    {\tt truewavedir} & 454.00 &  88.06 & 59.52 &   0.09 &  33.00 &  82.18 & 145.69 & 179.81 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of $DS_{summer}$}\label{tbl:testsummer_dataset_descriptive}
+\end{table}
+
+\begin{table}[h]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.21\linewidth} c c c c c c c c }
+    \hline
+    Features & Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
+    \hline
+    \textbf{{\tt sog}} & 503.00 & 16.75 & 3.24 & 5.10 & 16.59 & 17.98 & 18.61 & 20.70\\
+    \hline
+    {\tt cog} & 503.00 & 197.33 & 86.06 &  80.81 & 102.25 & 187.56 & 282.63 & 307.92 \\
+    {\tt heading} & 503.00 & 188.50 & 89.39 &  89.22 & 100.87 & 123.92 & 280.05 & 308.04 \\
+    {\tt draught} & 503.00 &   5.16 &  0.18 &   4.76 &   5.02 &   5.20 &   5.29 &   5.65 \\
+    {\tt windspeed}& 503.00 &   6.28 &  2.76 &   0.43 &   4.12 &   6.05 &   8.01 &  14.35 \\
+    {\tt oceantemperature} & 503.00 & 279.29 &  5.44 & 267.25 & 275.74 & 278.22 & 281.25 & 292.72 \\
+    {\tt waveperiod} & 503.00 & 3.67 &  0.76 &   1.67 &   3.16 &   3.62 &   4.14 &   5.98 \\
+    {\tt surftemp} & 503.00 & 280.41 &  4.71 & 273.15 & 277.23 & 278.68 & 282.68 & 292.85 \\
+    {\tt windwaveswellheight} & 503.00 &   0.73 &  0.45 &   0.08 &   0.40 &   0.66 &   0.90 &   2.43 \\
+    {\tt curspeed} & 503.00 &   0.09 &  0.07 &   0.00 &   0.05 &   0.08 &   0.12 &   0.42 \\
+    {\tt truewinddir} & 503.00 &  91.81 & 54.61 &   0.03 &  39.66 &  97.92 & 140.20 & 179.86 \\
+    {\tt truecurrentdir} & 503.00 &  97.16 & 55.40 &   1.44 &  41.92 & 102.12 & 145.34 & 179.95 \\
+    {\tt truewavedir} & 503.00 &  85.86 & 52.13 &   0.06 &  39.44 &  81.22 & 132.49 & 178.30 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of $DS_{winter}$}\label{tbl:testwinter_dataset_descriptive}
+\end{table}
+
 \subsection*{Evaluation of testing datasets}
 
-To evaluate model performance, the testing datasets $DS_{year}$, $DS_{summer}$ and $DS_{winter}$ will be passed through the optimised model with hyperparameter values presented in \Cref{tbl:hpo_optimal}. The model performance is summarised in \Cref{tbl:testing_dataset_sog_result}   
+The results of SOG prediction of optimised the tree-based models is summarised in \Cref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the tree models is compared against Multiple Linear Regressor (MLR) model.
 
 \begin{table}[ht]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ p{0.1\linewidth} p{0.1\linewidth} c c c c c c }
+    {\begin{tabular}{ l l c c c c c c }
     \hline
     Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
-    \hline
     & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
-    $\text{DTR}_{OPT}$ & $DS_{year}$ & 90.10 & 90.12 & 0.629 & 0.975  & 0.420 & 4.21  \\
-    & $DS_{winter}$ & 93.18 & 93.19 & 0.561 & 0.846 & 0.390 & 3.92 \\
-    & $DS_{summer}$ & 85.69 & 84.90 & 0.704 & 1.100 & 0.451 & 4.52 \\
-    $\text{RFR}_{OPT}$ & $DS_{year}$  & 96.59 & 96.60 & 0.335 & 0.572 & 0.187 & 2.29 \\
-    & $DS_{winter}$ & \textbf{98.41} & \textbf{98.42} & \textbf{0.265} & \textbf{0.409} & \textbf{0.173} & \textbf{1.94} \\
-    & $DS_{summer}$ & 94.02 & 94.14 & 0.412 & 0.710 & 0.215 & 2.68 \\
-    $\text{ETR}_{OPT}$ & $DS_{year}$ & 96.82 & 96.82 & 0.347 & 0.553 & 0.214 & 2.35 \\
-    & $DS_{winter}$ & 98.40 & 98.40 & 0.287 & 0.410 & 0.196 & 2.03 \\
-    & $DS_{summer}$ & 95.49 & 94.68 & 0.413 & 0.676 & 0.239 & 2.70 \\
-    MLR & $DS_{year}$ & 69.75 & 69.85 & 1.139 & 1.704 & 0.908 & 7.64 \\
-    & $DS_{winter}$ & 68.16 & 68.17 & 1.129 & 1.828 & 0.871 & 7.94 \\
-    & $DS_{summer}$ & 71.43 & 71.87 & 1.150 & 1.554 & 0.951 & 7.32 \\
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 86.72 & 86.75 & 0.714 & 1.129  & 0.479 & 4.96  \\
+    & $DS_{winter}$ & 88.51 & 88.61 & 0.690 & 1.100 & 0.441 & 4.95 \\
+    & $DS_{summer}$ & 84.04 & 84.05 & 0.741 & 1.161 & 0.520 & 4.97 \\
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 90.13 & 96.16 & 0.629 & 0.973 & 0.419 & 4.29 \\
+    & $DS_{winter}$ & 93.40 & 93.52 & 0.549 & 0.833 & 0.374 & 3.96 \\
+    & $DS_{summer}$ & 85.48 & 85.48 & 0.696 & 1.108 & 0.455 & 4.66 \\
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 91.09 & 91.91 & 0.582 & 0.882 & 0.398 & 3.96 \\
+    & $DS_{winter}$ & \textbf{94.55} & \textbf{94.63} & \textbf{0.532} & \textbf{0.756} & \textbf{0.394} & \textbf{3.72} \\
+    & $DS_{summer}$ & 88.11 & 88.13 & 0.637 & 1.002 & 0.409 & 4.23 \\
+    MLR & $DS_{year}$ & 69.61 & 69.67 & 1.147 & 1.707 & 0.924 & 7.73 \\
+    & $DS_{winter}$ & 68.08 & 68.08 & 1.135 & 1.831 & 0.880 & 8.04 \\
+    & $DS_{summer}$ & 71.21 & 71.56 & 1.160 & 1.560 & 0.949 & 7.39 \\
     \hline
     \end{tabular}}
 \caption{Performance indices for different modelling approach and different testing datasets}\label{tbl:testing_dataset_sog_result}
 \end{table}
 
-From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good results on testing datasets. All tree-based model obtained $R^2$ scores above $90\%$ and is also able to obtain RMSE as low as 0.409 knots. In general, all tree based models performs better when $DS_{winter}$ datasets are used for testing. The results also show that ETR and RFR have nearly identical performance for SOG prediction. Both of the model achieved model fit score $R^2$ of about $96\%$ and RMSE of about $0.5-0.6$ knots. While the fit performance of DTR is comparable to both RFR and ETR, DTR makes more substantial errors during predictions, this can be seen from the MAE of DTR from figure \Cref{tbl:testing_dataset_sog_result}, DTR model makes larger error during the prediction, this pattern is consistent for all error metrics such as MAE, RMSE, MAD and MAPE, where DTR model exhibits errors that are twice as large as those of other models with exception to MLR.\\
+From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good prediction results on different testing datasets. Generally, all tree-based models obtained $R^2$ score above $80\%$ and perform better when using the $DS_{winter}$ datasets. All tree-based models offer significant improvement from MLR. Among the tree-based model, ETR presented the best SOG prediction across different datasets, followed by RFR and DTR.\\ 
+
+To gain more insight to the predictive performance, descriptive statistics of the SOG prediction is provided \Cref{tbl:SOG_pred_descriptive}:\\
+
+\begin{table}[h]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c c c }
+    \hline
+    Model & Dataset & Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
+    \hline
+    \textbf{{Actual}} & $DS_{year}$ & 957.00 &  16.99 &   3.10 & 5.10 &  16.68 &  18.05 &  18.72 &  21.01 \\
+    & $DS_{winter}$ & 503.00 &  16.75 &   3.24 & 5.10 &  16.59 &  17.98 &  18.61 &  20.70 \\
+    & $DS_{summer}$ & 454.00 &  17.26 &   2.91 & 5.22 &  16.74 &  18.17 &  18.95 &  21.01 \\
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.91 & 5.36 &  16.58 &  18.11 &  18.66 &  20.00 \\
+    & $DS_{winter}$ & 503.00 &  16.85 &   3.06 & 5.36 &  16.58 &  17.86 &  18.58 &  19.98 \\
+    & $DS_{summer}$ & 454.00 &  17.25 &   2.73 & 5.64 &  16.58 &  18.15 &  18.91 &  20.00 \\
+    \hline
+    $\text{RFR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.89 & 5.37 &  16.71 &  18.11 &  18.70 &  20.22 \\
+    & $DS_{winter}$ & 503.00 &  16.86 &   3.04 & 5.37 &  16.70 &  18.02 &  18.60 &  19.74 \\
+    & $DS_{summer}$ & 454.00 &  17.25 &   2.72 & 5.81 &  16.74 &  18.20 &  18.77 &  20.22 \\
+    \hline
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.03 &   2.87 & 5.39 &  16.67 &  18.05 &  18.65 &  19.96 \\
+    & $DS_{winter}$ & 503.00 &  16.84 &   3.04 & 5.39 &  16.65 &  17.96 &  18.56 &  19.87 \\
+    & $DS_{summer}$ & 454.00 &  17.23 &   2.66 & 5.96 &  16.71 &  18.18 &  18.75 &  19.96 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of SOG Prediction}\label{tbl:SOG_pred_descriptive}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+
+\begin{minipage}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{02_figures/sog_pred_year.png}
+    % \caption{Caption for Picture 1.}
+    \label{fig:boxplot_dsyear}
+\end{minipage}%
+\hfill
+\begin{minipage}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{02_figures/sog_pred_winter.png}
+    % \caption{Caption for Picture 2.}
+    \label{fig:boxplot_dswinter}
+\end{minipage}%
+\hfill
+\begin{minipage}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{02_figures/sog_pred_summer.png}
+    % \caption{Caption for Picture 3.}
+    \label{fig:boxplot_dssummer}
+\end{minipage}
+
+\caption{SOG distribution for $DS_{year}$, $DS_{winter}$ and $DS_{summer}$}
+\label{fig:boxplot_sogPred_overall}
+\end{figure}  
+
+From the descriptive statistics, it can be inferred that the model is not able to capture information on the lower end of the ship speed across the different datasets. This is possibly caused by low number of data points that represent lower end of the SOG speed, this is evident from the boxplots of the different datasets shown in \Cref{fig:boxplot_sogPred_overall}. Both the descriptive statistics and boxplots implied that the data points distributions are skewed towards the higher end of SOG and the majority of the data points are distributed within approximately 16.5 knots for the first quartile and 19 knots for the third quartile across all datasets. The lowest data point within the $1.5 \cdot \text{IQR}_{LOW}$ distribution lies at approximately 13.6 knots, which is indicated by the lower whisker. Which suggests that data points beyond the whisker are outliers, which is not the case as these points should represent the ship journey at low speed.\\ 
+
+This may explain the relatively high value of RMSE for all models as it treats the data points for low SOG as outliers, as previously discussed in \Cref{sec:perf_metrics}, RMSE are more sensitive to outliers in comparison to both MAE and MAD, making it less representative in this case study which result in MAE and MAD being the more suitable error evaluation metrics to be used in this case study. Furthermore, the high scores of $R^2$ and explained Variance can be attributed to the models' ability to predict SOG values that lie within the whiskers of the box plots, indicating good prediction performance within those ranges.\\
+
+
+
+
 
 
 
