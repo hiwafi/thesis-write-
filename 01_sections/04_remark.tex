@@ -37,7 +37,7 @@ Subsequently, for FOC calculation, the following steps are taken:
 
 \section{Evaluation of BBM}\label{sec:BBM_tree_evaluate}
 
-\subsection*{Model Training and Selection of Optimal Parameter}\label{sec:hpo_select_train}
+\subsection{Model Training and Selection of Optimal Parameter}\label{sec:hpo_select_train}
 
 As mentioned in \Cref{sec:BBM_modelling}. There are 2871 data points available for training. To help narrow the search range of the hyperparameters for the tree-based model, RMSE plots against different values of hyperparameters will be performed. This method was presented in \Cref{sec:hpo}. The hyperparameter will be iteratively tuned until the best model is obtained. The result of the optimal parameter is found in \Cref{tbl:hpo_optimal}. The model training is executed using \textbf{AMD Ryzen 7 2700X, Eight-Core Processor $@$ 3.7 GHz processor with 16384 MB installed RAM}.\\
 
@@ -46,27 +46,27 @@ As mentioned in \Cref{sec:BBM_modelling}. There are 2871 data points available f
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth} p{0.3\linewidth}}
+    {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth}  p{0.3\linewidth} p{0.25\linewidth}}
     \hline
-    Model & Training time [s] & Optimal Hyperparameter \\
+    Model & Training time [s] &  Optimal Hyperparameter & Search Range \\
     \hline
     DTR & 0.044 & None \\
-    $\text{DTR}_{OPT}$ & 0.021  & {\tt min\_samples\_split = 7}\\
-    &&{\tt min\_samples\_leaf = 10}\\
-    &&{\tt max\_features = 12}\\
-    &&{\tt max\_depth = 8}\\
+    $\text{DTR}_{OPT}$ & 0.021  & {\tt min\_samples\_split = 7} & [2,10] \\
+    &&{\tt min\_samples\_leaf = 10} & [1,10] \\
+    &&{\tt max\_features = 12} & [1,12]\\
+    &&{\tt max\_depth = 8} & [1,10] and [None]\\
     RFR & 4.112 & None \\
-    $\text{RFR}_{OPT}$ & 3.431  & {\tt min\_samples\_split = 2}\\
-    &&{\tt min\_samples\_leaf = 1}\\
-    &&{\tt max\_features = 10}\\
-    &&{\tt max\_depth = 120}\\
-    &&{\tt n\_estimators = 100}\\
+    $\text{RFR}_{OPT}$ & 3.431  & {\tt min\_samples\_split = 2} & [2,10]\\
+    &&{\tt min\_samples\_leaf = 1} & [1,10]\\
+    &&{\tt max\_features = 10} & [6,12]\\
+    &&{\tt max\_depth = 120} & [10,200] and [None]\\
+    &&{\tt n\_estimators = 100} & [100,1000]\\
     ETR & 0.944 & None \\
-    $\text{ETR}_{OPT}$ & 4.390  & {\tt min\_samples\_split = 9}\\
-    &&{\tt min\_samples\_leaf = 1}\\
-    &&{\tt max\_features = 12}\\
-    &&{\tt max\_depth = 120}\\
-    &&{\tt n\_estimators = 800}\\
+    $\text{ETR}_{OPT}$ & 4.390  & {\tt min\_samples\_split = 9} & [1,10]\\
+    &&{\tt min\_samples\_leaf = 1} & [1,10]\\
+    &&{\tt max\_features = 12} [1,12]\\
+    &&{\tt max\_depth = 120} & [10,200] and [None]\\
+    &&{\tt n\_estimators = 800} & [100,1000]\\
     MLR & 0.004  & None\\
     \hline
     \end{tabular}}
@@ -75,39 +75,36 @@ As mentioned in \Cref{sec:BBM_modelling}. There are 2871 data points available f
 
 With the default hyperparameter, RFR takes the longest training time followed by ETR and DTR. This is expected as RFR uses greedy algorithm i.e. it looks for the best possible feature when splitting the node. ETR takes significantly shorter time to train as ETR randomly select for features when splitting the node. DTR takes the shortest training time as it only generates a single tree. However, in the case of optimised model, ETR takes a longer time to train compared to RFR. This is caused by the number of trees in the optimised model which is controlled by the parameter {\tt n\_estimator}, the optimised ETR model has 800 trees in comparison to 100 trees of RFR. It is also observed that the training time of optimised DTR model is halved as pruning the tree resulted in a simpler model to train. \\
 
-To further investigate the effect of hyperparameter optimisation, the learning curve of each tree-based model is plotted. For DTR, generated model with default parameter will result in a model that heavily overfits the training data, which is evident from the large gap between the training error and validation error which indicated a high variance as shown in \Cref{fig:learn_curve_DTR_RMSE}. Regularisation i.e. parameter tuning of the DTR model helps balance between bias and variance by trading bias for variance. This is observed from the substantial reduction in the gap between the training and validation error from \Cref{fig:learn_curve_DTR_RMSE}. Additionally, the learning curve indicates that the most notable improvement in model performance occurs until around 1000 data points. Beyond this point, the enhancement in model performance becomes less substantial.\\
+To further investigate the effect of hyperparameter optimisation, the learning curve of each tree-based model is plotted. For DTR, generated model with default parameter will result in a model that heavily overfits the training data, which is evident from the large gap between the training error and validation error which indicated a high variance as shown in \Cref{fig:learn_curve_DTR_MAE}. Regularisation i.e. parameter tuning of the DTR model helps balance between bias and variance by trading off bias for variance. This is observed from the substantial reduction in the gap between the training and validation error from \Cref{fig:learn_curve_DTR_MAE}. Additionally, the learning curve indicates that the model performance can be improved by increasing the amount of data points as the MAE continue to decrease with increasing amount of data points.\\
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_dtr.png}
+        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_dtr_mae.png}
         \caption{Learning curve of DTR}
-        \label{fig:learn_curve_DTR_RMSE}
+        \label{fig:learn_curve_DTR_MAE}
 \end{figure}
 
-The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The most notable improvement on model performance is observed until around 750 points, after which the model appears to reach a plateau. Furthermore, there is noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit.\\
+The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The model starts to plateau at approximately 1000 data points. Furthermore, there is noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit.\\
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_rfr_rmse.png}
+        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_rfr_mae.png}
         \caption{Learning curve of RFR}
-        \label{fig:learn_curve_RFR_RMSE}
+        \label{fig:learn_curve_RFR_MAE}
 \end{figure}
 
-Hyperparameter tuning helps to reduce variance in the ETR model. But it does not have any major impact on model's performance. The ETR model reaches plateau beyond 1000 data points. Suggesting that adding more data points will not result in any significant increase in model performance.\\
+Hyperparameter tuning helps to reduce variance in the ETR model. But it does not have any major impact on model's performance. The ETR model reaches plateau beyond 1000 data points. Suggesting that adding more data points will not result in any tangible increase in model performance.\\
 
 \begin{figure}[h]
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_etr_rmse.png}
+        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_etr_mae.png}
         \caption{Learning curve of ETR}
-        \label{fig:learn_curve_ETR_RMSE}
+        \label{fig:learn_curve_ETR_MAE}
 \end{figure}
 
-In addition to the initial exploration in \Cref{sec:hpo}, it can be concluded that hyperparameter tuning for number of features and tree depth will have the biggest impact in affecting the model's performance. To improve training time, lower number of trees should be considered for RFR and ETR model.\\
+\subsection{Analysis of trained model}\label{sec:BBM_model_eval}
 
-
-\subsection*{Analysis of trained model}\label{sec:BBM_model_eval}
-
-\subsubsection*{Feature Importance}
+\subsubsection{Feature Importance}\label{sec:feature_importance_bbm}
 
 As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the impact of each feature during the split process, this is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, it is computed as the mean and the standard deviation of accumulation of the impurity decrease within each tree i.e. total reduction of the criterion brought by a feature. Alternatively, it can be defined as how much a feature is used in each tree.\\
 
@@ -171,18 +168,18 @@ Based on the behaviour of the Random Forest Regressor (RFR) and Extra Trees Regr
 \begin{figure}[h]
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/dtr_mod_1tree.png}
-        \caption{Structure of DTR}
+        \caption{Partial structure of DTR}
         \label{fig:dtr_tree_hpov}
 \end{figure}
 
 To understand the effect of hyperparameter optimisation and feature importance, analysis on the structure of generated tree-based models will be performed. The shading in the nodes indicated the likelihood of the decision, where darker shading means greater likelihood. Each node indicates information on the splitting feature with the threshold, the SSR score, amount of samples and the predicted SOG value. Even after pruning, the tree can grow relatively large, therefore, the illustration of the trees is limited to a depth of {\tt max\_depth = 3} and for RFR and ETR, only the illustration of a specific tree in the forest will be shown.\\
 
-The structure of the optimised decision tree shown in \Cref{fig:dtr_tree_hpov} show the effect of regularisation at the leaf node. For example, the leaf nodes that splits the feature, ocean temperature, does not completely minimise the SSR. This is caused by the hyperparameter tuning of the minimum samples at the leaf node, which was set at {\t min\_samples\_leaf = 10}, splitting these nodes further will cause subsequent leaf nodes that have less than 10 samples. In this figure, the significance of COG and ship heading can be clearly seen, as it is used to split many of the internal nodes in the tree.\\
+The structure of the optimised decision tree shown in \Cref{fig:dtr_tree_hpov} show the effect of regularisation at the leaf node. For example, the leaf nodes that splits the feature, ocean temperature, does not completely minimise the SSR. This is caused by the hyperparameter tuning of the minimum samples at the leaf node, which was set at {\tt min\_samples\_leaf = 10}, splitting these nodes further will cause subsequent leaf nodes that have less than 10 samples. In this figure, the significance of COG and ship heading can be clearly seen, as it is used to split many of the internal nodes in the tree.\\
 
 \begin{figure}[h]
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/rfr_mod_it1.png}
-        \caption{Structure of RFR}
+        \caption{Partial structure of {\tt n\_estimators = 1} for RFR}
         \label{fig:rfr_tree1_hpov}
 \end{figure}
 
@@ -191,28 +188,48 @@ The illustration of the first RFR tree is shown in \Cref{fig:rfr_tree1_hpov}. Si
 \begin{figure}[h]
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/etr_mod_it1.png}
-        \caption{Structure of ETR}
+        \caption{Partial structure of {\tt n\_estimators = 1} for ETR}
         \label{fig:etr_tree1_etr}
 \end{figure}
 The random selection of the feature to split of ETR can be seen in the structure of the first tree in an ETR in \Cref{fig:etr_tree1_etr}. Since both DTR and RFR uses greedy algorithm, i.e. it finds the possible splits which minimise the cost function, both model selected COG as the parent node. However, the randomness in feature selection of ETR can be clearly observed in this illustration, the model selects the true current direction as the parent node. Also, due to regularisation of ETR, the leaf node when splitting COG does not completely minimise the SSR. The split is not allowed since it does not meet the tuning criteria of {\tt min\_samples\_split = 9}.\\ 
 
-\subsubsection*{Evaluation of k-fold cross-validation}
+\subsubsection{Evaluation of k-fold cross-validation}\label{sec:bbm_kfold_perf_eval}
 
-The performance of the model is evaluated using the training dataset using 10-fold cross validation. This means that the training will be repeated 10 times using 9 of the folds as training dataset, the remaining fold will be used as validation dataset. The results from k-folding validation process is shown in \Cref{fig:train_boxplot_r2_rmse}. The inside (orange) line represents the median i.e. $50\%$ of the score in k-folding. The top and the bottom of the box correspond to the first i.e. $25\%$ and third quartile i.e. $75\%$ respectively. The whiskers represent the lowest data point within the 1.5 Interquartile Range (IQR) of the lowest quartile and the highest point of data within 1.5 IQR of the upper quartile. The mean is indicated by the (green) triangle. Data points beyond the whisker range is shown as hollow circle.\\
-
+The performance of the model is evaluated using the training dataset using 10-fold cross validation. This means that the training will be repeated 10 times using 9 of the folds as training dataset, the remaining fold will be used as validation dataset. The results from k-folding validation process is shown in \Cref{fig:k_fold_validation_result}. The inside (orange) line represents the median i.e. $50\%$ of the score in k-folding. The top and the bottom of the box correspond to the first i.e. $25\%$ and third quartile i.e. $75\%$ respectively. The whiskers represent the lowest data point within the 1.5 Interquartile Range (IQR) of the lowest quartile and the highest point of data within 1.5 IQR of the upper quartile. The mean is indicated by the (green) triangle. Data points beyond the whisker range is shown as hollow circle.\\
 \begin{figure}[ht]
     \centering
-    \subfigure[k-fold $R^2$ validation performance]{\includegraphics[width=0.49\textwidth]{02_figures/kfold_r2_opt.png}} 
-    \subfigure[k-fold RMSE validation performance]{\includegraphics[width=0.49\textwidth]{02_figures/kfold_rmse_opt.png}}
-    \caption{Box plots of different models with default and optimised parameter in k-folding for training dataset}
-    \label{fig:train_boxplot_r2_rmse}
-\end{figure}
+  
+    \begin{minipage}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{02_figures/kfold_r2_opt.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{02_figures/kfold_mae_opt.png}
+    \end{minipage}
+  
+    \vspace{0.5cm} % Adjust the vertical space between rows
+  
+    \begin{minipage}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{02_figures/kfold_rmse_opt.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{02_figures/kfold_mad_opt.png}
+    \end{minipage}
+  
+    \caption{Evaluation of k-fold cross-validation for different performance indices}
+    \label{fig:k_fold_validation_result}
+  \end{figure}
 
-The box plots indicated that ETR achieved the best performance, the model is able to achieve $R^2$ score of around $91\%$ and RMSE of around 0.96 knots. The model is also relatively stable, which is indicated by the narrow box plots. RFR also achieved similar performance, achieving $R^2$ score of about $89\%$ and RMSE of approximately 1.00 knots and slightly worse stability. This behaviour may be caused due to the high variance shown from the learning curves shown in \Cref{fig:learn_curve_RFR_RMSE} and \Cref{fig:learn_curve_ETR_RMSE}. This means that the model will have slight tendency to overfit.\\
+The box plots indicated that ETR achieved the best performance, the model is able to achieve $R^2$ score of around $91\%$ and MAE of around 0.6 knots. The model is also relatively stable, which is indicated by the narrow box plots. RFR also achieved similar performance, achieving $R^2$ score of about $89\%$ and MAE of approximately 0.65 knots. As illustrated previously in \Cref{fig:learn_curve_ETR_MAE} and \Cref{fig:learn_curve_RFR_MAE}, optimisation does not yield any significant improvement in model performance. DTR greatly benefits from regularisation, the model achieves an increase of about $5\%$ for the $R^2$ score and a reduction from about 0.89 knots to 0.76 knots for the MAE, similar improvements can be observed in both RMSE and MAD. To summarise, all tree-based models exhibited good fit performance with mean/median $R^2$ scores above $80\%$. However, the value of RMSE is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
 
-DTR greatly benefits from regularisation, the model achieves an increase of about $5\%$ for the $R^2$ score and a reduction from about 1.2 knots to 1.1 knots for the RMSE. To summarise, all tree-based models exhibited good fit performance with mean/median $R^2$ scores above $80\%$. However, the value of RMSE range is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
+\subsection{Performance evaluation of BBM}\label{sec:Perf_eval_BBM}
 
-\subsection*{Analysing the testing dataset}
+\subsubsection{Analysing the testing dataset}\label{sec:testing_data_analysis}
 
 Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, $DS_{summer}$, which corresponds to summer datasets and it represents data between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
 
@@ -297,7 +314,7 @@ Once the best model is determined, the model will be tested against the testing 
 \caption{Descriptive statistics of $DS_{winter}$}\label{tbl:testwinter_dataset_descriptive}
 \end{table}
 
-\subsection*{Evaluation of testing datasets}
+\subsubsection{Result and Discussion of BBM}\label{sec:result_discussion_BBM}
 
 The results of SOG prediction of optimised the tree-based models is summarised in \Cref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the tree models is compared against Multiple Linear Regressor (MLR) model.
 
@@ -328,8 +345,6 @@ The results of SOG prediction of optimised the tree-based models is summarised i
 \end{table}
 
 From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good prediction results on different testing datasets. Generally, all tree-based models obtained $R^2$ score above $80\%$ and perform better when using the $DS_{winter}$ datasets. All tree-based models offer significant improvement from MLR. Among the tree-based model, ETR presented the best SOG prediction across different datasets, followed by RFR and DTR.\\ 
-
-To gain more insight to the predictive performance, descriptive statistics of the SOG prediction is provided \Cref{tbl:SOG_pred_descriptive}:\\
 
 \begin{table}[h]
     \footnotesize
@@ -387,9 +402,58 @@ To gain more insight to the predictive performance, descriptive statistics of th
 \label{fig:boxplot_sogPred_overall}
 \end{figure}  
 
-From the descriptive statistics, it can be inferred that the model is not able to capture information on the lower end of the ship speed across the different datasets. This is possibly caused by low number of data points that represent lower end of the SOG speed, this is evident from the boxplots of the different datasets shown in \Cref{fig:boxplot_sogPred_overall}. Both the descriptive statistics and boxplots implied that the data points distributions are skewed towards the higher end of SOG and the majority of the data points are distributed within approximately 16.5 knots for the first quartile and 19 knots for the third quartile across all datasets. The lowest data point within the $1.5 \cdot \text{IQR}_{LOW}$ distribution lies at approximately 13.6 knots, which is indicated by the lower whisker. Which suggests that data points beyond the whisker are outliers, which is not the case as these points should represent the ship journey at low speed.\\ 
+To gain more insight to the predictive performance, descriptive statistics of the SOG prediction is provided \Cref{tbl:SOG_pred_descriptive}. The results implied that the model is not able to capture information on the lower end of the ship speed across the different datasets. This is possibly caused by low number of data points that represent lower end of the SOG speed, this is evident from the boxplots of the different datasets shown in \Cref{fig:boxplot_sogPred_overall} and the plot actual against predicted SOG shown in \Cref{fig:pred_vs_act_SOG}. The sparsity of data points in lower SOG range is clearly indicated in \Cref{fig:pred_vs_act_SOG}.\\
 
-This may explain the relatively high value of RMSE for all models as it treats the data points for low SOG as outliers, as previously discussed in \Cref{sec:perf_metrics}, RMSE are more sensitive to outliers in comparison to both MAE and MAD, making it less representative in this case study which result in MAE and MAD being the more suitable error evaluation metrics to be used in this case study. Furthermore, the high scores of $R^2$ and explained Variance can be attributed to the models' ability to predict SOG values that lie within the whiskers of the box plots, indicating good prediction performance within those ranges.\\
+\begin{figure}[h]
+    \centering
+        \includegraphics[width=.9\textwidth]{02_figures/pred_vs_act_all_tree.png}
+        \caption{Actual vs Predicted SOG for DTR, RFR and ETR}
+        \label{fig:pred_vs_act_SOG}
+\end{figure}
+
+Both the descriptive statistics and boxplots implied that the data points distributions are skewed towards the higher end of SOG, with the majority of data points concentrated within approximately 16.5 knots for the first quartile and 19 knots for the third quartile across all datasets. The lowest data point within the $1.5 \cdot \text{IQR}_{LOW}$ distribution lies at approximately 13.6 knots, which is indicated by the lower whisker in the boxplot. Although the boxplots may suggest that data points beyond the whisker are outliers, this is not the case, as these points should represent ship journeys at low speeds. The limited representation of low-speed data points contributes to the model's inability to effectively predict SOG at the lower end of the range.\\
+
+This may explain the relatively high value of RMSE for all models as it treats the data points for low SOG as outliers, as previously discussed in \Cref{sec:perf_metrics}, RMSE are more sensitive to outliers in comparison to both MAE and MAD, making it less representative in this case study which results in MAE and MAD being the more suitable error evaluation metrics to be used in this case study. Furthermore, the high scores of $R^2$ and explained Variance can be attributed to the models' ability to predict SOG values that lie within the whiskers of the box plots, indicating good prediction performance within those ranges.\\
+
+There are two possible solutions to address this problem:\\ 
+
+\textbf{Increasing the number of data points in lower SOG range}: this is the apparent solution to this problem, this will help widen the IQR of the boxplot, and it should not misclassify data points in lower range of the SOG as outliers. This could also potentially improve the results of performance indices such as $R^2$ and RMSE. However, \emph{specific to this case study}, this may not be possible as the limitation of T-AIS shown in \Cref{fig:aiscoverage}. The ship will decrease its speed as it approach a port, or it will gradually increase its speed as it leaves a port. However, T-AIS coverage around the port of K{\o}ge and R{\o}nne are either problematic i.e. transmission reception rate at around $50\%$ to $80\%$ or poor i.e. transmission rate less than $50\%$. This may prove to be challenging to as it may not be possible to increase the number of data points around these regions.\\ 
+
+\textbf{Reducing skew of the data}: \bcitet{Gkerekos.2019} applied the outlier rejection formula which uses the formula $\mu \pm 3\sigma$, where $\mu$ is the mean and $\sigma$ is the standard deviation. Assuming normal distribution, $99.7\%$ of the normal data should be within this range. Another method of reducing the skew is by applying higher threshold of the minimum SOG value. While this may help reduce overall errors and improve model fit, this approach will negate the capability of the model to make prediction when the ship is sailing at a reduced speed. Careful consideration of the trade-offs is required when selecting the most appropriate approach.\\
+
+\section{Evaluation of WBM}\label{sec:WBM_perf_eval}
+
+The predicted SOG is then converted to STW using the methodology presented in \Cref{sec:SOG_corr}. Then the resistance components are estimated using Holtrop-Mennen method. Descriptive statistics of the estimated resistances and resulting power is shown in 
+
+\begin{table}[h]
+    \footnotesize
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c c c }
+    \hline
+    Model & Dataset & Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
+    \hline
+    \textbf{{Actual}} & $DS_{year}$ & 957.00 &  16.99 &   3.10 & 5.10 &  16.68 &  18.05 &  18.72 &  21.01 \\
+    & $DS_{winter}$ & 503.00 &  16.75 &   3.24 & 5.10 &  16.59 &  17.98 &  18.61 &  20.70 \\
+    & $DS_{summer}$ & 454.00 &  17.26 &   2.91 & 5.22 &  16.74 &  18.17 &  18.95 &  21.01 \\
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.91 & 5.36 &  16.58 &  18.11 &  18.66 &  20.00 \\
+    & $DS_{winter}$ & 503.00 &  16.85 &   3.06 & 5.36 &  16.58 &  17.86 &  18.58 &  19.98 \\
+    & $DS_{summer}$ & 454.00 &  17.25 &   2.73 & 5.64 &  16.58 &  18.15 &  18.91 &  20.00 \\
+    \hline
+    $\text{RFR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.89 & 5.37 &  16.71 &  18.11 &  18.70 &  20.22 \\
+    & $DS_{winter}$ & 503.00 &  16.86 &   3.04 & 5.37 &  16.70 &  18.02 &  18.60 &  19.74 \\
+    & $DS_{summer}$ & 454.00 &  17.25 &   2.72 & 5.81 &  16.74 &  18.20 &  18.77 &  20.22 \\
+    \hline
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.03 &   2.87 & 5.39 &  16.67 &  18.05 &  18.65 &  19.96 \\
+    & $DS_{winter}$ & 503.00 &  16.84 &   3.04 & 5.39 &  16.65 &  17.96 &  18.56 &  19.87 \\
+    & $DS_{summer}$ & 454.00 &  17.23 &   2.66 & 5.96 &  16.71 &  18.18 &  18.75 &  19.96 \\
+    \hline
+    \end{tabular}}
+\caption{Descriptive statistics of SOG Prediction}\label{tbl:SOG_presadd_descriptive}
+\end{table}
+
+
 
 
 
