@@ -319,7 +319,8 @@ Once the best model is determined, the model will be tested against the testing 
 The results of SOG prediction of optimised the tree-based models is summarised in \Cref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the tree models is compared against Multiple Linear Regressor (MLR) model.
 
 \begin{table}[ht]
-    \footnotesize
+    % \footnotesize
+    \small
     \centering
     % \resizebox {\textwidth}{!}
     {\begin{tabular}{ l l c c c c c c }
@@ -423,36 +424,136 @@ There are two possible solutions to address this problem:\\
 
 \section{Evaluation of WBM}\label{sec:WBM_perf_eval}
 
-The predicted SOG is then converted to STW using the methodology presented in \Cref{sec:SOG_corr}. Then the resistance components are estimated using Holtrop-Mennen method. Descriptive statistics of the estimated resistances and resulting power is shown in 
+\subsection{Analysis of WBM}\label{sec:Power_estimation_actual}
+
+The findings of power estimation using the Holtrop-Mennen method are presented in \Cref{tbl:PB_act_descriptive_yr} and \Cref{fig:hist_resistance_power_yr}. To gain insights into the overall model behavior, the analysis is conducted using the actual data from the $DS_{year}$ datasets.To facilitate a better interpretation of the scale of magnitude, the histograms for the resistance components utilize identical scaling.\\
+
+For calm water resistance $R_{CALM}$, the largest portion is attributed to the frictional resistance $R_F$, which accounts for approximately $39\%$ of $R_{TOTAL}$ when considering the mean. Following this, the wave-making and breaking resistance $R_W$ contribute around $21\%$. Subsequently, the bulbous bow resistance $R_{B}$ accounts for approximately $16\%$, the correlation resistance $R_{A}$ around $10\%$, and the appendage resistance $R_{APP}$ at approximately $8\%$. The transom resistance $R_{TR}$ has a relatively negligible impact on $R_{CALM}$, accounting for only about $1\%$.\\
+
+Reagrding the added resistance due to surrounding weather conditions, the contribution of added resistance due to wind $R_{AA}$ are noticeable and add a significant amount to the total resistance $R_{TOTAL}$. In contrast, the added resistance due to waves $R_{AW}$ is comparatively negligible. This behavior can be explained by referring to \Cref{tbl:testyear_dataset_descriptive}, the sea conditions along the ship's sailing path are relatively calm, with a mean significant wave height $H_{1/3}$ of $0.77 m$ and a mean wind speed of $6.45 m/s$. By only considering the mean, the combined additional resistance to weather conditions only makes up to about $3.5\%$ of the total resistance.\\
+
+These results further validate the BBM's ranking of ship draught $T$ as the most significant physical factor that affect the ship speed. The WBM also further confirm the BBM suggestion that wave resistance might have a more significant impact on the speed compared to wind resistance. This is evident from the maximum achievable resistance of $R_{AA}$ and $R_{AWL}$ shown in \Cref{tbl:PB_act_descriptive_yr}. However, over the journey, the mean of $R_{AWL}$ is significantly lower, primarily due to the condition in \Cref{eqn:stawave1}, which only consider the wave correction force within $\pm 45$° off bow.\\  
 
 \begin{table}[h]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ l l c c c c c c c c }
+    {\begin{tabular}{ p{0.04\linewidth} p{0.03\linewidth} c c c c c c c c }
     \hline
-    Model & Dataset & Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
+    Features && Count & Mean & std & Min & 25\% & 50\% & 75\% & Max \\
     \hline
-    \textbf{{Actual}} & $DS_{year}$ & 957.00 &  16.99 &   3.10 & 5.10 &  16.68 &  18.05 &  18.72 &  21.01 \\
-    & $DS_{winter}$ & 503.00 &  16.75 &   3.24 & 5.10 &  16.59 &  17.98 &  18.61 &  20.70 \\
-    & $DS_{summer}$ & 454.00 &  17.26 &   2.91 & 5.22 &  16.74 &  18.17 &  18.95 &  21.01 \\
+    $STW$ & $[kt]$ & 957.00 &  17.03 &  3.10 &  5.14 &  16.62 &  18.07 &  18.79 &  21.08 \\
+    $R_F $&$[kN]$ & 957.00 & 174.65 & 49.25 & 17.17 & 162.08 & 189.16 & 205.18 & 262.25 \\
+    $R_{APP} $&$[kN]$ & 957.00 &  39.52 &  11.29 &  3.64 &  36.53 &  43.03 &  46.46 &  58.25 \\
+    $R_{W} $&$[kN]$ & 957.00 &  96.51 &  55.49 &  0.00 &  61.08 & 102.36 & 129.98 & 297.53 \\
+    $R_{B} $&$[kN]$& 957.00 &  71.23 &  11.30 & 15.59 &  69.79 &  74.93 &  77.64 &  82.20 \\
+    $R_{TR} $&$ [kN]$ & 957.00 &   5.58 &  11.60 &  0.00 &   0.00 &   0.00 &   4.70 &  53.56 \\
+    $R_{A} $&$ [kN]$ & 957.00 &  44.45 &  12.85 &  3.92 &  41.03 &  48.37 &  52.44 &  66.23 \\
+    $R_{AA}$&$ [kN]$ & 957.00 &  12.15 &  11.27 &  0.01 &   3.07 &   8.74 &  18.08 &  59.50 \\
+    $R_{AWL}$&$ [kN]$ & 957.00 &    3.48 &   11.23 &   0.00 &    0.00 &    0.00 &    1.17 &   116.18 \\
+    $R_{TOT}$&$ [kN]$ & 957.00 &  447.57 &  129.17 & 100.29 &  387.05 &  473.26 &  527.77 &   784.72 \\
+    $\eta_{TOT}$&$ [\%]$ & 957.00 &   0.67 &   0.00 &  0.67 &   0.67 &   0.67 &   0.67 &   0.67 \\
+    $P_{B} $&$[kW]$ & 957.00 & 6173.34 & 2361.10 & 397.02 & 4987.21 & 6607.35 & 7654.90 & 12755.90 \\
     \hline
-    $\text{DTR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.91 & 5.36 &  16.58 &  18.11 &  18.66 &  20.00 \\
-    & $DS_{winter}$ & 503.00 &  16.85 &   3.06 & 5.36 &  16.58 &  17.86 &  18.58 &  19.98 \\
-    & $DS_{summer}$ & 454.00 &  17.25 &   2.73 & 5.64 &  16.58 &  18.15 &  18.91 &  20.00 \\
-    \hline
-    $\text{RFR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.89 & 5.37 &  16.71 &  18.11 &  18.70 &  20.22 \\
-    & $DS_{winter}$ & 503.00 &  16.86 &   3.04 & 5.37 &  16.70 &  18.02 &  18.60 &  19.74 \\
-    & $DS_{summer}$ & 454.00 &  17.25 &   2.72 & 5.81 &  16.74 &  18.20 &  18.77 &  20.22 \\
-    \hline
-    $\text{ETR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.03 &   2.87 & 5.39 &  16.67 &  18.05 &  18.65 &  19.96 \\
-    & $DS_{winter}$ & 503.00 &  16.84 &   3.04 & 5.39 &  16.65 &  17.96 &  18.56 &  19.87 \\
-    & $DS_{summer}$ & 454.00 &  17.23 &   2.66 & 5.96 &  16.71 &  18.18 &  18.75 &  19.96 \\
+    \textbf{FOC}&$[T/h]$ & 957.00 &   1.04 &   0.40 &  0.06 &   0.84 &   1.11 &   1.29 &   2.09 \\
     \hline
     \end{tabular}}
-\caption{Descriptive statistics of SOG Prediction}\label{tbl:SOG_presadd_descriptive}
+\caption{Descriptive statistics of Power estimation method}\label{tbl:PB_act_descriptive_yr}
 \end{table}
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/resistance_power_hist.png}
+    \caption{Histogram of encountered resistances for $DS_{year}$}
+    \label{fig:hist_resistance_power_yr}
+\end{figure}
+
+By considering the total resistance $R_{TOTAL}$ and the total efficiencies $\eta_{TOTAL}$, the brake power $P_B$ can be calculated. Using the brake power and the corresponding speeds, a power-to-speed curve can be plotted. This curve can then be transformed into a bunker-to-speed curve, which enables the estimation of the energy required for different operating speeds.\\ 
+
+To determine the best regression fit, different polynomial regression lines with varying orders are considered. The selection of the best model is based on the highest $R^2$ score and the ability to minimize the Mean Squared Error (MSE). Similar to BBM, the data is split into training and test sets for model evaluations. The evaluations shows that a polynomial regression fit of order $n=4$ is adequate to fit the data effectively. This model achieves $R^2$ score of $99.92\%$. From \Cref{fig:polyfit_best_MSE}, it can be observed that there is no substantial improvement in performance by increasing the order from $n=4$ to $n=5$.\\
+
+\begin{figure}
+    \begin{minipage}{0.35\linewidth} % Adjust the width as needed
+      \footnotesize
+      \centering
+      \begin{tabular}{c c}
+          \hline
+          Polynomial Order & $R^2$ \\
+          $n$&$[\%]$\\
+          \hline
+            1 & 89.04\\
+            2 & 99.29\\
+            3 & 99.87\\
+            4 & 99.92\\
+            5 & 99.93\\
+          \hline
+      \end{tabular}
+    %   \caption{$R^2$ of different polynomial order}
+      \label{tbl:polyfit_best_rsquared}
+    \end{minipage}
+    \hspace{0.01\linewidth}
+  %   \hfill
+    \begin{minipage}{0.6\linewidth} % Adjust the width as needed
+        \centering
+        \includegraphics[width=\linewidth]{02_figures/MSE_polyfitplot.png}
+        % \caption{MSE plot of different polynomial orders}
+        \label{fig:polyfit_best_MSE}
+        \end{minipage}
+  \caption{Performance indices for different polynomial orders}
+  \end{figure}
+
+The resulting plot is shown in figure \Cref{fig:FOC_plot_act_yr}, This resulting bunker to fuel function aligns with the findings from \bcitet{Psaraftis.2013}. The cubic law dictates that the fuel consumption rate can be defined with a propotional factor and saling speed raised to the power of $\alpha = 3$ \bcitep{Du.2019}. However, \bcitet{Psaraftis.2013} stated that the cubic law are not applicable for low speeds, and the the factor $\alpha$ can be 4 or 5 or posssibly even higher for some type of ships or when travelling at high speeds.\\ 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\linewidth]{02_figures/FOC_plot_act_yr.png}
+    \caption{Bunker-to-speed curve for $DS_{year}$}
+    \label{fig:FOC_plot_act_yr}
+\end{figure}
+
+However, the observations from \Cref{fig:polyfit_best_MSE} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
+
+
+
+
+\subsection{Result and Discussion of WBM}\label{sec:WBM_result_discussion}
+
+\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM, the errors made during SOG prediction is carried over since the WBM requires SOG as input which is shown in \Cref{fig:flowchart_GBM}. Decline in $R^2$, explained variance and MAPE performance across all models is also observed.\\ 
+
+This decline in performance may be caused due to the nonlinearity of the WBM. The case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear} shown that at lower end of the ship speed, the difference at $1$ knots resulted in difference of delivered power at approximately $1200$ kW. Whereas, at higher end of the ship, the difference in power is about $2300$ kW. Assuming that the engine in the case study by \bcitet{Birk.2019} has identical SFOC to the case study in this thesis, this translate to FOC of about $0.2$ T/h to $0.4$ T/h respectively Therefore, any prediction errors at higher speed will receive higher penalty for the FOC prediction.\\
+\begin{table}
+    % \footnotesize
+    \small
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c }
+    \hline
+    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+    & & [$\%$] & [$\%$] & [$T/h$] & [$T/h$] & [$T/h$] & [$\%$]  \\ 
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 76.59 & 76.63 & 0.133 & 0.193  & 0.087 & 15.79  \\
+    & $DS_{winter}$ & 78.24 & 78.25 & 0.123 & 0.179 & 0.080 & 15.38 \\
+    & $DS_{summer}$ & 74.42 & 74.73 & 0.145 &  0.208 & 0.096 & 16.25 \\
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 81.82 & 81.89 & 0.117 & 0.170 & 0.079 & 13.65 \\
+    & $DS_{winter}$ & 86.55 & 86.56 & 0.099 & 0.141 & 0.069 & 12.08 \\
+    & $DS_{summer}$ & 76.81 & 77.20 & 0.137 & 0.198 & 0.088 & 15.37 \\
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 83.84 & 84.01 & 0.111 & 0.161 & 0.076 & 12.45\\
+    & $DS_{winter}$ & \textbf{87.57} & \textbf{87.57} & \textbf{0.097} & \textbf{0.135} & \textbf{0.068} & \textbf{11.37} \\
+    & $DS_{summer}$ & 79.86 & 80.49 & 0.127 & 0.184 & 0.082 & 13.64 \\
+    MLR & $DS_{year}$ & 29.34 & 32.03 & 0.223 & 0.336 & 0.171 & 29.35 \\
+    & $DS_{winter}$ & 11.98 & 13.09 & 0.212 & 0.360 &0.162& 33.02 \\
+    & $DS_{summer}$ & 44.28 & 49.44 & 0.235 & 0.307 & 0.191 & 25.29 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for FOC prediction}\label{tbl:FOC_scores_errors}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\linewidth]{02_figures/birk19_Pb_nonlinear_case.jpg}
+    \caption{Case study for power estimation by \bcitet{Birk.2019}}
+    \label{fig:birk19_Pb_nonlinear}
+\end{figure}
 
 
 
