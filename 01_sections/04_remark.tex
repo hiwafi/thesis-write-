@@ -513,6 +513,9 @@ The resulting plot is shown in figure \Cref{fig:FOC_plot_act_yr}, This resulting
 
 However, the observations from \Cref{fig:polyfit_best_MSE} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
 
+From the result, it is also implied that the model exceeded the maximum engine rating. This is physically not possible and can be attributed by the conversion of SOG to STW. Analysing the openly accessible data in research by \bcitet{JoanPeturPetersen.2011}, noticeable difference between SOG and STW can be observed by a factor of 0.85. In this case study, even after current correction, the difference in speed are minimal. Which suggests that the conversion of SOG and STW may also be affected by other factor such as wind.\\
+
+For direct speed reduction formula. Kwon and Aertsen presented speed reduction formula due to wind effects. The formula by Aertsen considers the Beaufort scale while the formula by Kwon additionally considers the effect of ship displacement. However, both formula have narrow application range and it may not be applicable to all types of vessel.\\ 
 
 
 
@@ -520,7 +523,7 @@ However, the observations from \Cref{fig:polyfit_best_MSE} indicate that the imp
 
 \Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM, the errors made during SOG prediction is carried over since the WBM requires SOG as input which is shown in \Cref{fig:flowchart_GBM}. Decline in $R^2$, explained variance and MAPE performance across all models is also observed.\\ 
 
-This decline in performance may be caused due to the nonlinearity of the WBM. The case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear} shown that at lower end of the ship speed, the difference at $1$ knots resulted in difference of delivered power at approximately $1200$ kW. Whereas, at higher end of the ship, the difference in power is about $2300$ kW. Assuming that the engine in the case study by \bcitet{Birk.2019} has identical SFOC to the case study in this thesis, this translate to FOC of about $0.2$ T/h to $0.4$ T/h respectively Therefore, any prediction errors at higher speed will receive higher penalty for the FOC prediction.\\
+This decline in performance may be caused due to the nonlinearity of the WBM. This magnifies FOC prediction error at higher ship speed. This is presented through the case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear} shown that at lower end of the ship speed, the difference at $1$ knots resulted in difference of delivered power at approximately $1200$ kW. Whereas, at higher end of the ship, the difference in power is about $2300$ kW. Assuming that the engine in the case study by \bcitet{Birk.2019} has identical SFOC to the case study in this thesis, this translate to FOC of about $0.2$ T/h to $0.4$ T/h respectively. \\
 \begin{table}
     % \footnotesize
     \small
@@ -554,6 +557,10 @@ This decline in performance may be caused due to the nonlinearity of the WBM. Th
     \caption{Case study for power estimation by \bcitet{Birk.2019}}
     \label{fig:birk19_Pb_nonlinear}
 \end{figure}
+
+For this reason, the model is not able to accurately predict the FOC for higher speeds. The error amplification in higher end of ship speed is a limitation using the sequential GBM. The models in general underfit the prediction which is indicated in figure placeholder.\\
+
+The resulting bunker-to-speed curves functions is almost similar in shape.
 
 
 
