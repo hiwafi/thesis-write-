@@ -513,18 +513,25 @@ The resulting plot is shown in figure \Cref{fig:FOC_plot_act_yr}, This resulting
 
 However, the observations from \Cref{fig:polyfit_best_MSE} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
 
-From the result, it is also implied that the model exceeded the maximum engine rating. This is physically not possible and can be attributed by the conversion of SOG to STW. Analysing the openly accessible data in research by \bcitet{JoanPeturPetersen.2011}, noticeable difference between SOG and STW can be observed by a factor of 0.85. In this case study, even after current correction, the difference in speed are minimal. Which suggests that the conversion of SOG and STW may also be affected by other factor such as wind.\\
+The results also indicate that the model predicted ship speeds exceeding the maximum engine rating, which is physically impossible. This issue can be attributed to the conversion of SOG to STW. Analysing the openly accessible data from the research by \bcitet{JoanPeturPetersen.2011}\footnote{\url{http://cogsys.imm.dtu.dk/propulsionmodelling/}}, a noticeable difference between SOG and STW can be observed, typically by a factor of aprroximately 0.85. In this case study, even after current correction, the difference in speed are minimal.\\ 
 
-For direct speed reduction formula. Kwon and Aertsen presented speed reduction formula due to wind effects. The formula by Aertsen considers the Beaufort scale while the formula by Kwon additionally considers the effect of ship displacement. However, both formula have narrow application range and it may not be applicable to all types of vessel.\\ 
+This suggests that the conversion of SOG and STW should also account the effect of speed loss due to wind and waves. \bcitet{Molland.2017} demonstrated typical speed loss curves based on different Beaufort scales, as shown in \Cref{fig:molland17_speedloss_windwave}. \bcitet{Molland.2017} then presented two formulae by \bcitet{Aertssen.1975} and \bcitet{kwon.2008} for estimating speed loss due to wind and wave effects. However, these formulae have a limited application range and are not optimised for different types of vessels. As a result, these formulae are not implemented in this thesis.\\ 
 
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\linewidth]{02_figures/molland17_speedlosscurve.jpg}
+    \caption{Speed loss with increase in Beaufort Number BN \bcitep{Molland.2017}}
+    \label{fig:molland17_speedloss_windwave}
+\end{figure}
 
 
 \subsection{Result and Discussion of WBM}\label{sec:WBM_result_discussion}
 
-\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM, the errors made during SOG prediction is carried over since the WBM requires SOG as input which is shown in \Cref{fig:flowchart_GBM}. Decline in $R^2$, explained variance and MAPE performance across all models is also observed.\\ 
+\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM. The output from the BBM is used as the input for WBM as shown in \Cref{fig:flowchart_GBM}. Decline in $R^2$ score, explained variance and MAPE performance across all models is also observed.\\ 
 
-This decline in performance may be caused due to the nonlinearity of the WBM. This magnifies FOC prediction error at higher ship speed. This is presented through the case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear} shown that at lower end of the ship speed, the difference at $1$ knots resulted in difference of delivered power at approximately $1200$ kW. Whereas, at higher end of the ship, the difference in power is about $2300$ kW. Assuming that the engine in the case study by \bcitet{Birk.2019} has identical SFOC to the case study in this thesis, this translate to FOC of about $0.2$ T/h to $0.4$ T/h respectively. \\
-\begin{table}
+This decrease in performance may be caused due to the nonlinearity of the WBM, which magnifies FOC prediction error at higher ship speed. This behaviour is demosntrated through the case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear}. At the lower end of the ship speed, a difference of $1$ knot resulted in a power difference of approximately $1200$ kW. However, at the higher end of the ship speed, the power difference increases to about $2300$ kW. Assuming that the engine in \bcitet{Birk.2019} case study has the identical SFOC as the engine in this thesis, this translates to FOC differences of approximately $0.2$ T/h and $0.4$ T/h, respectively.\\
+
+\begin{table}[h]
     % \footnotesize
     \small
     \centering
@@ -553,14 +560,62 @@ This decline in performance may be caused due to the nonlinearity of the WBM. Th
 
 \begin{figure}
     \centering
-    \includegraphics[width=.7\linewidth]{02_figures/birk19_Pb_nonlinear_case.jpg}
+    \includegraphics[width=.8\linewidth]{02_figures/birk19_Pb_nonlinear_case.jpg}
     \caption{Case study for power estimation by \bcitet{Birk.2019}}
     \label{fig:birk19_Pb_nonlinear}
 \end{figure}
 
-For this reason, the model is not able to accurately predict the FOC for higher speeds. The error amplification in higher end of ship speed is a limitation using the sequential GBM. The models in general underfit the prediction which is indicated in figure placeholder.\\
+This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_etr_rfr_yr} and \cref{fig:foc_dtr_mlr_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h. Overall, the pred\\
 
-The resulting bunker-to-speed curves has similar function. Each tree-based model will generate different functions. The prediction using the generated function from different models is summarised in table placeholder, dummy STW dataset is created with similar distribution to the test datasets. This result indicated that the models are almost identical in performance, with DTR model performning slightly better compared to the more complex model of RFR and ETR.\\
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_etr_rfr.png}
+    \caption{Predicted and Actual FOC for ETR and RFR using $DS_{year}$}
+    \label{fig:foc_etr_rfr_yr}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_dtr_mlr.png}
+    \caption{Predicted and Actual FOC for DTR and MLR using $DS_{year}$}
+    \label{fig:foc_dtr_mlr_yr}
+\end{figure}
+
+To evaluate the accuracy and precision of the generated bunker-to-speed function, the best regression fit for the predicted FOC will be compared against the regression fit of the actual case. The test data used for this evaluation will be random generated values between $5$ knots to $21$ knots with different STW distribution compared to the STW distribution used to generate the best fit regression line. The distribution of the test data is presented in \cref{fig:hist_dummy_test} and the results is summarised in 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.6\linewidth]{02_figures/hist_dummy_stw.png}
+    \caption{STW ditribution for regression test}
+    \label{fig:hist_dummy_test}
+\end{figure}
+
+\begin{table}[h]
+    % \footnotesize
+    \small
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c }
+    \hline
+    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+    & & [$\%$] & [$\%$] & [$T/h$] & [$T/h$] & [$T/h$] & [$\%$]  \\ 
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 76.59 & 76.63 & 0.133 & 0.193  & 0.087 & 15.79  \\
+    & $DS_{winter}$ & 78.24 & 78.25 & 0.123 & 0.179 & 0.080 & 15.38 \\
+    & $DS_{summer}$ & 74.42 & 74.73 & 0.145 &  0.208 & 0.096 & 16.25 \\
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 81.82 & 81.89 & 0.117 & 0.170 & 0.079 & 13.65 \\
+    & $DS_{winter}$ & 86.55 & 86.56 & 0.099 & 0.141 & 0.069 & 12.08 \\
+    & $DS_{summer}$ & 76.81 & 77.20 & 0.137 & 0.198 & 0.088 & 15.37 \\
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 83.84 & 84.01 & 0.111 & 0.161 & 0.076 & 12.45\\
+    & $DS_{winter}$ & \textbf{87.57} & \textbf{87.57} & \textbf{0.097} & \textbf{0.135} & \textbf{0.068} & \textbf{11.37} \\
+    & $DS_{summer}$ & 79.86 & 80.49 & 0.127 & 0.184 & 0.082 & 13.64 \\
+    MLR & $DS_{year}$ & 29.34 & 32.03 & 0.223 & 0.336 & 0.171 & 29.35 \\
+    & $DS_{winter}$ & 11.98 & 13.09 & 0.212 & 0.360 &0.162& 33.02 \\
+    & $DS_{summer}$ & 44.28 & 49.44 & 0.235 & 0.307 & 0.191 & 25.29 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
+\end{table}
 
 
 
