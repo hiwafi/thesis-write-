@@ -470,52 +470,52 @@ These results further validate the BBM's ranking of ship draught $T$ as the most
 
 By considering the total resistance $R_{TOTAL}$ and the total efficiencies $\eta_{TOTAL}$, the brake power $P_B$ can be calculated. Using the brake power and the corresponding speeds, a power-to-speed curve can be plotted. This curve can then be transformed into a bunker-to-speed curve, which enables the estimation of the energy required for different operating speeds.\\ 
 
-To determine the best regression fit, different polynomial regression lines with varying orders are considered. The selection of the best model is based on the highest $R^2$ score and the ability to minimize the Mean Squared Error (MSE). Similar to BBM, the data is split into training and test sets for model evaluations. The evaluations shows that a polynomial regression fit of order $n=4$ is adequate to fit the data effectively. This model achieves $R^2$ score of $99.92\%$. From \Cref{fig:polyfit_best_MSE}, it can be observed that there is no substantial improvement in performance by increasing the order from $n=4$ to $n=5$.\\
+To determine the best regression fit, different polynomial regression lines with varying orders are considered. The selection of the best model is based on the highest $R^2$ score and the ability to minimise the Mean Squared Error (MSE). To ensure that the best model is selected, the data from each sets are split into training and validation dataset, this ensure that the performance of generated model will be validated accordingly. Evaluations regression fits shows that a polynomial regression fit of order $n=4$ is adequate to fit the data effectively. This model achieves $R^2$ score of about $99\%$, and it achieve significant reduction of MSE from $n=3$. \Cref{tbl:polyfit_scores_errors} also shows that there is no substantial improvement in performance by increasing the order from $n=4$ to $n=5$.\\
 
-\begin{figure}
-    \begin{minipage}{0.35\linewidth} % Adjust the width as needed
-      \footnotesize
-      \centering
-      \begin{tabular}{c c}
-          \hline
-          Polynomial Order & $R^2$ \\
-          $n$&$[\%]$\\
-          \hline
-            1 & 89.04\\
-            2 & 99.29\\
-            3 & 99.87\\
-            4 & 99.92\\
-            5 & 99.93\\
-          \hline
-      \end{tabular}
-    %   \caption{$R^2$ of different polynomial order}
-      \label{tbl:polyfit_best_rsquared}
-    \end{minipage}
-    \hspace{0.01\linewidth}
-  %   \hfill
-    \begin{minipage}{0.6\linewidth} % Adjust the width as needed
-        \centering
-        \includegraphics[width=\linewidth]{02_figures/MSE_polyfitplot.png}
-        % \caption{MSE plot of different polynomial orders}
-        \label{fig:polyfit_best_MSE}
-        \end{minipage}
-  \caption{Performance indices for different polynomial orders}
-  \end{figure}
-
-The resulting plot is shown in figure \Cref{fig:FOC_plot_act_yr}, This resulting bunker to fuel function aligns with the findings from \bcitet{Psaraftis.2013}. The cubic law dictates that the fuel consumption rate can be defined with a propotional factor and saling speed raised to the power of $\alpha = 3$ \bcitep{Du.2019}. However, \bcitet{Psaraftis.2013} stated that the cubic law are not applicable for low speeds, and the the factor $\alpha$ can be 4 or 5 or posssibly even higher for some type of ships or when travelling at high speeds.\\ 
-
-\begin{figure}
+\begin{table}[h]
+    % \footnotesize
+    \small
     \centering
-    \includegraphics[width=.7\linewidth]{02_figures/FOC_plot_act_yr.png}
-    \caption{Bunker-to-speed curve for $DS_{year}$}
-    \label{fig:FOC_plot_act_yr}
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l c c c }
+    \hline
+    Dataset  & Polynomial Order & $R^2$ & MSE \\
+    & $n$ & [$\%$] & [$(T/h)^2] \cdot 10^{-3}$ \\ 
+    \hline
+    $DS_{year}$ & 1 & 86.95 & 20.62 \\
+     & 2 & 98.69 & 2.07 \\  
+     & 3 & 99.86 & 0.22 \\
+     & 4 & 99.96 & 0.06 \\
+     & 5 & 99.97 & 0.05 \\
+     $DS_{winter}$ & 1 & 87.64 & 21.41 \\
+     & 2 & 98.86 & 1.97 \\  
+     & 3 & 99.81 & 0.33 \\
+     & 4 & 99.95 & 0.08 \\
+     & 5 & 99.96 & 0.06 \\
+     $DS_{summer}$ & 1 & 86.53 & 27.67 \\
+     & 2 & 98.77 & 2.52 \\  
+     & 3 & 99.81 & 0.39 \\
+     & 4 & 99.93 & 0.15 \\
+     & 5 & 99.92 & 0.16 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
+\end{table}
+
+The resulting bunker-to-speed curve plots are shown in figure \cref{fig:FOC_plot_act_combi}, This resulting functions aligns with the findings from \bcitet{Psaraftis.2013}. The cubic law dictates that the fuel consumption rate can be defined with a propotional factor and saling speed raised to the power of $\alpha = 3$ \bcitep{Du.2019}. However, \bcitet{Psaraftis.2013} stated that the cubic law are not applicable for low speeds, and the the factor $\alpha$ can be 4 or 5 or posssibly even higher for some type of ships or when travelling at high speeds.\\ 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/poly_act_combi.png}
+    \caption{Bunker-to-speed curve for actual data}
+    \label{fig:FOC_plot_act_combi}
 \end{figure}
 
-However, the observations from \Cref{fig:polyfit_best_MSE} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
+However, the observations from \cref{tbl:polyfit_scores_errors} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
 
 The results also indicate that the model predicted ship speeds exceeding the maximum engine rating, which is physically impossible. This issue can be attributed to the conversion of SOG to STW. Analysing the openly accessible data from the research by \bcitet{JoanPeturPetersen.2011}\footnote{\url{http://cogsys.imm.dtu.dk/propulsionmodelling/}}, a noticeable difference between SOG and STW can be observed, typically by a factor of aprroximately 0.85. In this case study, even after current correction, the difference in speed are minimal.\\ 
 
-This suggests that the conversion of SOG and STW should also account the effect of speed loss due to wind and waves. \bcitet{Molland.2017} demonstrated typical speed loss curves based on different Beaufort scales, as shown in \Cref{fig:molland17_speedloss_windwave}. \bcitet{Molland.2017} then presented two formulae by \bcitet{Aertssen.1975} and \bcitet{kwon.2008} for estimating speed loss due to wind and wave effects. However, these formulae have a limited application range and are not optimised for different types of vessels. As a result, these formulae are not implemented in this thesis.\\ 
+This suggests that the conversion of SOG and STW should also account the effect of speed loss due to wind and waves. \bcitet{Molland.2017} demonstrated typical speed loss curves based on different Beaufort scales, as shown in \cref{fig:molland17_speedloss_windwave}. \bcitet{Molland.2017} then presented two formulae by \bcitet{Aertssen.1975} and \bcitet{kwon.2008} for estimating speed loss due to wind and wave effects. However, these formulae have a limited application range and are not optimised for different types of vessels. As a result, these formulae are not implemented in this thesis.\\ 
 
 \begin{figure}
     \centering
@@ -527,9 +527,9 @@ This suggests that the conversion of SOG and STW should also account the effect 
 
 \subsection{Result and Discussion of WBM}\label{sec:WBM_result_discussion}
 
-\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM. The output from the BBM is used as the input for WBM as shown in \Cref{fig:flowchart_GBM}. Decline in $R^2$ score, explained variance and MAPE performance across all models is also observed.\\ 
+\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM. The output from the BBM is used as the input for WBM as shown in \cref{fig:flowchart_GBM}. Decline in $R^2$ score, explained variance and MAPE performance across all models is also observed.\\ 
 
-This decrease in performance may be caused due to the nonlinearity of the WBM, which magnifies FOC prediction error at higher ship speed. This behaviour is demosntrated through the case study by \bcitet{Birk.2019} shown in \Cref{fig:birk19_Pb_nonlinear}. At the lower end of the ship speed, a difference of $1$ knot resulted in a power difference of approximately $1200$ kW. However, at the higher end of the ship speed, the power difference increases to about $2300$ kW. Assuming that the engine in \bcitet{Birk.2019} case study has the identical SFOC as the engine in this thesis, this translates to FOC differences of approximately $0.2$ T/h and $0.4$ T/h, respectively.\\
+This decrease in performance may be caused due to the nonlinearity of the WBM, which magnifies FOC prediction error at higher ship speed. This behaviour is demosntrated through the case study by \bcitet{Birk.2019} shown in \cref{fig:birk19_Pb_nonlinear}. At the lower end of the ship speed, a difference of $1$ knot resulted in a power difference of approximately $1200$ kW. However, at the higher end of the ship speed, the power difference increases to about $2300$ kW. Assuming that the engine in \bcitet{Birk.2019} case study has the identical SFOC as the engine in this thesis, this translates to FOC differences of approximately $0.2$ T/h and $0.4$ T/h, respectively.\\
 
 \begin{table}[h]
     % \footnotesize
@@ -565,7 +565,7 @@ This decrease in performance may be caused due to the nonlinearity of the WBM, w
     \label{fig:birk19_Pb_nonlinear}
 \end{figure}
 
-This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_etr_rfr_yr} and \cref{fig:foc_dtr_mlr_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h. Overall, the pred\\
+This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_etr_rfr_yr} and \cref{fig:foc_dtr_mlr_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h.\\
 
 \begin{figure}
     \centering
@@ -581,41 +581,62 @@ This may also explain the inability of the model to accurately predict FOC for h
     \label{fig:foc_dtr_mlr_yr}
 \end{figure}
 
-To evaluate the accuracy and precision of the generated bunker-to-speed function, the best regression fit for the predicted FOC will be compared against the regression fit of the actual case. The test data used for this evaluation will be random generated values between $5$ knots to $21$ knots with different STW distribution compared to the STW distribution used to generate the best fit regression line. The distribution of the test data is presented in \cref{fig:hist_dummy_test} and the results is summarised in 
+The resulting bunker-to-speed curves for different models are shown in figure \cref{fig:FOC_plot_etr_combi} for ETR, \cref{fig:FOC_plot_rfr_combi} for RFR and \cref{fig:FOC_plot_dtr_combi} for DTR. Overall, the plot for ETR gives the best $R^2$ score. However, the differences are marginal as the functions are nearly identical across different models.\\ 
 
-\begin{figure}
+\newpage
+
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=.6\linewidth]{02_figures/hist_dummy_stw.png}
-    \caption{STW ditribution for regression test}
-    \label{fig:hist_dummy_test}
+    \includegraphics[width=.9\linewidth]{02_figures/poly_etr_combi.png}
+    \caption{Bunker-to-speed curves generated from ETR}
+    \label{fig:FOC_plot_etr_combi}
 \end{figure}
 
-\begin{table}[h]
-    % \footnotesize
-    \small
+\newpage
+
+\begin{figure}[h!]
     \centering
-    % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ l l c c c c c c }
-    \hline
-    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
-    & & [$\%$] & [$\%$] & [$T/h$] & [$T/h$] & [$T/h$] & [$\%$]  \\ 
-    \hline
-    $\text{DTR}_{OPT}$ & $DS_{year}$ & 76.59 & 76.63 & 0.133 & 0.193  & 0.087 & 15.79  \\
-    & $DS_{winter}$ & 78.24 & 78.25 & 0.123 & 0.179 & 0.080 & 15.38 \\
-    & $DS_{summer}$ & 74.42 & 74.73 & 0.145 &  0.208 & 0.096 & 16.25 \\
-    $\text{RFR}_{OPT}$ & $DS_{year}$  & 81.82 & 81.89 & 0.117 & 0.170 & 0.079 & 13.65 \\
-    & $DS_{winter}$ & 86.55 & 86.56 & 0.099 & 0.141 & 0.069 & 12.08 \\
-    & $DS_{summer}$ & 76.81 & 77.20 & 0.137 & 0.198 & 0.088 & 15.37 \\
-    $\text{ETR}_{OPT}$ & $DS_{year}$ & 83.84 & 84.01 & 0.111 & 0.161 & 0.076 & 12.45\\
-    & $DS_{winter}$ & \textbf{87.57} & \textbf{87.57} & \textbf{0.097} & \textbf{0.135} & \textbf{0.068} & \textbf{11.37} \\
-    & $DS_{summer}$ & 79.86 & 80.49 & 0.127 & 0.184 & 0.082 & 13.64 \\
-    MLR & $DS_{year}$ & 29.34 & 32.03 & 0.223 & 0.336 & 0.171 & 29.35 \\
-    & $DS_{winter}$ & 11.98 & 13.09 & 0.212 & 0.360 &0.162& 33.02 \\
-    & $DS_{summer}$ & 44.28 & 49.44 & 0.235 & 0.307 & 0.191 & 25.29 \\
-    \hline
-    \end{tabular}}
-\caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
-\end{table}
+    \includegraphics[width=.9\linewidth]{02_figures/poly_rfr_combi.png}
+    \caption{Bunker-to-speed curves generated from RFR}
+    \label{fig:FOC_plot_rfr_combi}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/poly_dtr_combi.png}
+    \caption{Bunker-to-speed curves generated from DTR}
+    \label{fig:FOC_plot_dtr_combi}
+\end{figure}
+
+\newpage
+
+\subsection{Key Findings}\label{sec:key_findings}
+
+\subsubsection*{\emph{Performance of BBM}}
+
+The best predictive performance for SOG from different datasets was obtained by ETR, which is able to achieve $R^2$ score of $95\%$ and MAE of 0.53 knots. The performance gap between RFR and ETR is slight, RFR is able to obtain $R^2$ score of $93\%$ and MAE of 0.55 knots. Despite being a relatively simpler model to both RFR and ETR, DTR performs reasonably well for SOG and FOC prediction, it obtained $R^2$ score of $89\%$ and MAE of 0.69 knots. Simple MLR model may be insufficient for implementation, as big performance gap is found between MLR and other tree-based models, with $R^2$ score of $72\%$ and MAE of 1.16 knots.\\
+
+The quality and quantity of data are closely interrelated factors that significantly impact model performance. Notably, there are noticeable differences in the performance between the $DS_{winter}$ and $DS_{summer}$ datasets, with an increase of approximately $6\%$ in the $R^2$ score and a reduction of about 0.1 knots in MAE is achievable with an increase in about 50 data points. However, the quantity of data alone is insufficient to ensure an increase in model performance. This observation is evident from the $DS_{year}$ datasets, which contain approximately twice as much data as the other datasets, yet the model's performance is not superior to that of the $DS_{winter}$ dataset. This suggests that the quality of the $DS_{summer}$ dataset may compromise the model's performance when using the $DS_{year}$ dataset.\\
+
+For BBM, hyperparameter optimisation substantially benefits the DTR model, while the impact of optimization on RFR and ETR models is minimal. Analyzing feature importances and model structure visualisation, the RFR model recognizes draught as the most influential factor affecting SOG prediction. While the ETR and DTR models also identify this factor, but with a lesser degree of recognition.\\
+
+
+\subsubsection*{\emph{Performance of WBM}}
+
+Due to the sequential appraoch of GBM, the predictive performance of BBM are carried over to WBM during FOC prediction. Similar to BBM, ETR achieved $R^2$ score of $88\%$ with MAE of 0.097 T/h for the best dataset. This is then followed with RFR which achieved $R^2$ score of $87\%$ and MAE of 0.099 T/h, DTR obtained $78\%$ for $R^2$ and 0.123 T/h for MAE. MLR sees a very significant decline in $R^2$ score, only achieving $44.28\%$ and MAE of 0.34 T/h.\\
+
+The nonlinear relation between speed and bunker means that significant deviation of SOG leads to amplified magnitude of errors for FOC. This is evident in the case with MLR, the model already made relatively larger error to other tree-based models during SOG prediction. With that, it is important to ensure that the SOG prediction of BBM is to be optimised as much as possible to ensure accurate FOC prediction. In the case study, the decline in performance in apparent when comparing the SOG prediction in \cref{tbl:SOG_pred_descriptive} and \cref{tbl:FOC_scores_errors}.\\
+
+The power estimation method by Holtrop-Mennen method resulted in a 4\textsuperscript{th} order bunker-to-speed function. This result aligns with previous research and therefore, relatively simpler model such as cubic law can be used as a replacement for the WBM part of the GBM. For calm water resistance $R_{CALM}$, all resistance components make noticeable contribution to calm water resistance $R_{CALM}$ and the additional resistance due to wind and wave makes up about $3.5\%$ of total resistance $R_{TOT}$.\\
+
+\subsubsection*{\emph{Overall performance of GBM}}
+
+Finally it can be concluded that GBM can predict SOG and FOC using a fusion of AIS data and weather data. This modeling approach benefits from the predictive power of BBM, which is utilised for SOG prediction. Subsequently, WBM facilitates the estimation of actual bunker consumption without neglecting fundamental vessel knowledge.  However, due to the sequential model nature, it is crucial to ensure thorough data processing and model optimisation to minimise errors during initial SOG prediction. Given the nonlinear relationship between bunker consumption and speed, any initial prediction errors in BBM will be amplified.\\
+
+
+
 
 
 
