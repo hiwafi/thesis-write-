@@ -342,7 +342,7 @@ The results of SOG prediction of optimised the tree-based models is summarised i
     & $DS_{summer}$ & 71.21 & 71.56 & 1.160 & 1.560 & 0.949 & 7.39 \\
     \hline
     \end{tabular}}
-\caption{Performance indices for different modelling approach and different testing datasets}\label{tbl:testing_dataset_sog_result}
+\caption{Performance indices for SOG predictions}\label{tbl:testing_dataset_sog_result}
 \end{table}
 
 From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good prediction results on different testing datasets. Generally, all tree-based models obtained $R^2$ score above $80\%$ and perform better when using the $DS_{winter}$ datasets. All tree-based models offer significant improvement from MLR. Among the tree-based model, ETR presented the best SOG prediction across different datasets, followed by RFR and DTR.\\ 
@@ -612,6 +612,7 @@ The resulting bunker-to-speed curves for different models are shown in figure \c
 
 \newpage
 
+
 \subsection{Key Findings}\label{sec:key_findings}
 
 \subsubsection*{\emph{Performance of BBM}}
@@ -622,18 +623,71 @@ The quality and quantity of data are closely interrelated factors that significa
 
 For BBM, hyperparameter optimisation substantially benefits the DTR model, while the impact of optimization on RFR and ETR models is minimal. Analyzing feature importances and model structure visualisation, the RFR model recognizes draught as the most influential factor affecting SOG prediction. While the ETR and DTR models also identify this factor, but with a lesser degree of recognition.\\
 
-
 \subsubsection*{\emph{Performance of WBM}}
 
-Due to the sequential appraoch of GBM, the predictive performance of BBM are carried over to WBM during FOC prediction. Similar to BBM, ETR achieved $R^2$ score of $88\%$ with MAE of 0.097 T/h for the best dataset. This is then followed with RFR which achieved $R^2$ score of $87\%$ and MAE of 0.099 T/h, DTR obtained $78\%$ for $R^2$ and 0.123 T/h for MAE. MLR sees a very significant decline in $R^2$ score, only achieving $44.28\%$ and MAE of 0.34 T/h.\\
+
+Due to the sequential approach of GBM, the predictive performance of BBM are carried over to WBM during FOC prediction. Similar to BBM, ETR achieved $R^2$ score of $88\%$ with MAE of 0.097 T/h for the best dataset. This is then followed with RFR which achieved $R^2$ score of $87\%$ and MAE of 0.099 T/h, DTR obtained $78\%$ for $R^2$ and 0.123 T/h for MAE. MLR sees a very significant decline in $R^2$ score, only achieving $44.28\%$ and MAE of 0.34 T/h.\\
 
 The nonlinear relation between speed and bunker means that significant deviation of SOG leads to amplified magnitude of errors for FOC. This is evident in the case with MLR, the model already made relatively larger error to other tree-based models during SOG prediction. With that, it is important to ensure that the SOG prediction of BBM is to be optimised as much as possible to ensure accurate FOC prediction. In the case study, the decline in performance in apparent when comparing the SOG prediction in \cref{tbl:SOG_pred_descriptive} and \cref{tbl:FOC_scores_errors}.\\
 
 The power estimation method by Holtrop-Mennen method resulted in a 4\textsuperscript{th} order bunker-to-speed function. This result aligns with previous research and therefore, relatively simpler model such as cubic law can be used as a replacement for the WBM part of the GBM. For calm water resistance $R_{CALM}$, all resistance components make noticeable contribution to calm water resistance $R_{CALM}$ and the additional resistance due to wind and wave makes up about $3.5\%$ of total resistance $R_{TOT}$.\\
 
+\subsubsection*{\emph{Application of outlier rejection to test data}}
+
+Two possible solutions to improve model performance was presented \cref{sec:result_discussion_BBM}, since the addition of data points is not feasible, the application of outlier rejection is adopted in this section. The outlier in higher speed is not applicable, however, for the lower limit, it was found to be around 8 knots which is based on the mean and standard deviation of $DS_{year}$ shown in \cref{tbl:testyear_dataset_descriptive}. Due to the sparsity of data points at low SOG, the amount of data points are not compromised.\\
+\begin{table}[h!]
+    % \footnotesize
+    \small
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c }
+    \hline
+    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+    & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 79.54 & 79.55 & 0.658 & 0.971 & 0.462 & 3.99 \\
+    & $DS_{winter}$ & 84.17 & 84.17 & 0.584 & 0.847 & 0.407 & 3.53 \\
+    & $DS_{summer}$ & 74.26 & 74.36 & 0.742  & 1.096 & 0.524 & 4.51 \\
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 91.97 & 91.98 & 0.349 & 0.608 & 0.208  & 2.12 \\
+    & $DS_{winter}$ & 95.35 & 95.35 & 0.303 & 0.459 & 0.201 & 1.83 \\
+    & $DS_{summer}$ & 88.18 & 88.23 & 0.401 & 0.743 & 0.218 & 2.45 \\
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 92.59 & 92.61 & 0.363 & 0.584 & 0.235  & 2.20 \\
+    & $DS_{winter}$ & 94.87 & 94.87 &  0.323  & 0.482 & 0.212 & 1.96 \\
+    & $DS_{summer}$ & 90.02 & 90.12 & 0.409 & 0.682 & 0.255  & 2.46 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for SOG prediction with outlier rejection}\label{tbl:sog_scores_errors_rejection}
+\end{table}
+
+\begin{table}[h!]
+    % \footnotesize
+    \small
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l l c c c c c c }
+    \hline
+    Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+    & & [$\%$] & [$\%$] & [$T/h$] & [$T/h$] & [$T/h$] & [$\%$]  \\ 
+    \hline
+    $\text{DTR}_{OPT}$ & $DS_{year}$ & 68.60 & 68.90 & 0.137 & 0.198  & 0.089 & 13.34  \\
+    & $DS_{winter}$ & 72.17 & 72.23 & 0.118 & 0.170 & 0.078 & 11.76 \\
+    & $DS_{summer}$ & 65.05 & 65.74 & 0.158 &  0.226 & 0.107 & 15.14 \\
+    $\text{RFR}_{OPT}$ & $DS_{year}$  & 88.41 & 88.59  & 0.072 & 0.120 & 0.042 & 7.08 \\
+    & $DS_{winter}$ & 91.61 & 91.68 & 0.061 & 0.093  & 0.036  & 6.02 \\
+    & $DS_{summer}$ & 85.56 & 85.95 & 0.086 & 0.145 & 0.045 & 8.28 \\
+    $\text{ETR}_{OPT}$ & $DS_{year}$ & 88.45 & 88.73 & 0.076  & 0.120 & 0.044 & 7.22\\
+    & $DS_{winter}$ & 90.68 & 90.77 & 0.064 & 0.098 & 0.040 & 6.42 \\
+    & $DS_{summer}$ & 86.39 & 86.98 & 0.088 & 0.141 & 0.053 & 8.14 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for FOC prediction with outlier rejection}\label{tbl:FOC_scores_errors_rejection}
+\end{table}
+
+The results for SOG and FOC prediction are summarised in \cref{tbl:sog_scores_errors_rejection} and \cref{tbl:FOC_scores_errors_rejection}. In the case of both SOG and FOC prediction, there is an improvement observed in all aspects of the performance metrics for both RFR and ETR. While DTR displays a less accurate fit, it exhibits decrease in prediction errors. Through the outlier rejection, it can be inferred that the model in this particular study is better suited for higher sailing speeds, given its training was performed on datasets with higher sailing speed. Moreover, it is also observed that the RMSE notably reduces, which might be attributed to the removal of data points below the new threshold that were treated as outliers. \\
+
 \subsubsection*{\emph{Overall performance of GBM}}
 
-Finally it can be concluded that GBM can predict SOG and FOC using a fusion of AIS data and weather data. This modeling approach benefits from the predictive power of BBM, which is utilised for SOG prediction. Subsequently, WBM facilitates the estimation of actual bunker consumption without neglecting fundamental vessel knowledge.  However, due to the sequential model nature, it is crucial to ensure thorough data processing and model optimisation to minimise errors during initial SOG prediction. Given the nonlinear relationship between bunker consumption and speed, any initial prediction errors in BBM will be amplified.\\
+Finally, it can be concluded that GBM can predict SOG and FOC using a fusion of AIS data and weather data. This modeling approach benefits from the predictive power of BBM, which is utilised for SOG prediction. Subsequently, WBM facilitates the estimation of actual bunker consumption without neglecting fundamental vessel knowledge.  However, due to the sequential model nature, it is crucial to ensure thorough data processing and model optimisation to minimise errors during initial SOG prediction. Given the nonlinear relationship between bunker consumption and speed, any initial prediction errors in BBM will be amplified.\\
 
 
 
