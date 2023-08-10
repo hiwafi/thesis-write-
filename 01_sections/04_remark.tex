@@ -108,7 +108,7 @@ Hyperparameter tuning helps to reduce variance in the ETR model. But it does not
 
 As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the impact of each feature during the split process, this is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, it is computed as the mean and the standard deviation of accumulation of the impurity decrease within each tree i.e. total reduction of the criterion brought by a feature. Alternatively, it can be defined as how much a feature is used in each tree.\\
 
-\begin{table}[ht]
+\begin{table}[h]
     \scriptsize
     \centering
     \resizebox {\textwidth}{!}
@@ -233,7 +233,7 @@ The box plots indicated that ETR achieved the best performance, the model is abl
 
 Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, $DS_{summer}$, which corresponds to summer datasets and it represents data between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
 
-\begin{table}[h]
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -260,7 +260,7 @@ Once the best model is determined, the model will be tested against the testing 
 \caption{Descriptive statistics of $DS_{year}$}\label{tbl:testyear_dataset_descriptive}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -287,7 +287,7 @@ Once the best model is determined, the model will be tested against the testing 
 \caption{Descriptive statistics of $DS_{summer}$}\label{tbl:testsummer_dataset_descriptive}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -313,6 +313,8 @@ Once the best model is determined, the model will be tested against the testing 
     \end{tabular}}
 \caption{Descriptive statistics of $DS_{winter}$}\label{tbl:testwinter_dataset_descriptive}
 \end{table}
+
+\clearpage
 
 \subsubsection{Result and Discussion of BBM}\label{sec:result_discussion_BBM}
 
@@ -358,15 +360,12 @@ From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-bas
     \textbf{{Actual}} & $DS_{year}$ & 957.00 &  16.99 &   3.10 & 5.10 &  16.68 &  18.05 &  18.72 &  21.01 \\
     & $DS_{winter}$ & 503.00 &  16.75 &   3.24 & 5.10 &  16.59 &  17.98 &  18.61 &  20.70 \\
     & $DS_{summer}$ & 454.00 &  17.26 &   2.91 & 5.22 &  16.74 &  18.17 &  18.95 &  21.01 \\
-    \hline
     $\text{DTR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.91 & 5.36 &  16.58 &  18.11 &  18.66 &  20.00 \\
     & $DS_{winter}$ & 503.00 &  16.85 &   3.06 & 5.36 &  16.58 &  17.86 &  18.58 &  19.98 \\
     & $DS_{summer}$ & 454.00 &  17.25 &   2.73 & 5.64 &  16.58 &  18.15 &  18.91 &  20.00 \\
-    \hline
     $\text{RFR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.04 &   2.89 & 5.37 &  16.71 &  18.11 &  18.70 &  20.22 \\
     & $DS_{winter}$ & 503.00 &  16.86 &   3.04 & 5.37 &  16.70 &  18.02 &  18.60 &  19.74 \\
     & $DS_{summer}$ & 454.00 &  17.25 &   2.72 & 5.81 &  16.74 &  18.20 &  18.77 &  20.22 \\
-    \hline
     $\text{ETR}_{OPT}$ & $DS_{year}$ & 957.00 &  17.03 &   2.87 & 5.39 &  16.67 &  18.05 &  18.65 &  19.96 \\
     & $DS_{winter}$ & 503.00 &  16.84 &   3.04 & 5.39 &  16.65 &  17.96 &  18.56 &  19.87 \\
     & $DS_{summer}$ & 454.00 &  17.23 &   2.66 & 5.96 &  16.71 &  18.18 &  18.75 &  19.96 \\
@@ -421,6 +420,8 @@ There are two possible solutions to address this problem:\\
 \textbf{Increasing the number of data points in lower SOG range}: this is the apparent solution to this problem, this will help widen the IQR of the boxplot, and it should not misclassify data points in lower range of the SOG as outliers. This could also potentially improve the results of performance indices such as $R^2$ and RMSE. However, \emph{specific to this case study}, this may not be possible as the limitation of T-AIS shown in \Cref{fig:aiscoverage}. The ship will decrease its speed as it approach a port, or it will gradually increase its speed as it leaves a port. However, T-AIS coverage around the port of K{\o}ge and R{\o}nne are either problematic i.e. transmission reception rate at around $50\%$ to $80\%$ or poor i.e. transmission rate less than $50\%$. This may prove to be challenging to as it may not be possible to increase the number of data points around these regions.\\ 
 
 \textbf{Reducing skew of the data}: \bcitet{Gkerekos.2019} applied the outlier rejection formula which uses the formula $\mu \pm 3\sigma$, where $\mu$ is the mean and $\sigma$ is the standard deviation. Assuming normal distribution, $99.7\%$ of the normal data should be within this range. Another method of reducing the skew is by applying higher threshold of the minimum SOG value. While this may help reduce overall errors and improve model fit, this approach will negate the capability of the model to make prediction when the ship is sailing at a reduced speed. Careful consideration of the trade-offs is required when selecting the most appropriate approach.\\
+
+\pagebreak
 
 \section{Evaluation of WBM}\label{sec:WBM_perf_eval}
 
@@ -517,7 +518,7 @@ The results also indicate that the model predicted ship speeds exceeding the max
 
 This suggests that the conversion of SOG and STW should also account the effect of speed loss due to wind and waves. \bcitet{Molland.2017} demonstrated typical speed loss curves based on different Beaufort scales, as shown in \cref{fig:molland17_speedloss_windwave}. \bcitet{Molland.2017} then presented two formulae by \bcitet{Aertssen.1975} and \bcitet{kwon.2008} for estimating speed loss due to wind and wave effects. However, these formulae have a limited application range and are not optimised for different types of vessels. As a result, these formulae are not implemented in this thesis.\\ 
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=.7\linewidth]{02_figures/molland17_speedlosscurve.jpg}
     \caption{Speed loss with increase in Beaufort Number BN \bcitep{Molland.2017}}
@@ -558,28 +559,47 @@ This decrease in performance may be caused due to the nonlinearity of the WBM, w
 \caption{Performance indices for FOC prediction}\label{tbl:FOC_scores_errors}
 \end{table}
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=.8\linewidth]{02_figures/birk19_Pb_nonlinear_case.jpg}
     \caption{Case study for power estimation by \bcitet{Birk.2019}}
     \label{fig:birk19_Pb_nonlinear}
 \end{figure}
 
-This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_etr_rfr_yr} and \cref{fig:foc_dtr_mlr_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h.\\
+\clearpage
+
+This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_act_all_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h.\\
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_etr_rfr.png}
+%     \caption{Predicted and Actual FOC for ETR and RFR using $DS_{year}$}
+%     \label{fig:foc_etr_rfr_yr}
+% \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_etr_rfr.png}
-    \caption{Predicted and Actual FOC for ETR and RFR using $DS_{year}$}
-    \label{fig:foc_etr_rfr_yr}
-\end{figure}
-
-\begin{figure}
-    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_etr_rfr.png}\\
     \includegraphics[width=.9\linewidth]{02_figures/FOC_act_pred_dtr_mlr.png}
-    \caption{Predicted and Actual FOC for DTR and MLR using $DS_{year}$}
-    \label{fig:foc_dtr_mlr_yr}
+    \caption{Predicted and Actual FOC for different models using $DS_{year}$}
+    \label{fig:foc_act_all_yr}
 \end{figure}
+
+% \begin{figure}
+%     \centering
+%     \begin{minipage}[t]{0.5\textwidth}
+%         \includegraphics[width=\textwidth]{02_figures/FOC_act_pred_etr_rfr.png}
+%         \caption{Caption for Image 1}
+%         \label{fig:image1}
+%     \end{minipage}%
+%     \begin{minipage}[t]{0.5\textwidth}
+%         \includegraphics[width=\textwidth]{02_figures/FOC_act_pred_dtr_mlr.png}
+%         \caption{Caption for Image 2}
+%         \label{fig:image2}
+%     \end{minipage}
+%     \caption{Overall Caption for Both Images}
+%     \label{fig:two_images}
+% \end{figure}
 
 The resulting bunker-to-speed curves for different models are shown in figure \cref{fig:FOC_plot_etr_combi} for ETR, \cref{fig:FOC_plot_rfr_combi} for RFR and \cref{fig:FOC_plot_dtr_combi} for DTR. Overall, the plot for ETR gives the best $R^2$ score. However, the differences are marginal as the functions are nearly identical across different models.\\ 
 

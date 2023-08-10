@@ -78,36 +78,36 @@ The data is collected from a ferry serving between ports of K{\o}ge, R{\o}nne, Y
 The resulting fused dataset has a temporal resolution of 1 hour. Due to the difference in temporal resolution of the data from CMEMS and ECMWF, the weather information is synchronised so that the wind, waves, seawater temperature and sea current belongs to the same weather grid with same temporal resolutions. The features \textbf{wind direction},\textbf{swell direction}, and \textbf{wind wave direction} are oriented to true north. However, to reflect the actual direction of weather effects that are acting on the ship, these features are converted to true direction; where true direction is defined as the direction of weather effect with respect to the bow of the ship. The value ranges between 0° and 180°. Subsequently, through vector decomposition, the northward and eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
 
 \begin{equation}\label{eqn:vwindabs}
-    V_{\text{wind}} = \sqrt{(V_{\text{wind}}^N)^2 + (V_{\text{wind}}^E)^2} 
+    u_{\text{W}} = \sqrt{(u_{\text{W}_{N}})^2 + (u_{\text{W}_{E}})^2} 
 \end{equation}
 \begin{equation}\label{eqn:winddir}
     \varphi = 
     \begin{cases}
-        360 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E > 0 \quad \wedge \quad V_{\text{wind}}^N < 0 \\ 
-        180 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E < 0 \quad \wedge \quad V_{\text{wind}}^N > 0 \\ 
-        270 - \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \quad \text{\textbf{if}} \quad V_{\text{wind}}^E > 0 \quad \wedge \quad V_{\text{wind}}^N > 0 \\
-        \arctan(\frac{V_{\text{wind}}^E}{V_{\text{wind}}^N}) \qquad \text{\textbf{otherwise}} 
+        360 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad u_{\text{W}_{E}} > 0 \quad \wedge \quad u_{\text{W}_{N}} < 0 \\ 
+        180 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad u_{\text{W}_{E}} < 0 \quad \wedge \quad u_{\text{W}_{N}} > 0 \\ 
+        270 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad u_{\text{W}_{E}} > 0 \quad \wedge \quad u_{\text{W}_{N}} > 0 \\
+        \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \qquad \text{\textbf{otherwise}} 
     \end{cases}   
 \end{equation}
 
 Similarly, information of Northward and Eastward current Velocity is converted to absolute current speed and current direction \emph{with respect to True North} $\gamma$.\\ 
 
 \begin{equation}\label{eqn:vcurrabs}
-    V_{\text{current}} = \sqrt{(V_{\text{current}}^N)^2 + (V_{\text{current}}^E)^2} 
+    v_{\text{C}} = \sqrt{(v_{\text{C}_N})^2 + (v_{\text{C}_E})^2} 
 \end{equation}
 \begin{equation}\label{eqn:currdir}
     \gamma = 
     \begin{cases}
-        360 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E < 0 \quad \wedge \quad V_{\text{current}}^N > 0 \\ 
-        180 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E > 0 \quad \wedge \quad V_{\text{current}}^N < 0 \\ 
-        270 - \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \quad \text{\textbf{if}} \quad V_{\text{current}}^E < 0 \quad \wedge \quad V_{\text{current}}^N < 0 \\
-        \arctan(\frac{V_{\text{current}}^E}{V_{\text{current}}^N}) \qquad \text{\textbf{otherwise}} 
+        360 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad v_{\text{C}_E} < 0 \quad \wedge \quad v_{\text{C}_N} > 0 \\ 
+        180 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad v_{\text{C}_E} > 0 \quad \wedge \quad v_{\text{C}_N} < 0 \\ 
+        270 - \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \quad \text{\textbf{if}} \quad v_{\text{C}_E} < 0 \quad \wedge \quad v_{\text{C}_N} < 0 \\
+        \arctan(u_{\text{W}_{E}} / u_{\text{W}_{N}}) \qquad \text{\textbf{otherwise}} 
     \end{cases}   
 \end{equation}
 
 The initial dataset provides information to the true directions, which indicate the encounter direction of weather conditions with respect to the ship bow. Static information from the AIS data which only indicated the ship's identity and navigational status are discarded in the dataset. The initial structure have 27 features, 9 AIS features and 18 weather features. The structure of the initial dataset i.e. before data preprocessing and feature selection, is summarised in \Cref{tbl:dataset_init_struct} \\
 
-\begin{table}[ht]
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -282,6 +282,8 @@ Statistically, the heading and COG are highly correlated, but both features are 
     \label{fig:hist_training_ftr_label}
 \end{figure}
 
+\pagebreak
+
 \section{Black Box Modelling}\label{sec:BBM_modelling}
 
 In this section, the modelling of ship speed through SOG using selected features will be performed using tree-based regressor model. The tree-based regressor model considered are decision tree regressor (DTR), random forest regressor (RFR) and extra-tree regressor (ETR). The tree-based models are compared against multiple linear regressor (MLR) for benchmarking. For training, the dataset is split into training and test dataset in ratio of 75:25. This corresponds to 2871 data points for training and 957 data points for testing. The training dataset will be subjected to 10-fold splitting, this k-fold splitting is performed as the model will be evaluated using k-fold cross validation. The hyperparameter of the tree-based regressor will be iteratively tuned until no further improvements of the model can be made.\\
@@ -345,13 +347,16 @@ Is an alternative to MAE, which provide easier interpretation, the result of MAP
 \begin{equation}\label{eqn:MAPE}
     MAPE(y,\hat{y}) = \frac{1}{n}\sum_{i=1}^{n} \biggl|\frac{y_{\text{i}} - \hat{y}_{\text{i}}}{y_i}\biggr| \cdot 100\%  \quad \textbf{with} \quad \begin{array}{l c}
         \text{MAPE} & \text{Interpretation}\\
-        \hline\\
+        \hline
         < 10 & \text{Highly accurate forecasting} \\
         10-20 & \text{Good Forecasting} \\
         20-50 & \text{Reasonable forecasting}\\
         > 50 & \text{Inaccurate forecasting} \\
+        \hline
     \end{array}
 \end{equation}
+
+\pagebreak
 
 \subsection{Model Hyperparameter Optimisation}\label{sec:hpo}
 
@@ -400,6 +405,7 @@ Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hype
         \label{fig:hpo_min_samples_split}
 \end{figure}
 
+\pagebreak
 
 \subsubsection*{Number of sample in a leaf node}\label{sec:min_samples_leaf}
 
@@ -425,8 +431,7 @@ Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparam
 
 \subsubsection*{Number of Trees}\label{sec:n_estimators}
 
-Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time, and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}. 
-
+Defined with default value as {\tt n\_estimators=100}. This hyperparameter controls the amount of trees i.e. predictors in a forest. Tuning of number of trees will have an effect on the training time, and it is only available to RFR and ETR. The default value seems to yield satisfactory result, as the performance for both RFR and ETR stabilise after in this case stabilise after 100 trees, as seen in \Cref{fig:hpo_n_features}.
 \begin{figure}[h]
     \centering
         \includegraphics[width=.65\textwidth]{02_figures/hpo_n_estimators_mae.png}
@@ -434,13 +439,9 @@ Defined with default value as {\tt n\_estimators=100}. This hyperparameter contr
         \label{fig:n_estimators}
 \end{figure}
 
+ 
 
-% \begin{figure}
-%     \centering
-%         \includegraphics[width=.85\textwidth]{02_figures/JuneFilter.png}
-%         \caption{Journey of the ship in June}
-%         \label{fig:JuneJourney}
-% \end{figure}
+\clearpage
 
 \section{White Box Modelling}\label{sec:WBM_modelling}
 
@@ -479,7 +480,7 @@ From known ship information and ship schematics shown in \Cref{fig:Hammershus_Pi
 
 The assumptions for the appendage area are made by scaling the schematics to known measurements (e.g. the $L_{WL}$). From here, the appropriate $k_{2_i}$ constants for individual appendages will be selected to obtain the $(1+k_{2_i})_{eq}$ from \Cref{eqn:k2eq}.
 
-\begin{table}[ht]
+\begin{table}[h]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -517,7 +518,7 @@ Additionally, there are two bow thrusters installed with approximated diameter o
 
 The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using equation \Cref{eqn:R_w_low}. The estimation is done by adding the constants presented between \Cref{eqn:c_7} and \Cref{eqn:m4}. There are some use cases for some equations, which is summarised in \Cref{tbl:R_w_use_case}.
 
-\begin{table}[ht]
+\begin{table}[h]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -567,11 +568,13 @@ Two assumptions are made during the calculation of $R_{AA}$, since the informati
 
 This part of the equation is relatively straightforward, $L_{BWL}$ will be approximated to about \textbf{43.75} m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
 
+\pagebreak
+
 \subsection{Calculation of total efficiency $\eta_{TOT}$}\label{sec:eta_tot_method}
 
 \subsubsection*{Calculation of open water efficiency $\eta_O$}
 
-This value is approximated based on the line of Wageningen series in \Cref{fig:breslin_open water efficiencies} \bcitep{Breslin.1994}. The case will be for ``Passenger ships and high speed naval vessels''. Since the value of $C_Th$ is not available, the value of $\eta_O$ is approximated as \textbf{0.7}.
+This value is approximated based on the line of Wageningen series in \Cref{fig:breslin_open water efficiencies} \bcitep{Breslin.1994}. The case will be for ``Passenger ships and high speed naval vessels''. Since the value of $C_{Th}$ is not available, the value of $\eta_O$ is approximated as \textbf{0.7}.
 
 \subsubsection*{Calculation of hull efficiency $\eta_H$}
 
@@ -640,7 +643,7 @@ The FOC can be calculated using \Cref{eqn:FOC}. The information of the SFOC can 
     $d_{TH}$ & 2.15 m & Approximated from schematics \Cref{fig:Hammershus_Pict}\\
     \hline
     \end{tabular}}
-\caption{Assumed value for some constants}\label{tbl:assume_sea_constants}
+\caption{Assumed values for power estimation}\label{tbl:assume_sea_constants}
 \end{table}
 
 

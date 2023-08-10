@@ -84,7 +84,7 @@
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
 \usepackage{listings}
 \usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
-%\usepackage{subcaption}
+% \usepackage{subcaption}
 \definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
 \definecolor{mylilas}{RGB}{170,55,241}
 \definecolor{deepblue}{rgb}{0,0,0.5}
@@ -341,6 +341,12 @@ autogobble = true
 \renewcommand{\footrulewidth}{0.1pt}
 \captionsetup{margin=10pt,font=small,labelfont=bf}
 
+% Set pagestyle for front matter
+\fancypagestyle{frontmatter}{
+  \renewcommand{\headrulewidth}{0pt} % No header line
+  \fancyhf{} % Clear header and footer
+  \cfoot{\thepage} % Centered page number
+}
 
 %--- chapter heading
 

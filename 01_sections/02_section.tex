@@ -2,23 +2,25 @@
 
 \section{Literature Review}\label{sec:litreview}
 
-The literature review in \Cref{sec:litreview} presents past and present research on utilisation of machine learning methods to achieve energy efficient operation. The concept of different modelling approaches for ship operation will be discussed in \Cref{sec:modelling_type}. Short summary of the data source in the modelling of FOC is given in \Cref{sec:data_use}. The review of popular machine learning model used to predict FOC is presented in \Cref{sec:ml_var_appl}. The performance of tree-based model, which include random forest and extra trees in various research will be discussed in \Cref{sec:tree_litreview}. Brief summary of the literature review is presented in \Cref{sec:lit_review_conclusion}.\\
+The literature review in \Cref{sec:litreview} presents past and present research on utilisation of machine learning methods to achieve energy-efficient operation. The concept of different modelling approaches for ship operation will be discussed in \Cref{sec:modelling_type}. The summary of the data source in the modelling of FOC is given in \Cref{sec:data_use}. The review of popular machine learning models used to predict FOC is presented in \Cref{sec:ml_var_appl}. The performance of tree-based models, which include random forest and extra trees in various research will be discussed in \Cref{sec:tree_litreview}. Brief summary of the literature review is presented in \Cref{sec:lit_review_conclusion}.\\
 
 \subsection{Modelling Approach for Ship Operation}\label{sec:modelling_type}
 
 According to \bcitet{MichaelHaranen.2016} and \bcitet{Coraddu.2017}, the modelling strategies to predict fuel consumption are classified into three categories:\\
 
-\subsubsection*{\textbf{White Box Models (WBM)}} Based on \emph{a priori} mechanistic knowledge and physical principles of the vessel's system. This means that the dimensions of the vessel's structure, design parameters, and propulsion plant configuration are known.\\
+\subsubsection*{\textbf{White Box Models (WBM)}} are based on \emph{a priori} mechanistic knowledge and physical principles of the vessel's system. This means that the dimensions of the vessel's structure, design parameters, and propulsion plant configuration are known.\\
 
-\subsubsection*{\textbf{Black Box Models (BBM)}} Purely data driven, and it is developed using data from different sailing journey and historical observations. Contrary to WBM, this approach does not require detailed information on the vessel. This modelling approach can be further split into two categories. \emph{Statistical Modelling} aims to find explanations for relationships between fuel consumption and different factors that affect it. \emph{Machine Learning (ML) Modelling} focuses on the predictive capabilities of the model that could predict fuel consumption at different points in time.\\
+\subsubsection*{\textbf{Black Box Models (BBM)}} are purely data-driven, and it is developed using data from different sailing journeys and historical observations. Contrary to WBM, this approach does not require detailed information on the vessel. This modelling approach can be further split into two categories. \emph{Statistical Modelling} aims to find explanations for relationships between fuel consumption and different factors that affect it. \emph{Machine Learning (ML) Modelling} focuses on the predictive capabilities of the model that could predict fuel consumption at different points in time.\\
 
-\subsubsection*{\textbf{Grey Box Models (GBM)}} Fuse WBM and BBM into a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
+\subsubsection*{\textbf{Grey Box Models (GBM)}} fuse WBM and BBM into a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
 
 Each of these strategies possesses its strength and limitations. WBMs are developed based on physical and hydrodynamics laws as well as theories of naval architecture, it is transparent and comprehensible, making them the preferred model used by various shipping industries. However, the deterministic nature of WBMs causes them to have poor suitability and generalisability. This is mainly caused due to limited \emph{a priori} knowledge of different vessel dimensions, parameters, and narrow application limits of principle dimensions and form parameters of the vessel. Subsequently, the inability of WBMs to add randomness makes it rigid and restrictive. \bcitep{MichaelHaranen.2016,Yan.2021}\\
 
-BBMs in general have a good fitting ability for training data and good predictive accuracy for unseen data. BBMs developed using machine learning approach can generalise better compared to BBMs that are based on statistical modelling \bcitep{Petersen.2012b}. BBMs are purely data driven, which means BBMs do not require former knowledge of vessel principle dimensions and form parameters. With increasing amount of data, better generalisation performance and handling of noisy data should be expected in a BBM. However, for the same reason, the quality of BBM model is highly dependent on data quantity and quality. For BBMs based machine learning approach, the amount of data is a major factor in determining the effectiveness of machine learning \bcitep{Halevy.2009}. Data driven approach means that BBMs neglect basic vessel physical knowledge and are generally complex making it challenging to analyse and explain. For these reasons, experts in shipping industries are critical of models that do not include basic vessel knowledge and those that violate concepts of the domain knowledge in serious ways \bcitep{Yan.2021}.\\   
+BBMs in general have a good fitting ability for training data and good predictive accuracy for unseen data. BBMs developed using ML approach can generalise better compared to BBMs that are based on statistical modelling \bcitep{Petersen.2012b}. BBMs are purely data-driven, which means BBMs do not require former knowledge of vessel principle dimensions and form parameters. With increasing amounts of data, better generalisation performance and handling of noisy data should be expected in a BBM. However, for the same reason, the quality of BBM model is highly dependent on data quantity and quality. For BBMs based machine learning approach, the amount of data is a major factor in determining the effectiveness of machine learning \bcitep{Halevy.2009}. Data-driven approach means that BBMs neglect basic vessel physical knowledge and are generally complex making it challenging to analyse and explain. For these reasons, experts in shipping industries are critical of models that do not include basic vessel knowledge and those that violate concepts of the domain knowledge in serious ways \bcitep{Yan.2021}.\\   
 
-Hence, GBMs are introduced to address the limitations of both WBMs and BBMs by combining the mechanistic knowledge of the ship and physical principles of the vessel's system with BBM models, which possess good predictive capability. Despite these advantages, \bcitet{Yan.2021} noted that GBM approach is not a common approach, recent research to predict fuel consumption are mainly dominated by BBM approach, specifically BBM based on machine learning approach.\\
+Hence, GBMs are introduced to address the limitations of both WBMs and BBMs by combining the mechanistic knowledge of the ship and physical principles of the vessel's system with BBM models, which possess good predictive capability. Despite these advantages, \bcitet{Yan.2021} noted that GBM approach is not a common approach, recent research to predict fuel consumption are mainly dominated by BBM approach, specifically BBM based on ML approach.\\
+
+\pagebreak
 
 \subsection{Review of data source used for FOC model}\label{sec:data_use}
 
@@ -32,19 +34,19 @@ The modelling of FOC using GBM requires both components of WBM and BBM. For the 
 
 \subsection{Review of ML approach to predict FOC}\label{sec:ml_var_appl}
 
-Modelling of FOC using \emph{machine learning} approach generally focus on prediction of unseen data. The general framework usually include collection and preprocessing of ship operational data, training and validation of the model, and evaluation and selection of the most appropriate model. Some machine learning models allow further hyperparameter tuning of the model and in case of data rich environment, the data can be further split into test data to further validate the performance of machine learning model.\\
+Modelling of FOC using \emph{machine learning} approach generally focus on the prediction of unseen data. The general framework usually includes the collection and preprocessing of ship operational data, training and validation of the model, and evaluation and selection of the most appropriate model. Some machine learning models allow further hyperparameter tuning of the model and in case of data rich environment, the data can be further split into test data to further validate the performance of machine learning model.\\
 
-The study by \bcitet{Yan.2021} indicated that the majority of recent research that uses machine learning approach employ ANN as the model to predict FOC. ANN models are powerful models capable of modelling nonlinear data which are based on theories on how the brain works. The outcome is modelled by intermediate set of unobserved variables known as hidden layer. \bcitep{Kuhn.2013}. Back propagation neural networks, Multi Level Perceptron (MLP), and wavelet neural networks are some examples of ANN model subclasses.\\
+The study by \bcitet{Yan.2021} indicated that the majority of recent research that uses machine learning approach employs Artificial Neural Network (ANN) as the model to predict FOC. ANN models are powerful models capable of modelling nonlinear data which are based on theories on how the brain works. The outcome is modelled by an intermediate set of unobserved variables known as hidden layer. \bcitep{Kuhn.2013}. Backpropagation neural networks, Multi Level Perceptron (MLP), and wavelet neural networks are some examples of ANN model subclasses.\\
 
-ANN has shown respectable performance in its attempt to predict FOC. \bcitet{Petersen.2012} reported Root Mean Square Error of $47.2$ L/h for the fuel flow i.e. FOC. To put this into context, the fuel flow in their case study fluctuates between $1000 - 2500$ L/h. \bcitet{BalBesikci.2016} considered sailing speed, trim, wind, sea effects, propeller pitch, and engine rotation speed as input variables to predict FOC per hour and achieved model fit score of $R^2 = 0.759$ in test set. Other studies also reported similar range of results using ANNs \bcitep{Yan.2021}.\\
+ANN has shown respectable performance in its attempt to predict FOC. \bcitet{Petersen.2012} reported Root Mean Square Error (RMSE) of $47.2$ L/h for the fuel flow i.e. FOC. To put this into context, the fuel flow in their case study fluctuates between $1000 - 2500$ L/h. \bcitet{BalBesikci.2016} considered sailing speed, trim, wind, sea effects, propeller pitch, and engine rotation speed as input variables to predict FOC per hour and achieved model fit score of $R^2 = 0.759$ in the test set. Other studies also reported similar range of results using ANNs \bcitep{Yan.2021}.\\
 
-However, the development of ANN models is a challenging task. ANN models tend to overfit when there is shortage of data, as such, regularisation is necessary to improve model performance. The balancing process during regularisation is a demanding task and unsuitable regularisation may lead to counterintuitive prediction results. Adding layers is computationally expensive, and it does not always guarantee promising results \bcitep{Hastie.2009}. Additionally, in machine learning terms, ANN is classified as a black box model, which makes it unintuitive and lacking in interpretability  \bcitep{Geron.2019}, this particular limitation cause shipping industry expert generally reluctant to accept the model generated using machine learning approach. \\
+However, the development of ANN models is a challenging task. These models tend to overfit in scenarios of limited data availability, as such, regularisation is necessary to improve model performance. The balancing process during regularisation is a demanding task and unsuitable regularisation may lead to counterintuitive prediction results. Adding layers is computationally expensive, and it does not always guarantee promising results \bcitep{Hastie.2009}. Additionally, in machine learning terms, ANN is classified as a black box model, which makes it unintuitive and lacking in interpretability  \bcitep{Geron.2019}, this particular limitation cause shipping industry expert generally reluctant to accept the model generated using machine learning approach. \\
 
 \subsection{Tree-Based Model as FOC model}\label{sec:tree_litreview}
 
-Concerning interpretability, modelling approaches such Linear Regression (LR), KNN and tree-based models have shown superior interpretability in comparison to ANNs. LR can explain the effect of each input variable on the output through the coefficients. KNN searches for the nearest neighbour and their closeness is evaluated through distance measurement algorithms such as Euclidean distance. Additionally, LRs and KNNs also offer easy implementation and adequate explainability. However, both approaches suffer from sensitivity to outliers and noise in data.\\
+Concerning interpretability, modelling approaches such Linear Regression (LR), k-Nearest Neighbour (KNN) and tree-based models have shown superior interpretability in comparison to ANNs. LR can explain the effect of each input variable on the output through the coefficients. KNN searches for the nearest neighbour and their closeness is evaluated through distance measurement algorithms such as Euclidean distance. Additionally, LRs and KNNs also offer easy implementation and adequate explainability. However, both approaches suffer from sensitivity to outliers and noise in data.\\
 
-This brings us to tree-based model, a supervised, highly interpretable machine learning modelling approach capable of performing classification tasks for discrete data and regression tasks for continuous data. According to summary of \bcitet{Yan.2021}, it is not as popular as ANN, however some literature work and studies have indicated its benefits and performance superiority over other machine learning modelling approaches:\\
+This brings us to tree-based model, a supervised, highly interpretable machine learning modelling approach capable of performing classification tasks for discrete data and regression tasks for continuous data. According to the summary of \bcitet{Yan.2021}, it is not as popular as ANN, however, some literature work and studies have indicated its benefits and performance superiority over other machine learning modelling approaches:\\
 
 \bcitet{Soner.2018} used the ferry dataset from \bcitet{Petersen.2012} to predict FOC using tree-based model, which includes bagging, random forest (RF), and bootstrap. From the test dataset, the random forest model achieved RMSE of $43.5$ L/h for the fuel consumption. Which suggested improvement from ANN model from the study of \bcitet{Petersen.2012}.\\ 
 
@@ -77,7 +79,7 @@ The principle of decision tree as a predictor can be defined as one or more nest
 A decision tree consists of the following type of nodes, \textbf{\emph{Root node}} defines the topmost node. \textbf{\emph{Leaf nodes}} are also termed as terminal nodes, it is the node that will give the final prediction output. The
 \textbf{\emph{Internal Node}} is defined as the nodes between the root node and leaf node. The process of dividing a node into successive nodes is called \textbf{\emph{splitting}}. The node that is being split is called \textbf{\emph{parent node}} and the successive nodes that are created are called \textbf{\emph{child nodes}}. To grow a tree in a regression task, the splitting process is commonly regulated by Mean Square Error (MSE). The tree growth algorithm are based on Classification and Regression Tree (CART).\\
 
-To understand the principle of selection for the feature, $k_t$ , of the parent node and splitting rule, $t_k$ , for data partition, the following example will be presented:\\
+To understand the principle of selection for the feature, $\text{k}_t$ , of the parent node and splitting rule, $\text{t}_k$ , for data partition, the following example will be presented:\\
 
 \begin{figure}
 \centering
@@ -141,24 +143,24 @@ To understand the principle of selection for the feature, $k_t$ , of the parent 
 \end{minipage}
 \end{figure}
 
-\textbf{For the selection of the optimal splitting rule $t_k$}: Given a case with single feature $k$ and response $y$ with $m$ data points present. The algorithm starts by looking for possible splits between two distinct data points $y$. This split results in two distinct partition spaces. For each partition space $S_1$ and $S_2$, the mean is calculated by dividing the sum of response $y$ with the amount of data points $m$ for each respective partition space $S_1$ and $S_2$.\\ 
+\textbf{For the selection of the optimal splitting rule $t_k$}: Given a case with single feature $\text{k}$ and response $y$ with $n$ data points present. The algorithm starts by looking for possible splits between two distinct data points $y$. This split results in two distinct partition spaces. For each partition space $\text{S}_1$ and $\text{S}_2$, the mean is calculated by dividing the sum of response $y$ with the amount of data points $m$ for each respective partition space $\text{S}_1$ and $\text{S}_2$.\\ 
 
-This step is then followed by calculating the sum of squared error (SSE) of each data point in partition space $S_1$ and $S_2$ and dividing it by the number of data points $m_{s_1}$ and $m_{s_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $S_1$ and $S_2$ is summed. The process is then recursively repeated until a threshold $t_k$ that produces minimum sum of MSE is found, this threshold will be selected as splitting rule for the parent node and correspond to the threshold that minimise the cost function $J(k,t_k)$, with $\hat{y}_{S_i}$, being the mean of the response, $y_{S_i}$, in partition space $S_i$. \bcitep{Geron.2019,Kuhn.2013}:
+This step is then followed by calculating the sum of squared error (SSE) of each data point in partition space $\text{S}_1$ and $\text{S}_2$ and dividing it by the number of data points $n_{\text{S}_1}$ and $n_{\text{S}_2}$ respectively to obtain the MSE. Subsequently, the MSE from the respective partition space $\text{S}_1$ and $\text{S}_2$ is summed. The process is then recursively repeated until a threshold $\text{t}_k$ that produces the minimum sum of MSE is found, this threshold will be selected as splitting rule for the parent node and correspond to the threshold that minimises the cost function $J(\text{k},\text{t}_k)$, with $\hat{y}_{\text{S}_i}$, being the mean of the response, $y_{\text{S}_i}$, in partition space $\text{S}_i$. \bcitep{Geron.2019,Kuhn.2013}:
 
 \begin{equation}\label{eqn:sse}
-    \text{MSE}_{S_i} = \frac{1}{m_{S_i}}\text{SSE}_{S_i} \quad \textbf{where} \quad i = (1,2)   
+    \text{MSE}_{\text{S}_i} = \frac{1}{n_{\text{S}_i}}\text{SSE}_{\text{S}_i} \quad \textbf{where} \quad i = (1,2)   
 \end{equation}
 \begin{equation}\label{eqn:costfun}
-    J(k,t_k) = \frac{1}{m_{S_1}}\text{SSE}_{S_1} + \frac{1}{m_{S_2}}\text{SSE}_{S_2}
+    J(\text{k},\text{t}_k) = \frac{1}{n_{\text{S}_1}}\text{SSE}_{\text{S}_1} + \frac{1}{n_{\text{S}_2}}\text{SSE}_{\text{S}_2}
     \begin{cases}
-        \text{SSE}_{S_i} = \sum\limits_{i \in S_i}(\hat{y}_{S_i} - y_{S_i} )^2 \\
-        \hat{y}_{S_i} = \frac{1}{m_{S_i}}\sum\limits_{i\in S_i} y
+        \text{SSE}_{\text{S}_i} = \sum\limits_{i \in \text{S}_i}(\hat{y}_{\text{S}_i} - y_{\text{S}_i} )^2 \\
+        \hat{y}_{\text{S}_i} = \frac{1}{n_{\text{S}_i}}\sum\limits_{i\in \text{S}_i} y
     \end{cases}  
 \end{equation}
 
-\textbf{For the selection of the most optimal feature for parent node $t_k$}: Similar principle is also applied for the selection of the most optimal feature for the parent node. Consider there are $k_t$ features, then for each respective feature $k_1,k_2,\dots,k_t$, The MSE for each of the features is calculated following the cost function $J(k,t_k)$. The feature that can best \emph{\textbf{minimise}} the cost function will be selected as the root node of the tree. The subsequent selections of the feature for the parent node follow the same principle. \bcitep{Hastie.2009,Geron.2019}.\\
+\textbf{For the selection of the most optimal feature for parent node $\text{t}_k$}: Similar principle is also applied for the selection of the most optimal feature for the parent node. Consider there are $\text{k}_t$ features, then for each respective feature $\text{k}_1,\text{k}_2,\dots,\text{k}_t$, The MSE for each of the features is calculated following the cost function $J(\text{k},\text{t}_k)$. The feature that can best \emph{\textbf{minimise}} the cost function will be selected as the root node of the tree. The subsequent selections of the feature for the parent node follow the same principle. \bcitep{Hastie.2009,Geron.2019}.\\
 
-Once complete, then the partition space is further split into two more regions to look for the next possible split that minimise the cost function $J(k,t_k)$. This process is recursively continued until the number of samples to split falls under a certain threshold or when it cannot find a split that can further reduce MSE.\\ 
+Once complete, then the partition space is further split into two more regions to look for the next possible split that minimise the cost function $J(\text{k},\text{t}_k)$. This process is recursively continued until the number of samples to split falls under a certain threshold or when it cannot find a split that can further reduce MSE.\\ 
 
 
 \begin{figure}[h]
@@ -201,6 +203,8 @@ However, random forest loses the benefit of interpretability of tree-based model
 
 Extra-trees (Extremely Randomised Trees) is introduced by \bcitet{Geurts.2006} to further randomise random forest and further de-correlate the trees in the forest. Unlike random forest, which selects the optimal split by selecting the best feature among randomly selected subset of features, Extra-trees selects a split at random. Extra-trees also does not bootstrap the sample\footnote{This sampling technique is referred to as sampling \emph{without} replacement} and uses the whole training dataset. The random selection of split means that it saves computational power and the increase in variance caused by tree de-correlation can be countered by increasing the number of trees in the ensemble.\\ 
 
+\pagebreak
+
 \section{AIS Data}\label{sec:ais_theo}
 
 \subsection{Overview of AIS}
@@ -211,11 +215,11 @@ AIS uses Very High Frequency (VHF) with special protocol for communication syste
 
 AIS is also further differentiated by its equipment class. The classification is based on the reporting interval and the type of information that is conveyed. \textbf{Class A} autonomously report their position within 2-10 seconds interval, depending on the state of ship's movement. The reporting interval is less frequent at 3 minutes, When the ship is at anchor or moored and moving slower than 3 knots. Class A AIS is also capable of sending safety related information, meteorological and hydrological data, electronic broadcast to mariners and marine safety messages. \textbf{Class B} reports at longer interval and at a lower power. They can only receive safety related messages, not send them. \bcitep{Rakke2016,webimo.2014}\\
 
-\begin{table}
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ p{0.25\linewidth} p{0.7\linewidth}  }
+    {\begin{tabular}{ p{0.2\linewidth} p{0.65\linewidth}  }
     \hline
     \textbf{Information Item} & \textbf{Description} \\
     \hline
@@ -244,13 +248,15 @@ AIS is also further differentiated by its equipment class. The classification is
     \hline
     Ship's draught & To be manually entered at the start of the voyage using the
     maximum draft for the voyage and amended as required \\
-    (Hazardous) Cargo Type & Type of cargo from AIS message.\\
+    Cargo Type & Type of (hazardous) cargo from AIS message.\\
     Destination and ETA & To be manually entered at the start of the voyage and kept up to
     date as necessary.\\
     \hline
     \end{tabular}}
 \caption{Structure of AIS data \bcitep{webimo.2014}}\label{tbl:AIS_struct}
 \end{table}
+
+\pagebreak
 
 It is also stated by \bcitet{Yang.2019} that AIS data can be combined with data from other databases to provide additional information such as:\\
 
@@ -266,29 +272,31 @@ It is also stated by \bcitet{Yang.2019} that AIS data can be combined with data 
 
 The speed that is shown in AIS is the speed over ground (SOG). However, the ship actual speed i.e. speed through water (STW) will be required to calculate the bunker fuel consumption. Therefore, the SOG will need to be corrected for STW. This correction is performed by considering the current speed $V_c$ and the direction of the current $\gamma$ \emph{with respect to True North}. In principle, STW will be greater than SOG, when the current is moving against the current as the ship tries to compensate for the current to maintain the SOG. Whereas, the STW will be greater than the SOG when the current is moving in the same direction of the ship movement. \\
 
-To calculate the correction, this study will adopt the methodology proposed by Kim et al. \bcitep{Kim.2020b} and Yang et al. \bcitep{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{current}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
+To calculate the correction, this study will adopt the methodology proposed by Kim et al. \bcitep{Kim.2020b} and Yang et al. \bcitep{Yang.2020}. The $x$ and $y$ component of SOG can be obtained through vector decomposition using the ship's heading angle $\alpha$ \emph{with respect to True North}. Similar vector decomposition is also performed for current speed $V_{\text{C}}$, it is resolved with current direction $\gamma$ \emph{with respect to True North}:\\
 
 \begin{equation}\label{eqn:sogx}
-    V_{\text{SOG}}^x = V_{\text{SOG}}\cdot\sin(\alpha)   
+    v_{\text{G}}^x = v_{\text{G}}\cdot\sin(\alpha)   
 \end{equation}
 \begin{equation}\label{eqn:sogy}
-    V_{\text{SOG}}^y = V_{\text{SOG}}\cdot\cos(\alpha)   
+    v_{\text{G}}^y = v_{\text{G}}\cdot\cos(\alpha)   
 \end{equation} 
 \begin{equation}\label{eqn:vcurrx}
-     V_{\text{current}}^x = V_{\text{current}}\cdot\sin(\gamma)   
+     v_{\text{C}}^x = v_{\text{C}}\cdot\sin(\gamma)   
 \end{equation}
 \begin{equation}\label{eqn:vcurry}
-    V_{\text{current}}^y = V_{\text{current}}\cdot\cos(\gamma)   
+    v_{\text{C}}^y = v_{\text{C}}\cdot\cos(\gamma)   
 \end{equation}
-Then the resulting equation to determine STW, including the current compensation, is given by:\\
+
+Then the resulting equation to determine STW,$v_{\text{S}}$, including the current compensation, is given by:\\
+
 \begin{equation}\label{eqn:stwx}
-    V_{\text{STW}}^x = V_{\text{SOG}}^x - V_{\text{current}}^x    
+    v_{\text{S}}^x = v_{\text{G}}^x - v_{\text{C}}^x    
 \end{equation}
 \begin{equation}\label{eqn:stwy}
-    V_{\text{STW}}^y = V_{\text{SOG}}^y - V_{\text{current}}^y      
+    v_{\text{S}}^y = v_{\text{G}}^y - v_{\text{C}}^y      
 \end{equation}
 \begin{equation}\label{eqn:stwabs}
-    V_{\text{STW}} = \sqrt{(V_{\text{STW}}^x)^2 + (V_{\text{STW}}^y)^2} 
+    v_{\text{S}} = \sqrt{(v_{\text{S}}^x)^2 + (v_{\text{S}}^y)^2} 
 \end{equation}
 
 \subsection{Source of error in AIS}\label{sec:AIS_error}
@@ -331,27 +339,31 @@ Additionally, \bcitet{BitnerGregersen.2005} and \bcitet{Nielsen.2020} described 
         \label{fig:wavestats}
 \end{figure}
 
+\pagebreak
+
 \subsubsection*{Wave Period}
 
 Defined as the time interval between the start and the end of a wave. Some characteristics of wave period can be derived to define wave spectrum.
 
 \subsubsection*{Wave Spectrum}
 
-The most important form in which ocean waves are described. Wave spectrum characterises all possible observations of the waves which include wave heights, frequencies i.e. period and wave direction. For example, \bcitet{BitnerGregersen.2005} stated that the state of the sea can be described through the significant height $H_{1/3}$ and spectral peak $T_p$ with the help of Torsethaugen peak, given average wave spectrum $T_f$ and constant $a_f = 6.6$  \bcitep{K.Torsethaugen.2004}. 
+The most important form in which ocean waves are described. Wave spectrum characterises all possible observations of the waves which include wave heights, frequencies i.e. period and wave direction. For example, \bcitet{BitnerGregersen.2005} stated that the state of the sea can be described through the significant height $H_{1/3}$ and spectral peak period $\text{T}_p$ with the help of Torsethaugen peak, given the spectral peak period of fully developed sea $\text{T}_f$ and constant $a_f = 6.6$  \bcitep{K.Torsethaugen.2004}. 
 
 \begin{equation}\label{eqn:T_p_spectralpeak}
-    T_p = a_f\cdot H_{1/3}
+    \text{T}_p = a_f\cdot H_{1/3}
 \end{equation}
 \begin{equation}
     \label{eqn:H_s_and_Tp}
     \text{Sea State (SS)} = 
     \begin{cases}
         \begin{aligned}
-            &\text{Swell dominated}  &&\text{\textbf{if}} \quad T_p > T_f \\ 
-            &\text{Wind sea dominated} && \text{\textbf{if}} \quad T_p \leqslant T_f 
+            &\text{Swell dominated}  &&\text{\textbf{if}} \quad \text{T}_p > \text{T}_f \\ 
+            &\text{Wind sea dominated} && \text{\textbf{if}} \quad \text{T}_p \leqslant \text{T}_f 
         \end{aligned}     
     \end{cases} 
 \end{equation}
+
+\pagebreak
 
 \section{General concept of ship propulsion}\label{sec:power_calc}
 
@@ -456,6 +468,8 @@ The Froude number $Fr$ is defined with the following equation:
         \caption{Definition of $C_P$ \bcitep{Biran.2014}}
         \label{fig:biran_cp}
 \end{figure}
+
+\pagebreak
 
 \subsubsection*{Waterplane area coefficient}
 
@@ -571,11 +585,12 @@ The flat plate resistance is subsequently adjusted by including a form factor $k
 \begin{equation}\label{eqn:c_14}
     c_{14} = 1.0 + 0.011C_{stern} \quad \textbf{with} \quad \begin{array}{l c}
         \text{Aft body shape} & C_{stern}\\
-        \hline\\
+        \hline
         \text{Pram with gondola} & -25 \\
         \text{V-shaped sections} & -10 \\
         \text{Normal sections} & 0 \\
         \text{U-shaped sections} & +10 \\
+        \hline
     \end{array}
 \end{equation}
 
@@ -637,7 +652,7 @@ The equivalent form factor for multiple appendages, $(1+k_{2_i})_{eq}$ is given 
 If bow thruster is present, the resistance due to the bow thruster tunnel $R_{TH}$ can be obtained through:
 
 \begin{equation}\label{eqn:R_th}
-    R_{TH} = \rho v_S^2 \pi \d_{TH}^2 C_{D_{TH}} \quad \textbf{where} \quad C_{D_{TH}} = 0.003 + 0.003 \Biggl( \frac{10_{d_{TH}}}{t} - 1 \Biggr) 
+    R_{TH} = \rho v_S^2 \pi \d_{TH}^2 C_{D_{TH}} \quad \textbf{where} \quad C_{D_{TH}} = 0.003 + 0.003 \Biggl( \frac{10{d_{TH}}}{t} - 1 \Biggr) 
 \end{equation}
 
 The coefficient $C_{D_{TH}}$ defines the drag coefficient for the tunnel, and it ranges between $0.003$ and $0.012$. Smaller values indicate thrusters which are in the cylindrical part of bulbous bow. The coefficient can also be estimated using the equation by \bcitet{Hollenbach.1999} in \Cref{eqn:R_th}.\\
@@ -698,10 +713,10 @@ To compute each of the constants in \Cref{eqn:R_w_low}, The following equations 
     c_1 = 2223105c_7^{3.78613}\biggl( \frac{T}{B}\biggr)^{1.07961}(90-i_e)^{1.37565}
 \end{equation}
 
-$i_e$ is defined as half angle of the waterline entrance and the estimation can be calculated by:
+$i_E$ is defined as the half angle of the waterline entrance and the estimation can be calculated by:
 
 \begin{equation}\label{eqn:i_e}
-    i_e = 1+89 e^{a}
+    i_E = 1+89 e^{a}
 \end{equation}
 
 and $a$ can be obtained through:
@@ -804,7 +819,7 @@ The approximation of the resistance due to bulbous bow $R_B$ can be obtained thr
 
 \subsubsection*{(Immersed) Transom Resistance}
 
-The flat section at ship stern is termed as transom and the immersion of the transom causes pressure loss, the resulting resistance from the pressure loss are considered using the term $R_{TR}$ for immersed transom area $A_T > 0$. The transom resistance is a function of the depth Froude number $Fr_{T}$:
+Transom is referred to as the flat section at the ship stern and the immersion of the transom causes pressure loss, the resulting resistance from the pressure loss are considered using the term $R_{TR}$ for immersed transom area $A_T > 0$. The transom resistance is a function of the depth Froude number $Fr_{T}$:
 
 \begin{equation}
     \label{eqn:Fr_t}
@@ -844,6 +859,8 @@ The resistance term $R_A$ considers other effects that are not captured by other
     \end{cases}
 \end{equation}
 
+\pagebreak
+
 The correlation allowance coefficient $C_A$ and subsequent correlation resistance is defined as:
 
 \begin{equation}
@@ -865,16 +882,16 @@ The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the
     R_{AA} = \frac{\rho_{air}}{2}u^2A_{L}CD_l \frac{\cos{(\varepsilon)}}{1-\frac{\delta}{2}(1-\frac{CD_l}{CD_t}\sin^2{(2\varepsilon)})}
 \end{equation}
 
-Where $u$ is the apparent wind velocity, $A_L$ the lateral plane area, $\varepsilon$ the apparent wind angle ($\epsilon = 0$ in headwind). $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle $\text{TWA}$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
+Where $u$ is the apparent wind velocity, $A_L$ the lateral plane area, $\varepsilon$ the apparent wind angle ($\varepsilon = 0$ in headwind). $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle, $\beta$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
 
 \begin{equation}
     \label{eqn:u_AW}
-    u = \sqrt{u_{\text{TW}}^2 + v_S^2 + 2 \cdot u_{\text{TW}} \cdot v_S \cdot \cos(\text{TWA})}
+    u = \sqrt{u_{\text{TW}}^2 + v_S^2 + 2 \cdot u_{\text{TW}} \cdot v_S \cdot \cos(\beta)}
 \end{equation}
 
 \begin{equation}
     \label{eqn:epsilon_AWA}
-    \frac{u_{TW}}{\sin(\varepsilon)} = \frac{u}{\sin({\text{TWA}})}
+    \frac{u_{TW}}{\sin(\varepsilon)} = \frac{u}{\sin({\beta})}
 \end{equation}
 
 \begin{figure}
@@ -912,6 +929,8 @@ According to \bcitet{Schneekluth.1998}, maximum wind resistance is encountered w
     \end{tabular}}
 \caption{Coefficients to estimate wind resistance}\label{tbl:BlendermannCoeff}
 \end{table}
+
+\pagebreak
 
 \subsubsection{Added resistance due to wave}\label{sec:wave_resistance}
 
