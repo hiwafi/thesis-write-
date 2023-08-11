@@ -1,6 +1,6 @@
 \chapter{Result and Discussion} \label{chp:result_and_discussion}
 
-The performance of GBM will be evaluated by means of a case study using the test dataset. The test dataset comprises journey data from the whole year of 2021. The first part will focus on performance evaluation of BBM, where the trained model will be used to predict the SOG. The second part focus on the power estimation method using Holtrop-Mennen method. The output of BBM, which is the ship SOG, will be fed to the WBM to estimate the power. For further clarity regarding the methodology, the following steps are taken which are based on the proposed methodology shown in \Cref{fig:flowchart_BBM} and \Cref{fig:flowchart_WBM}. For generation of the BBM, the steps taken are:
+To assess the performance of the GBM, a case study will be conducted using the test dataset, which contains journey data for the entire year of 2021. The evaluation process consists of two main parts. The first part involves assessing the performance of the BBM, where the trained model will predict the ship's SOG. The output of BBM, which is the SOG, will be fed to the WBM to estimate the power and subsequently the bunker consumption. For further clarity regarding the methodology, the following steps are taken which are based on the proposed methodology shown in \Cref{fig:flowchart_BBM} and \Cref{fig:flowchart_WBM}. For generation of the BBM, the steps taken are:
 
 \begin{enumerate}
     \setlength\itemsep{0em}
@@ -21,7 +21,7 @@ Subsequently, for FOC calculation, the following steps are taken:
 
 \begin{enumerate}
     \setlength\itemsep{0em}
-    \item The test dataset is split into seasonal data. Summer-Fall season and Winter-Spring season which correspond to data for 6 months respectively.
+    \item The test dataset is split into seasonal data. Summer-Fall season and Winter-Spring season corresponding to data for 6 months respectively.
     \item Impute missing values using {\tt KNNImputer}.
     \item SOG is converted to STW.
     \item Calculate calm water resistance $R_{CALM}$.
@@ -39,10 +39,9 @@ Subsequently, for FOC calculation, the following steps are taken:
 
 \subsection{Model Training and Selection of Optimal Parameter}\label{sec:hpo_select_train}
 
-As mentioned in \Cref{sec:BBM_modelling}. There are 2871 data points available for training. To help narrow the search range of the hyperparameters for the tree-based model, RMSE plots against different values of hyperparameters will be performed. This method was presented in \Cref{sec:hpo}. The hyperparameter will be iteratively tuned until the best model is obtained. The result of the optimal parameter is found in \Cref{tbl:hpo_optimal}. The model training is executed using \textbf{AMD Ryzen 7 2700X, Eight-Core Processor $@$ 3.7 GHz processor with 16384 MB installed RAM}.\\
+As noted in Section \ref{sec:BBM_modelling}, the training dataset encompasses 2871 data points. To refine the range of hyperparameter search for the tree-based model, MAE plots were generated against varying hyperparameter values, a technique outlined in \Cref{sec:hpo}. The hyperparameters are iteratively tuned until the optimal model is achieved. The outcome of this hyperparameter optimization process is presented in Table \ref{tbl:hpo_optimal}. The model training is conducted using an \textbf{AMD Ryzen 7 2700X, Eight-Core Processor} operating at 3.7 GHz, with 16384 MB of installed RAM.\\
 
-
-\begin{table}[ht]
+\begin{table}[h!]
     \footnotesize
     \centering
     % \resizebox {\textwidth}{!}
@@ -73,40 +72,50 @@ As mentioned in \Cref{sec:BBM_modelling}. There are 2871 data points available f
 \caption{Optimal hyperparameter with training time of each model}\label{tbl:hpo_optimal}
 \end{table}
 
-With the default hyperparameter, RFR takes the longest training time followed by ETR and DTR. This is expected as RFR uses greedy algorithm i.e. it looks for the best possible feature when splitting the node. ETR takes significantly shorter time to train as ETR randomly select for features when splitting the node. DTR takes the shortest training time as it only generates a single tree. However, in the case of optimised model, ETR takes a longer time to train compared to RFR. This is caused by the number of trees in the optimised model which is controlled by the parameter {\tt n\_estimator}, the optimised ETR model has 800 trees in comparison to 100 trees of RFR. It is also observed that the training time of optimised DTR model is halved as pruning the tree resulted in a simpler model to train. \\
+With the default hyperparameters, the RFR exhibits the lengthiest training duration, followed by the ETR and the DTR. This aligns with expectations, as RFR employs a greedy algorithm, seeking the optimal feature for node splitting, leading to increased training time. ETR, on the other hand, trains faster due to its random feature selection during node splitting. DTR displayed the shortest training time as it constructs only a single tree. However, in the case of the optimised model, ETR requires a lengthier training period compared to RFR. This discrepancy arises from the number of trees in the optimized model, controlled by the {\tt n\_estimator} parameter. The optimized ETR model has 800 trees, while RFR comprises 100 trees. Notably, the training time of the optimized DTR model is halved, as pruning the tree results in a simpler model requiring less time for training.\\
 
-To further investigate the effect of hyperparameter optimisation, the learning curve of each tree-based model is plotted. For DTR, generated model with default parameter will result in a model that heavily overfits the training data, which is evident from the large gap between the training error and validation error which indicated a high variance as shown in \Cref{fig:learn_curve_DTR_MAE}. Regularisation i.e. parameter tuning of the DTR model helps balance between bias and variance by trading off bias for variance. This is observed from the substantial reduction in the gap between the training and validation error from \Cref{fig:learn_curve_DTR_MAE}. Additionally, the learning curve indicates that the model performance can be improved by increasing the amount of data points as the MAE continue to decrease with increasing amount of data points.\\
+To further investigate the effect of hyperparameter optimisation, the learning curve of each tree-based model is plotted. For DTR, generated model with default parameter will result in a model that heavily overfits the training data, which is evident from the large gap between the training error and validation error which indicated a high variance as shown in \Cref{fig:learn_curve_TREE_MAE}. Regularisation i.e. parameter tuning of the DTR model helps balance between bias and variance by trading off bias for variance. This is observed from the substantial reduction in the gap between the training and validation error from \Cref{fig:learn_curve_TREE_MAE}. Additionally, the learning curve indicates that the model performance can be improved by increasing the amount of data points as the MAE continue to decrease with increasing amount of data points.\\
 
-\begin{figure}[h]
+The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The model starts to plateau at approximately 1000 data points. Furthermore, there is a noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit. On the other hand, hyperparameter tuning contributes to variance reduction in the ETR model. However, its impact on overall model performance remains limited. The ETR model reaches a performance plateau beyond 1000 data points, indicating that augmenting the dataset with additional points is unlikely to yield substantial improvements in model effectiveness.\\
+
+
+\begin{figure}
     \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_dtr_mae.png}
-        \caption{Learning curve of DTR}
-        \label{fig:learn_curve_DTR_MAE}
+    \includegraphics[width=.95\textwidth]{02_figures/learning_curve_dtr_mae.png}\\
+    \includegraphics[width=.95\textwidth]{02_figures/learning_curve_rfr_mae.png}\\
+    \includegraphics[width=.95\textwidth]{02_figures/learning_curve_etr_mae.png}
+    \caption{Learning curve of various tree-based models}
+    \label{fig:learn_curve_TREE_MAE}
 \end{figure}
 
-The process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of  \bcitet{Kuhn.2013} and \bcitet{Hastie.2009} which was discussed in \Cref{sec:rf_theo}. The model starts to plateau at approximately 1000 data points. Furthermore, there is noticeable variance in the RFR model, which indicates that the model will have a slight tendency to overfit.\\
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.95\textwidth]{02_figures/learning_curve_dtr_mae.png}
+%         \caption{Learning curve of DTR}
+%         \label{fig:learn_curve_DTR_MAE}
+% \end{figure}
 
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_rfr_mae.png}
-        \caption{Learning curve of RFR}
-        \label{fig:learn_curve_RFR_MAE}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.95\textwidth]{02_figures/learning_curve_rfr_mae.png}
+%         \caption{Learning curve of RFR}
+%         \label{fig:learn_curve_RFR_MAE}
+% \end{figure}
 
-Hyperparameter tuning helps to reduce variance in the ETR model. But it does not have any major impact on model's performance. The ETR model reaches plateau beyond 1000 data points. Suggesting that adding more data points will not result in any tangible increase in model performance.\\
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.95\textwidth]{02_figures/learning_curve_etr_mae.png}
+%         \caption{Learning curve of ETR}
+%         \label{fig:learn_curve_ETR_MAE}
+% \end{figure}
 
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.95\textwidth]{02_figures/learning_curve_etr_mae.png}
-        \caption{Learning curve of ETR}
-        \label{fig:learn_curve_ETR_MAE}
-\end{figure}
+\pagebreak
 
 \subsection{Analysis of trained model}\label{sec:BBM_model_eval}
 
 \subsubsection{Feature Importance}\label{sec:feature_importance_bbm}
 
-As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the impact of each feature during the split process, this is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, it is computed as the mean and the standard deviation of accumulation of the impurity decrease within each tree i.e. total reduction of the criterion brought by a feature. Alternatively, it can be defined as how much a feature is used in each tree.\\
+As discussed in \Cref{sec:rf_theo}, tree-based models inherently possess the ability to quantify the influence of each feature during the splitting process. This is performed using {\tt feature\_importances\_} feature in \scikit/ \bcitep{Kuhn.2013}. According to documentation by \bcitet{FabianPedregosa.2011}, this attribute is computed as the mean and standard deviation of the accumulated reduction in impurity within each tree, which is essentially the total reduction in the criterion achieved by a specific feature. Alternatively, it can be interpreted as a measure of how extensively a feature is employed in each tree.\\
 
 \begin{table}[h]
     \scriptsize
@@ -134,68 +143,90 @@ As discussed in \Cref{sec:rf_theo}, tree-based models are able to quantify the i
 \caption{Feature importance of different models}\label{tbl:feature_importances}
 \end{table}
 
-The feature importances for all tree-based models shown in \Cref{tbl:feature_importances} indicated that the structure of the model is significantly influenced by the features {\tt heading} and {\tt cog}. This finding indicated that the models predicted the SOG by basis of ship movement direction i.e. heading and COG for a particular location. However, in a physical sense, it will be more insightful to consider the ship state and weather conditions that affect the prediction of the SOG.\\
+The feature importances for all tree-based models shown in \Cref{tbl:feature_importances} indicated that the structure of the model is significantly influenced by the features {\tt heading} and {\tt cog}. This observation suggests that the models rely considerably on ship movement direction, represented by heading and COG, to predict the SOG at a given location. However, from a physical perspective, it will be more insightful to consider the ship state and weather conditions that affect the prediction of the SOG.\\
 
-\begin{figure}[h]
+\begin{figure}
     \centering
-        \includegraphics[width=.9\textwidth]{02_figures/dtr_ftr_importance_nodir.png}
-        \caption{Feature importance of DTR}
-        \label{fig:ftr_impo_dtr}
+    \includegraphics[width=.82\textwidth]{02_figures/dtr_ftr_importance_nodir.png}\\
+    \includegraphics[width=.82\textwidth]{02_figures/rfr_ftr_importance_nodir.png}\\
+    \includegraphics[width=.82\textwidth]{02_figures/etr_ftr_importance_nodir.png}
+    \caption{Feature importance of different tree-based models}
+    \label{fig:ftr_impo_overall_tree}
 \end{figure}
 
-Excluding ship heading and COG. The ship draught $T$ is regarded as the significant factors that affect the SOG prediction. This aligns with the theory of frictional resistance $R_F$ encountered by the ship, which is discussed in \Cref{sec:Calm_Resistance}. \Cref{eqn:R_f} is a function of wetted surface area of bare hull $S$. Deeper draught $T$ will result in more submerged area of the hull and this will consequently increase the frictional force $R_F$ of the ship. Given a constant supply of power to the ship propulsion system, the speed of the ship will decrease which is shown in \Cref{eqn:P_e}.\\
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/dtr_ftr_importance_nodir.png}
+%         \caption{Feature importance of DTR}
+%         \label{fig:ftr_impo_dtr}
+% \end{figure}
 
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.9\textwidth]{02_figures/rfr_ftr_importance_nodir.png}
-        \caption{Feature importance of RFR}
-        \label{fig:ftr_impo_rfr}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/rfr_ftr_importance_nodir.png}
+%         \caption{Feature importance of RFR}
+%         \label{fig:ftr_impo_rfr}
+% \end{figure}
 
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.9\textwidth]{02_figures/etr_ftr_importance_nodir.png}
-        \caption{Feature importance of ETR}
-        \label{fig:ftr_impo_etr}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/etr_ftr_importance_nodir.png}
+%         \caption{Feature importance of ETR}
+%         \label{fig:ftr_impo_etr}
+% \end{figure}
 
-For weather states, both RFR and ETR considered current based information such as current speed and true current direction as the most significant weather factor that affect SOG prediction. This aligns to the proposed current correction methodology presented in \Cref{sec:SOG_corr} which states that the process of current correction to convert SOG to STW requires both the magnitude and direction of the current. The next influencing feature ranked by RFR and ETR model are wave related features which are significant wave height $H_{1/3}$, true wave direction, and the wave period {\tt waveperiod}. This corresponds to the added resistance due to wave $R_{AW}$ in the calculation of total resistance $R_{TOTAL}$ encountered by the ship. The wind related features, which are wind speed and its true direction, corresponds to added resistance due to wind force $R_{AA}$ and is found to be the least influential in SOG prediction in RFR and ETR model.\\
+Excluding ship heading and COG. The ship draught $T$ emerges as a significant factor influencing the prediction of SOG. This aligns with the theory of frictional resistance $R_F$ encountered by the ship, which is discussed in \Cref{sec:Calm_Resistance}. \Cref{eqn:R_f} is a function of wetted surface area of bare hull $S$. Deeper draught $T$ will result in more submerged area of the hull and this will consequently increase the frictional force $R_F$ of the ship. Given a constant supply of power to the ship propulsion system, the speed of the ship will decrease which is shown in \Cref{eqn:P_e}.\\
+
+\pagebreak
+
+Concerning weather states, both the RFR and ETR models identify current-based information, such as current speed and true current direction, as the most influential factors affecting SOG prediction. This observation concurs with the suggested methodology for current correction presented in Section \Cref{sec:SOG_corr}, which outlines that the process of converting SOG to STW necessitates both the magnitude and direction of the current. The subsequent influential features, according to the rankings of the RFR and ETR models, are wave-related attributes: significant wave height ($H_{1/3}$), true wave direction, and wave period ({\tt waveperiod}). This alignment reflects the added resistance caused by waves ($R_{AW}$) in the computation of the total resistance ($R_{TOTAL}$) experienced by the ship. On the other hand, wind-related features, encompassing wind speed and its true direction, are associated with the added resistance due to wind force ($R_{AA}$). However, these factors are found to be the least impactful in the prediction of SOG according to the RFR and ETR models.\\
 
 Based on the behaviour of the Random Forest Regressor (RFR) and Extra Trees Regressor (ETR) models, it can be inferred that waves have a more significant impact on the Speed Over Ground (SOG) compared to the influence of wind during the ship's journey. However, the Decision Tree Regressor (DTR) model demonstrates that temperature-related features, such as Sea Surface Temperature (SST) and air temperature above the ocean, have a more significant effect on SOG predictions than most other features. While the importance of temperature is not as pronounced as in RFR or ETR models, this finding suggests that the ship's SOG is implicitly influenced by the time of the travel or the season in which the journey takes place.\\
 
 \subsubsection*{Structure of generated tree-based model}
 
-\begin{figure}[h]
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/dtr_mod_1tree.png}
+%         \caption{Partial structure of DTR}
+%         \label{fig:dtr_tree_hpov}
+% \end{figure}
+
+To comprehend the impact of hyperparameter optimisation and feature importance, an analysis of the structure of the generated tree-based models will be conducted. The shading within the nodes conveys the probability of the decision, with darker shading indicating a higher likelihood. Each node provides information about the splitting feature, along with its threshold, SSR (Sum of Squared Residuals) value, sample count, and the predicted SOG value. Despite pruning efforts, the tree structure can potentially become quite large. To enhance clarity, the visualization of the trees will be restricted to a maximum depth of {\tt max\_depth = 3}. Additionally, for the RFR and ETR models, only the illustration of a specific tree within the forest will be presented.\\
+
+The structure of the optimized decision tree, as depicted in \Cref{fig:overall_tree_partial_structure}, illustrates the impact of regularisation at the leaf nodes. Notably, the leaf nodes that partition the feature ocean temperature do not achieve a complete minimization of the SSR. This outcome arises from the hyperparameter tuning of the minimum samples at the leaf nodes, set at {\tt min\_samples\_leaf = 10}. Further division of these nodes would result in subsequent leaf nodes with fewer than 10 samples. Within this visualisation, the significance of features such as COG and ship heading becomes evident, as they are employed to partition numerous internal nodes in the tree.\\
+
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/rfr_mod_it1.png}
+%         \caption{Partial structure of {\tt n\_estimators = 1} for RFR}
+%         \label{fig:rfr_tree1_hpov}
+% \end{figure}
+
+The illustration of the first RFR tree is shown in \Cref{fig:overall_tree_partial_structure}. Similar to DTR, both COG and ship heading are regarded as the best features to split the internal node. In this tree of the forest, the effect of allowing full tree growth can be observed in the leaf node when splitting the feature current speed. This tree is able to minimise the SSR to its possible minimum value, and the leaf node cannot be further split as there are no more available samples. The effect of bagging for the dataset and feature selection in RFR can also be observed in this tree as the structure of this tree is completely different to DTR tree shown in \Cref{fig:overall_tree_partial_structure}.\\
+
+% \begin{figure}[h]
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/etr_mod_it1.png}
+%         \caption{Partial structure of {\tt n\_estimators = 1} for ETR}
+%         \label{fig:etr_tree1_etr}
+% \end{figure}
+
+\begin{figure}
     \centering
-        \includegraphics[width=.9\textwidth]{02_figures/dtr_mod_1tree.png}
-        \caption{Partial structure of DTR}
-        \label{fig:dtr_tree_hpov}
+    \includegraphics[width=.9\textwidth]{02_figures/dtr_mod_1tree.png}\\
+    \includegraphics[width=.9\textwidth]{02_figures/rfr_mod_it1.png}\\
+    \includegraphics[width=.9\textwidth]{02_figures/etr_mod_it1.png}
+    \caption{Partial structure of DTR, RFR, and ETR}
+    \label{fig:overall_tree_partial_structure}
 \end{figure}
 
-To understand the effect of hyperparameter optimisation and feature importance, analysis on the structure of generated tree-based models will be performed. The shading in the nodes indicated the likelihood of the decision, where darker shading means greater likelihood. Each node indicates information on the splitting feature with the threshold, the SSR score, amount of samples and the predicted SOG value. Even after pruning, the tree can grow relatively large, therefore, the illustration of the trees is limited to a depth of {\tt max\_depth = 3} and for RFR and ETR, only the illustration of a specific tree in the forest will be shown.\\
-
-The structure of the optimised decision tree shown in \Cref{fig:dtr_tree_hpov} show the effect of regularisation at the leaf node. For example, the leaf nodes that splits the feature, ocean temperature, does not completely minimise the SSR. This is caused by the hyperparameter tuning of the minimum samples at the leaf node, which was set at {\tt min\_samples\_leaf = 10}, splitting these nodes further will cause subsequent leaf nodes that have less than 10 samples. In this figure, the significance of COG and ship heading can be clearly seen, as it is used to split many of the internal nodes in the tree.\\
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.9\textwidth]{02_figures/rfr_mod_it1.png}
-        \caption{Partial structure of {\tt n\_estimators = 1} for RFR}
-        \label{fig:rfr_tree1_hpov}
-\end{figure}
-
-The illustration of the first RFR tree is shown in \Cref{fig:rfr_tree1_hpov}. Similar to DTR, both COG and ship heading are regarded as the best features to split the internal node. In this tree of the forest, the effect of allowing full tree growth can be observed in the leaf node when splitting the feature current speed. This tree is able to minimise the SSR to its possible minimum value, and the leaf node cannot be further split as there are no more available samples. The effect of bagging for the dataset and feature selection in RFR can also be observed in this tree as the structure of this tree is completely different to DTR tree shown in \Cref{fig:dtr_tree_hpov}.\\
-
-\begin{figure}[h]
-    \centering
-        \includegraphics[width=.9\textwidth]{02_figures/etr_mod_it1.png}
-        \caption{Partial structure of {\tt n\_estimators = 1} for ETR}
-        \label{fig:etr_tree1_etr}
-\end{figure}
-The random selection of the feature to split of ETR can be seen in the structure of the first tree in an ETR in \Cref{fig:etr_tree1_etr}. Since both DTR and RFR uses greedy algorithm, i.e. it finds the possible splits which minimise the cost function, both model selected COG as the parent node. However, the randomness in feature selection of ETR can be clearly observed in this illustration, the model selects the true current direction as the parent node. Also, due to regularisation of ETR, the leaf node when splitting COG does not completely minimise the SSR. The split is not allowed since it does not meet the tuning criteria of {\tt min\_samples\_split = 9}.\\ 
+The influence of random feature selection in ETR is demonstrated by the structure of its first tree, as presented in \Cref{fig:overall_tree_partial_structure}. Unlike the DTR and RFR, which employ a greedy algorithm to identify splits minimizing the cost function, the ETR exhibits a noticeable randomness in feature selection. In this specific illustration, the ETR model designates the true current direction as the parent node. Furthermore, due to the regularisation applied to the ETR, the leaf node formed during the COG split does not entirely minimize the SSR. It is worth noting that this particular split does not occur due to the constraint imposed by the tuning parameter {\tt min\_samples\_split = 9}.\\
 
 \subsubsection{Evaluation of k-fold cross-validation}\label{sec:bbm_kfold_perf_eval}
 
-The performance of the model is evaluated using the training dataset using 10-fold cross validation. This means that the training will be repeated 10 times using 9 of the folds as training dataset, the remaining fold will be used as validation dataset. The results from k-folding validation process is shown in \Cref{fig:k_fold_validation_result}. The inside (orange) line represents the median i.e. $50\%$ of the score in k-folding. The top and the bottom of the box correspond to the first i.e. $25\%$ and third quartile i.e. $75\%$ respectively. The whiskers represent the lowest data point within the 1.5 Interquartile Range (IQR) of the lowest quartile and the highest point of data within 1.5 IQR of the upper quartile. The mean is indicated by the (green) triangle. Data points beyond the whisker range is shown as hollow circle.\\
+The results of the 10-fold validation process are shown in \Cref{fig:k_fold_validation_result}. The inner (orange) line corresponds to the median, representing the central $50\%$ of scores in the k-folding procedure. The upper and lower boundaries of the box signify the first ($25\%$) and third ($75\%$) quartiles, respectively. The whiskers denote the lowest data point within a 1.5 Interquartile Range (IQR) of the lower quartile and the highest data point within a 1.5 IQR of the upper quartile. The mean value is indicated by the (green) triangle, while data points beyond the whisker range are depicted as hollow circles.\\
+
 \begin{figure}[ht]
     \centering
   
@@ -209,7 +240,7 @@ The performance of the model is evaluated using the training dataset using 10-fo
       \includegraphics[width=\textwidth]{02_figures/kfold_mae_opt.png}
     \end{minipage}
   
-    \vspace{0.5cm} % Adjust the vertical space between rows
+    \vspace{0.1cm} % Adjust the vertical space between rows
   
     \begin{minipage}{0.45\textwidth}
       \centering
@@ -225,13 +256,13 @@ The performance of the model is evaluated using the training dataset using 10-fo
     \label{fig:k_fold_validation_result}
   \end{figure}
 
-The box plots indicated that ETR achieved the best performance, the model is able to achieve $R^2$ score of around $91\%$ and MAE of around 0.6 knots. The model is also relatively stable, which is indicated by the narrow box plots. RFR also achieved similar performance, achieving $R^2$ score of about $89\%$ and MAE of approximately 0.65 knots. As illustrated previously in \Cref{fig:learn_curve_ETR_MAE} and \Cref{fig:learn_curve_RFR_MAE}, optimisation does not yield any significant improvement in model performance. DTR greatly benefits from regularisation, the model achieves an increase of about $5\%$ for the $R^2$ score and a reduction from about 0.89 knots to 0.76 knots for the MAE, similar improvements can be observed in both RMSE and MAD. To summarise, all tree-based models exhibited good fit performance with mean/median $R^2$ scores above $80\%$. However, the value of RMSE is quite significant, the values lies between 1.00 to 1.20 knots across the models. To put this into scale, the mean SOG of the training data is at 16.91 knots as shown in \Cref{tbl:dataset_descriptive_pretraining}.\\  
+The box plots reveal that ETR outperformed other tree-based models, achieving a $R^2$ score of approximately $91\%$ and an MAE of around 0.6 knots. This model also demonstrated notable stability, evident from the narrow length between the first and third quartile. RFR showcased a similar level of performance, attaining an $R^2$ score of roughly $89\%$ and an MAE of about 0.65 knots. As demonstrated previously in \Cref{fig:learn_curve_TREE_MAE}, hyperparameter optimization did not lead to any substantial enhancement in model performance. DTR significantly benefited from the process of regularisation, resulting in an increase of around $5\%$ in the $R^2$ score and a reduction in MAE from about 0.89 knots to 0.76 knots. Similar improvements can be observed in both RMSE and MAD. In summary, all tree-based models demonstrated a satisfactory fit, with mean/median $R^2$ scores exceeding $80\%$. However, the RMSE values are relatively significant, ranging from 1.00 to 1.20 knots across the models. To provide context, the mean SOG of the training data is 16.91 knots, as indicated in \Cref{tbl:dataset_descriptive_pretraining}.\\
 
 \subsection{Performance evaluation of BBM}\label{sec:Perf_eval_BBM}
 
 \subsubsection{Analysing the testing dataset}\label{sec:testing_data_analysis}
 
-Once the best model is determined, the model will be tested against the testing dataset. The testing dataset correspond to 957 datasets across 2021, the dataset for the whole year is indicated as $DS_{year}$. To investigate the effect of data points on the model performance, the dataset is split into two seasons, $DS_{summer}$, which corresponds to summer datasets and it represents data between May 2021 and October 2021, there are 454 data points between this period. Winter dataset, $DS_{winter}$, correspond to testing datasets between January 2021 and April 2021 as well as November 2021 and December 2021 which correspond to 503 data points. Any missing values which are present in the testing dataset will be using {\tt KNNImputer}.\\
+Once the best-optimised model is identified, the performance of the model will be further evaluated using the testing dataset. This testing dataset comprises 957 data points from the year 2021, encompassing the entirety of the year. The dataset for the full year is denoted as $DS_{year}$. In order to explore the influence of data points on model performance, the dataset is divided into two distinct seasons: $DS_{summer}$, covering the period from May 2021 to October 2021, consisting of 454 data points; and $DS_{winter}$, encompassing data from January 2021 to April 2021, as well as November 2021 to December 2021, with a total of 503 data points. Any missing values present within the testing dataset will be addressed using the {\tt KNNImputer} method.\\
 
 \begin{table}[h!]
     \footnotesize
@@ -318,11 +349,11 @@ Once the best model is determined, the model will be tested against the testing 
 
 \subsubsection{Result and Discussion of BBM}\label{sec:result_discussion_BBM}
 
-The results of SOG prediction of optimised the tree-based models is summarised in \Cref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the tree models is compared against Multiple Linear Regressor (MLR) model.
+The results of SOG prediction of optimised tree-based models are summarised in \Cref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the tree models is compared against Multiple Linear Regressor (MLR) model.
 
 \begin{table}[ht]
-    % \footnotesize
-    \small
+    \footnotesize
+    % \small
     \centering
     % \resizebox {\textwidth}{!}
     {\begin{tabular}{ l l c c c c c c }
@@ -347,7 +378,7 @@ The results of SOG prediction of optimised the tree-based models is summarised i
 \caption{Performance indices for SOG predictions}\label{tbl:testing_dataset_sog_result}
 \end{table}
 
-From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-based model is able to achieve good prediction results on different testing datasets. Generally, all tree-based models obtained $R^2$ score above $80\%$ and perform better when using the $DS_{winter}$ datasets. All tree-based models offer significant improvement from MLR. Among the tree-based model, ETR presented the best SOG prediction across different datasets, followed by RFR and DTR.\\ 
+The results presented in \Cref{tbl:testing_dataset_sog_result} shows that all tree-based models demonstrated good predictive capabilities across various testing datasets. Generally, all tree-based models obtained $R^2$ score above $80\%$ and perform better when using the $DS_{winter}$ datasets. All tree-based models offer a substantial improvement from MLR. Among the tree-based model, ETR presented the best SOG prediction across different datasets, closely followed by RFR and followed by  DTR.\\ 
 
 \begin{table}[h]
     \footnotesize
@@ -374,66 +405,87 @@ From \Cref{tbl:testing_dataset_sog_result}, it can be observed that all tree-bas
 \caption{Descriptive statistics of SOG Prediction}\label{tbl:SOG_pred_descriptive}
 \end{table}
 
-\begin{figure}[ht]
-\centering
+% \begin{figure}[ht]
+% \centering
 
-\begin{minipage}[b]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{02_figures/sog_pred_year.png}
-    % \caption{Caption for Picture 1.}
-    \label{fig:boxplot_dsyear}
-\end{minipage}%
-\hfill
-\begin{minipage}[b]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{02_figures/sog_pred_winter.png}
-    % \caption{Caption for Picture 2.}
-    \label{fig:boxplot_dswinter}
-\end{minipage}%
-\hfill
-\begin{minipage}[b]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{02_figures/sog_pred_summer.png}
-    % \caption{Caption for Picture 3.}
-    \label{fig:boxplot_dssummer}
-\end{minipage}
+% \begin{minipage}[b]{0.32\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{02_figures/sog_pred_year.png}
+%     % \caption{Caption for Picture 1.}
+%     \label{fig:boxplot_dsyear}
+% \end{minipage}%
+% \hfill
+% \begin{minipage}[b]{0.32\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{02_figures/sog_pred_winter.png}
+%     % \caption{Caption for Picture 2.}
+%     \label{fig:boxplot_dswinter}
+% \end{minipage}%
+% \hfill
+% \begin{minipage}[b]{0.32\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{02_figures/sog_pred_summer.png}
+%     % \caption{Caption for Picture 3.}
+%     \label{fig:boxplot_dssummer}
+% \end{minipage}
 
-\caption{SOG distribution for $DS_{year}$, $DS_{winter}$ and $DS_{summer}$}
-\label{fig:boxplot_sogPred_overall}
-\end{figure}  
+% \caption{SOG distribution for $DS_{year}$, $DS_{winter}$ and $DS_{summer}$}
+% \label{fig:boxplot_sogPred_overall}
+% \end{figure}  
 
-To gain more insight to the predictive performance, descriptive statistics of the SOG prediction is provided \Cref{tbl:SOG_pred_descriptive}. The results implied that the model is not able to capture information on the lower end of the ship speed across the different datasets. This is possibly caused by low number of data points that represent lower end of the SOG speed, this is evident from the boxplots of the different datasets shown in \Cref{fig:boxplot_sogPred_overall} and the plot actual against predicted SOG shown in \Cref{fig:pred_vs_act_SOG}. The sparsity of data points in lower SOG range is clearly indicated in \Cref{fig:pred_vs_act_SOG}.\\
-
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
         \includegraphics[width=.9\textwidth]{02_figures/pred_vs_act_all_tree.png}
         \caption{Actual vs Predicted SOG for DTR, RFR and ETR}
         \label{fig:pred_vs_act_SOG}
 \end{figure}
 
-Both the descriptive statistics and boxplots implied that the data points distributions are skewed towards the higher end of SOG, with the majority of data points concentrated within approximately 16.5 knots for the first quartile and 19 knots for the third quartile across all datasets. The lowest data point within the $1.5 \cdot \text{IQR}_{LOW}$ distribution lies at approximately 13.6 knots, which is indicated by the lower whisker in the boxplot. Although the boxplots may suggest that data points beyond the whisker are outliers, this is not the case, as these points should represent ship journeys at low speeds. The limited representation of low-speed data points contributes to the model's inability to effectively predict SOG at the lower end of the range.\\
+\begin{figure}
+    \centering
+        \includegraphics[width=.75\textwidth]{02_figures/sog_pred_year.png}
+        \caption{SOG distribution for $DS_{year}$}
+        \label{fig:boxplot_sogPred_yr}
+\end{figure}
 
-This may explain the relatively high value of RMSE for all models as it treats the data points for low SOG as outliers, as previously discussed in \Cref{sec:perf_metrics}, RMSE are more sensitive to outliers in comparison to both MAE and MAD, making it less representative in this case study which results in MAE and MAD being the more suitable error evaluation metrics to be used in this case study. Furthermore, the high scores of $R^2$ and explained Variance can be attributed to the models' ability to predict SOG values that lie within the whiskers of the box plots, indicating good prediction performance within those ranges.\\
+For a deeper understanding of predictive performance, descriptive statistics of the SOG prediction are presented in \Cref{tbl:SOG_pred_descriptive}. The results suggest that the model struggles to capture information at lower ship speeds across the various datasets. This limitation could potentially be caused by the scarcity of data points representing the lower end of SOG. Such sparsity is evident from the boxplots of diverse datasets depicted in \Cref{fig:boxplot_sogPred_yr}, as well as the actual versus predicted SOG plot illustrated in \Cref{fig:pred_vs_act_SOG}, where the scarcity of information in lower SOG range data points becomes notably evident.\\
+
+% \begin{figure}
+%     \centering
+%         \includegraphics[width=.9\textwidth]{02_figures/pred_vs_act_all_tree.png}
+%         \caption{Actual vs Predicted SOG for DTR, RFR and ETR}
+%         \label{fig:pred_vs_act_SOG}
+% \end{figure}
+
+Both the descriptive statistics and boxplots indicate that the distribution of data points is skewed towards higher SOG values. The majority of data points cluster around approximately 16.5 knots for the first quartile and 19 knots for the third quartile, which is consistently observed across all datasets. The lowest data point within the $1.5 \cdot \text{IQR}_{LOW}$ range is situated around 13.6 knots, as evident from the lower whisker in the boxplot. Despite the appearance of potential outliers beyond the whisker in the boxplot, these points do not signify actual outliers; instead, they represent ship journeys at low speeds. The limited representation of low-speed data points contributes to the model's challenge in accurately predicting SOG values within the lower SOG range.\\
+
+This observation could potentially explain the relatively high values of RMSE for all the models. As discussed earlier in \Cref{sec:perf_metrics}, RMSE is more sensitive to outliers compared to both MAE and MAD, which makes it less suitable for this case study. In contrast, MAE and MAD provide more robust error evaluation metrics in situations like this. Additionally, the elevated $R^2$ scores and explained variance could be attributed to the models' effectiveness in predicting SOG values that fall within the interquartile ranges indicated by the boxplot whiskers. This suggests strong prediction performance within those specific ranges.\\
+
+\pagebreak
 
 There are two possible solutions to address this problem:\\ 
 
-\textbf{Increasing the number of data points in lower SOG range}: this is the apparent solution to this problem, this will help widen the IQR of the boxplot, and it should not misclassify data points in lower range of the SOG as outliers. This could also potentially improve the results of performance indices such as $R^2$ and RMSE. However, \emph{specific to this case study}, this may not be possible as the limitation of T-AIS shown in \Cref{fig:aiscoverage}. The ship will decrease its speed as it approach a port, or it will gradually increase its speed as it leaves a port. However, T-AIS coverage around the port of K{\o}ge and R{\o}nne are either problematic i.e. transmission reception rate at around $50\%$ to $80\%$ or poor i.e. transmission rate less than $50\%$. This may prove to be challenging to as it may not be possible to increase the number of data points around these regions.\\ 
+\textbf{Increasing the number of data points in the lower SOG Range}: This is the most apparent solution to address this issue. By doing so, the interquartile range (IQR) of the boxplot can be expanded, potentially preventing the misclassification of lower SOG data points as outliers. Furthermore, this could lead to improvements in performance metrics such as $R^2$ and RMSE. However, it is important to note that in the context of this specific case study, this approach may not be feasible due to the limitations of T-AIS coverage, as illustrated in \Cref{fig:aiscoverage}. The ship's speed decrease as it approaches a port and it gradually increases as it departs from one. Unfortunately, T-AIS coverage around the ports of K{\o}ge and R{\o}nne is either problematic, with a transmission and reception rate of approximately 50\% to 80\%, or poor, with a transmission rate of less than 50\%. This presents a significant challenge, as increasing the number of data points around these port regions may not be achievable given the limitations of T-AIS transmission rates.\\
 
-\textbf{Reducing skew of the data}: \bcitet{Gkerekos.2019} applied the outlier rejection formula which uses the formula $\mu \pm 3\sigma$, where $\mu$ is the mean and $\sigma$ is the standard deviation. Assuming normal distribution, $99.7\%$ of the normal data should be within this range. Another method of reducing the skew is by applying higher threshold of the minimum SOG value. While this may help reduce overall errors and improve model fit, this approach will negate the capability of the model to make prediction when the ship is sailing at a reduced speed. Careful consideration of the trade-offs is required when selecting the most appropriate approach.\\
-
-\pagebreak
+\textbf{Reducing data Skewness}: A strategy to address data skewness could involve applying outlier rejection techniques, as demonstrated by \citet{Gkerekos.2019}. The outlier rejection formula $\mu \pm 3\sigma$, where $\mu$ is the mean and $\sigma$ is the standard deviation, could be employed. Assuming a normal distribution, this range should encompass approximately $99.7\%$ of the normal data. Another approach to mitigate skewness is to set a higher threshold for the minimum SOG value. While this might lead to an overall reduction in errors and an improvement in model fit, it's important to note that such an approach could limit the model's ability to make accurate predictions when the ship is operating at lower speeds. Careful consideration of the trade-offs between model performance and predictive capability is essential when determining the most suitable approach. The effect of reducing skewness on the testing datasets will be demonstrated in subsequent sections.\\
 
 \section{Evaluation of WBM}\label{sec:WBM_perf_eval}
 
 \subsection{Analysis of WBM}\label{sec:Power_estimation_actual}
 
-The findings of power estimation using the Holtrop-Mennen method are presented in \Cref{tbl:PB_act_descriptive_yr} and \Cref{fig:hist_resistance_power_yr}. To gain insights into the overall model behavior, the analysis is conducted using the actual data from the $DS_{year}$ datasets.To facilitate a better interpretation of the scale of magnitude, the histograms for the resistance components utilize identical scaling.\\
+The findings of power estimation using the Holtrop-Mennen method are presented in \Cref{tbl:PB_act_descriptive_yr} and \Cref{fig:hist_resistance_power_yr}. To gain insights into the overall model behaviour, the analysis is conducted using the actual data from the $DS_{year}$ datasets. To facilitate a better interpretation of the scale of magnitude, the histograms for the resistance components utilise identical scaling.\\
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.9\linewidth]{02_figures/resistance_power_hist.png}
+    \caption{Histogram of encountered resistances for $DS_{year}$}
+    \label{fig:hist_resistance_power_yr}
+\end{figure}
 
 For calm water resistance $R_{CALM}$, the largest portion is attributed to the frictional resistance $R_F$, which accounts for approximately $39\%$ of $R_{TOTAL}$ when considering the mean. Following this, the wave-making and breaking resistance $R_W$ contribute around $21\%$. Subsequently, the bulbous bow resistance $R_{B}$ accounts for approximately $16\%$, the correlation resistance $R_{A}$ around $10\%$, and the appendage resistance $R_{APP}$ at approximately $8\%$. The transom resistance $R_{TR}$ has a relatively negligible impact on $R_{CALM}$, accounting for only about $1\%$.\\
 
-Reagrding the added resistance due to surrounding weather conditions, the contribution of added resistance due to wind $R_{AA}$ are noticeable and add a significant amount to the total resistance $R_{TOTAL}$. In contrast, the added resistance due to waves $R_{AW}$ is comparatively negligible. This behavior can be explained by referring to \Cref{tbl:testyear_dataset_descriptive}, the sea conditions along the ship's sailing path are relatively calm, with a mean significant wave height $H_{1/3}$ of $0.77 m$ and a mean wind speed of $6.45 m/s$. By only considering the mean, the combined additional resistance to weather conditions only makes up to about $3.5\%$ of the total resistance.\\
+Regarding the added resistance due to surrounding weather conditions, the contribution of added resistance due to wind $R_{AA}$ are noticeable and adds a significant amount to the total resistance $R_{TOTAL}$. In contrast, the added resistance due to waves $R_{AW}$ is comparatively negligible. This behaviour can be explained by referring to \Cref{tbl:testyear_dataset_descriptive}, the sea conditions along the ship's sailing path are relatively calm, with a mean significant wave height $H_{1/3}$ of $0.77$ m and a mean wind speed of $6.45$ m/s. By only considering the mean, the combined additional resistance to weather conditions only makes up about $3.5\%$ of the total resistance.\\
 
-These results further validate the BBM's ranking of ship draught $T$ as the most significant physical factor that affect the ship speed. The WBM also further confirm the BBM suggestion that wave resistance might have a more significant impact on the speed compared to wind resistance. This is evident from the maximum achievable resistance of $R_{AA}$ and $R_{AWL}$ shown in \Cref{tbl:PB_act_descriptive_yr}. However, over the journey, the mean of $R_{AWL}$ is significantly lower, primarily due to the condition in \Cref{eqn:stawave1}, which only consider the wave correction force within $\pm 45$° off bow.\\  
+These results further validate the BBM's ranking of ship draught $T$ as the most significant physical factor that affects the ship speed. The WBM also further confirm the BBM suggestion that wave resistance might have a more significant impact on the speed compared to wind resistance. This is evident from the maximum achievable resistance of $R_{AA}$ and $R_{AWL}$ shown in \Cref{tbl:PB_act_descriptive_yr}. However, over the journey, the mean of $R_{AWL}$ is significantly lower, primarily due to the condition in \Cref{eqn:stawave1}, which only consider the wave correction force within $\pm 45$° off bow.\\  
 
 \begin{table}[h]
     \footnotesize
@@ -462,48 +514,7 @@ These results further validate the BBM's ranking of ship draught $T$ as the most
 \caption{Descriptive statistics of Power estimation method}\label{tbl:PB_act_descriptive_yr}
 \end{table}
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=.9\linewidth]{02_figures/resistance_power_hist.png}
-    \caption{Histogram of encountered resistances for $DS_{year}$}
-    \label{fig:hist_resistance_power_yr}
-\end{figure}
-
 By considering the total resistance $R_{TOTAL}$ and the total efficiencies $\eta_{TOTAL}$, the brake power $P_B$ can be calculated. Using the brake power and the corresponding speeds, a power-to-speed curve can be plotted. This curve can then be transformed into a bunker-to-speed curve, which enables the estimation of the energy required for different operating speeds.\\ 
-
-To determine the best regression fit, different polynomial regression lines with varying orders are considered. The selection of the best model is based on the highest $R^2$ score and the ability to minimise the Mean Squared Error (MSE). To ensure that the best model is selected, the data from each sets are split into training and validation dataset, this ensure that the performance of generated model will be validated accordingly. Evaluations regression fits shows that a polynomial regression fit of order $n=4$ is adequate to fit the data effectively. This model achieves $R^2$ score of about $99\%$, and it achieve significant reduction of MSE from $n=3$. \Cref{tbl:polyfit_scores_errors} also shows that there is no substantial improvement in performance by increasing the order from $n=4$ to $n=5$.\\
-
-\begin{table}[h]
-    % \footnotesize
-    \small
-    \centering
-    % \resizebox {\textwidth}{!}
-    {\begin{tabular}{ l c c c }
-    \hline
-    Dataset  & Polynomial Order & $R^2$ & MSE \\
-    & $n$ & [$\%$] & [$(T/h)^2] \cdot 10^{-3}$ \\ 
-    \hline
-    $DS_{year}$ & 1 & 86.95 & 20.62 \\
-     & 2 & 98.69 & 2.07 \\  
-     & 3 & 99.86 & 0.22 \\
-     & 4 & 99.96 & 0.06 \\
-     & 5 & 99.97 & 0.05 \\
-     $DS_{winter}$ & 1 & 87.64 & 21.41 \\
-     & 2 & 98.86 & 1.97 \\  
-     & 3 & 99.81 & 0.33 \\
-     & 4 & 99.95 & 0.08 \\
-     & 5 & 99.96 & 0.06 \\
-     $DS_{summer}$ & 1 & 86.53 & 27.67 \\
-     & 2 & 98.77 & 2.52 \\  
-     & 3 & 99.81 & 0.39 \\
-     & 4 & 99.93 & 0.15 \\
-     & 5 & 99.92 & 0.16 \\
-    \hline
-    \end{tabular}}
-\caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
-\end{table}
-
-The resulting bunker-to-speed curve plots are shown in figure \cref{fig:FOC_plot_act_combi}, This resulting functions aligns with the findings from \bcitet{Psaraftis.2013}. The cubic law dictates that the fuel consumption rate can be defined with a propotional factor and saling speed raised to the power of $\alpha = 3$ \bcitep{Du.2019}. However, \bcitet{Psaraftis.2013} stated that the cubic law are not applicable for low speeds, and the the factor $\alpha$ can be 4 or 5 or posssibly even higher for some type of ships or when travelling at high speeds.\\ 
 
 \begin{figure}[h!]
     \centering
@@ -512,11 +523,90 @@ The resulting bunker-to-speed curve plots are shown in figure \cref{fig:FOC_plot
     \label{fig:FOC_plot_act_combi}
 \end{figure}
 
-However, the observations from \cref{tbl:polyfit_scores_errors} indicate that the improvement in function fit performance is negligible. There is no significant decrease in the MSE, and the attained $R^2$ score of $99.87\%$ shows little variation to the best fit model. Since the model is primarily used to define the ship journey at steady sailing state i.e. at normal operating speed, the limitations of cubic law mentioned by \bcitet{Psaraftis.2013} may not be applicable.\\
+To determine the most suitable regression fit, various polynomial regression lines with different orders are assessed. The selection of the optimal model is based on achieving the highest $R^2$ score while minimising the Mean Squared Error (MSE). To ensure robust model selection, the data from each dataset is partitioned into training and validation sets, allowing thorough validation of model performance. The evaluation of regression fits reveals that a polynomial regression of order $n=4$ is adequate to represent the relation between bunker consumption and STW. This model attains a $R^2$ score of approximately $99\%$ and significantly reduces the MSE compared to the $n=3$ model. Furthermore, as indicated in \Cref{tbl:polyfit_scores_errors}, there is no substantial performance enhancement when progressing from $n=4$ to $n=5$.\\
 
-The results also indicate that the model predicted ship speeds exceeding the maximum engine rating, which is physically impossible. This issue can be attributed to the conversion of SOG to STW. Analysing the openly accessible data from the research by \bcitet{JoanPeturPetersen.2011}\footnote{\url{http://cogsys.imm.dtu.dk/propulsionmodelling/}}, a noticeable difference between SOG and STW can be observed, typically by a factor of aprroximately 0.85. In this case study, even after current correction, the difference in speed are minimal.\\ 
+% \begin{table}[h]
+%     \footnotesize
+%     % \small
+%     \centering
+%     % \resizebox {\textwidth}{!}
+%     {\begin{tabular}{ l c c c }
+%     \hline
+%     Dataset  & Polynomial Order & $R^2$ & MSE \\
+%     & $n$ & [$\%$] & [$(T/h)^2] \cdot 10^{-3}$ \\ 
+%     \hline
+%     $DS_{year}$ & 1 & 86.95 & 20.62 \\
+%      & 2 & 98.69 & 2.07 \\  
+%      & 3 & 99.86 & 0.22 \\
+%      & 4 & 99.96 & 0.06 \\
+%      & 5 & 99.97 & 0.05 \\
+%      $DS_{winter}$ & 1 & 87.64 & 21.41 \\
+%      & 2 & 98.86 & 1.97 \\  
+%      & 3 & 99.81 & 0.33 \\
+%      & 4 & 99.95 & 0.08 \\
+%      & 5 & 99.96 & 0.06 \\
+%      $DS_{summer}$ & 1 & 86.53 & 27.67 \\
+%      & 2 & 98.77 & 2.52 \\  
+%      & 3 & 99.81 & 0.39 \\
+%      & 4 & 99.93 & 0.15 \\
+%      & 5 & 99.92 & 0.16 \\
+%     \hline
+%     \end{tabular}}
+% \caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
+% \end{table}
 
-This suggests that the conversion of SOG and STW should also account the effect of speed loss due to wind and waves. \bcitet{Molland.2017} demonstrated typical speed loss curves based on different Beaufort scales, as shown in \cref{fig:molland17_speedloss_windwave}. \bcitet{Molland.2017} then presented two formulae by \bcitet{Aertssen.1975} and \bcitet{kwon.2008} for estimating speed loss due to wind and wave effects. However, these formulae have a limited application range and are not optimised for different types of vessels. As a result, these formulae are not implemented in this thesis.\\ 
+\begin{table}[h]
+    \footnotesize
+    % \small
+    \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ l c c c c c c c }
+    \hline
+    Dataset & &  & \multicolumn{5}{c}{Polynomial Order}\\
+    & Metric & Unit & 1 & 2 & 3 & 4 & 5 \\
+    \hline
+    $DS_{year}$ & $R^2$ & [$\%$] & 86.95 & 98.69 & 99.86 & 99.96 & 99.97 \\
+    &MSE & [$(T/h)^2] \cdot 10^{-3}$ & 20.62 & 2.07 & 0.22 & 0.06 & 0.05 \\   
+    $DS_{winter}$ & $R^2$ & [$\%$] & 87.64 & 98.86 & 99.81 & 99.95 & 99.96 \\
+    &MSE & [$(T/h)^2] \cdot 10^{-3}$ & 21.41 & 1.97 & 0.33 & 0.08 & 0.06\\
+    $DS_{summer}$ & $R^2$ & [$\%$] & 86.53 & 98.77 & 99.81 & 99.93 & 99.92\\
+    &MSE & [$(T/h)^2] \cdot 10^{-3}$ & 27.67 & 2.52 & 0.39 & 0.15 & 0.16\\
+
+    % & $n$ & [$\%$] & [$(T/h)^2] \cdot 10^{-3}$ \\ 
+    % $DS_{year}$ & 1 & 86.95 & 20.62 & $R^2$ & MSE \\
+    %  & 2 & 98.69 & 2.07 \\  
+    %  & 3 & 99.86 & 0.22 \\
+    %  & 4 & 99.96 & 0.06 \\
+    %  & 5 & 99.97 & 0.05 \\
+    %  $DS_{winter}$ & 1 & 87.64 & 21.41 \\
+    %  & 2 & 98.86 & 1.97 \\  
+    %  & 3 & 99.81 & 0.33 \\
+    %  & 4 & 99.95 & 0.08 \\
+    %  & 5 & 99.96 & 0.06 \\
+    %  $DS_{summer}$ & 1 & 86.53 & 27.67 \\
+    %  & 2 & 98.77 & 2.52 \\  
+    %  & 3 & 99.81 & 0.39 \\
+    %  & 4 & 99.93 & 0.15 \\
+    %  & 5 &   & 0.16 \\
+    \hline
+    \end{tabular}}
+\caption{Performance indices for FOC regression functions}\label{tbl:polyfit_scores_errors}
+\end{table}
+
+The resulting bunker-to-speed curve plots are shown in figure \Cref{fig:FOC_plot_act_combi}, The resulting functions align with the findings from \bcitet{Psaraftis.2013}. The cubic law dictates that the fuel consumption rate can be defined with a proportional factor and sailing speed raised to the power of $\alpha = 3$ \bcitep{Du.2019}. However, \bcitet{Psaraftis.2013} stated that the cubic law is not applicable for low speeds, and the factor $\alpha$ can be 4 or 5 or possibly even higher for some types of ships or when travelling at high speeds.\\ 
+
+\pagebreak
+
+However, the observations outlined in \Cref{tbl:polyfit_scores_errors} imply that the cubic law may still be applicable within the context of this case study. The slight improvement in function fit performance from $n = 3$ to $n = 4$ is not substantial. There is no notable reduction in the MSE, and the achieved $R^2$ score for $n = 3$ exhibits minor variation from the best-fit model. Given that the model is primarily intended to characterize ship journeys at a steady sailing state, the limitations of the cubic law highlighted by \citet{Psaraftis.2013} may not be directly applicable.\\
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=.9\linewidth]{02_figures/poly_act_combi.png}
+%     \caption{Bunker-to-speed curve for actual data}
+%     \label{fig:FOC_plot_act_combi}
+% \end{figure}
+
+The results also reveal instances where the model predicts ship speeds exceeding the maximum engine rating, which is physically impossible. This issue can be attributed to the conversion of SOG to STW. Analysing openly accessible data from the study conducted by \bcitet{JoanPeturPetersen.2011}\footnote{\url{http://cogsys.imm.dtu.dk/propulsionmodelling/}}, a noticeable distinction between SOG and STW can be observed, typically differing by a factor of approximately 0.85. In the context of this case study, even after accounting for the current correction, the difference in speeds remains marginal. This suggests that the conversion of SOG to STW should also include the influence of speed reduction due to wind and waves. \bcitet{Molland.2017} presented illustrative speed loss curves based on varying Beaufort scales, as illustrated in Figure \Cref{fig:molland17_speedloss_windwave}. Furthermore, \bcitet{Molland.2017} presented two direct speed loss formulae due to wind and wave effects by \bcitet{Aertssen.1975} and \bcitet{kwon.2008}. However, these formulae possess a limited range of applicability and are not optimised for different vessel types. Therefore, these formulae are not implemented in this thesis.\\
 
 \begin{figure}[ht]
     \centering
@@ -525,16 +615,13 @@ This suggests that the conversion of SOG and STW should also account the effect 
     \label{fig:molland17_speedloss_windwave}
 \end{figure}
 
+\subsection{Result and Discussion of WBM on predicted SOG}\label{sec:WBM_result_discussion}
 
-\subsection{Result and Discussion of WBM}\label{sec:WBM_result_discussion}
-
-\Cref{tbl:FOC_scores_errors} present the results for FOC prediction for different modelling approches and datasets. ETR model shows best perfomance followed by RFR and DTR, the similarity in the results can be attributed to the sequential approach of GBM. The output from the BBM is used as the input for WBM as shown in \cref{fig:flowchart_GBM}. Decline in $R^2$ score, explained variance and MAPE performance across all models is also observed.\\ 
-
-This decrease in performance may be caused due to the nonlinearity of the WBM, which magnifies FOC prediction error at higher ship speed. This behaviour is demosntrated through the case study by \bcitet{Birk.2019} shown in \cref{fig:birk19_Pb_nonlinear}. At the lower end of the ship speed, a difference of $1$ knot resulted in a power difference of approximately $1200$ kW. However, at the higher end of the ship speed, the power difference increases to about $2300$ kW. Assuming that the engine in \bcitet{Birk.2019} case study has the identical SFOC as the engine in this thesis, this translates to FOC differences of approximately $0.2$ T/h and $0.4$ T/h, respectively.\\
+Table \Cref{tbl:FOC_scores_errors} presents the results for FOC prediction across different modelling approaches and datasets. The ETR model demonstrated the best predictive performance, it is closely trailed by RFR and the followed by DTR. The similarity in results can be attributed to the sequential nature of the GBM approach. Notably, there is a decline in the $R^2$ score, explained variance, and MAPE across all models. This decrease in performance could be attributed to the inherent nonlinearity of the WBM, which tends to amplify FOC prediction errors at higher ship speeds. This phenomenon is exemplified by the case study conducted by \bcitet{Birk.2019}, as depicted in Figure \Cref{fig:birk19_Pb_nonlinear}. In this study, a discrepancy of $1$ knot in ship speed resulted in a power difference of around $1200$ kW at lower speeds. However, at higher speeds, the power difference escalated to about $2300$ kW. Assuming an identical SFOC for the engine in both the \bcitet{Birk.2019} case study and this thesis, this discrepancy translates to FOC differences of approximately $0.2$ T/h and $0.4$ T/h, respectively.
 
 \begin{table}[h]
-    % \footnotesize
-    \small
+    \footnotesize
+    % \small
     \centering
     % \resizebox {\textwidth}{!}
     {\begin{tabular}{ l l c c c c c c }
@@ -566,9 +653,9 @@ This decrease in performance may be caused due to the nonlinearity of the WBM, w
     \label{fig:birk19_Pb_nonlinear}
 \end{figure}
 
-\clearpage
+This phenomenon could also account for the model's limitations in accurately predicting FOC at higher end of STW, as indicated by the plot in Figure \Cref{fig:foc_act_all_yr}. The plots also demonstrated the underfitting behaviour of the models, \Cref{fig:foc_act_all_yr} shows that all models underpredict the FOC for STW higher than 20 knots. However, the model's prediction errors remain reasonable. For instance, considering the $DS_{year}$ dataset, the MAE ranges between $0.111$ T/h and $0.133$ T/h, in the context of a mean FOC of $1.04$ T/h.\\
 
-This may also explain the inability of the model to accurately predict FOC for higher speeds. As shown in \cref{fig:foc_act_all_yr}. The plots also indicated the underfitting behavior of the generated model. Nevertheless, the prediction errors of the model is reasonable, taking the example of the $DS_{year}$ the MAE ranges between $0.111$ T/h to $0.133$ T/h for mean FOC of $1.04$ T/h.\\
+The resulting bunker-to-speed curves for different models are illustrated in Figure \Cref{fig:FOC_plot_etr_combi} for ETR, \Cref{fig:FOC_plot_rfr_combi} for RFR, and \Cref{fig:FOC_plot_dtr_combi} for DTR. Overall, the plot for ETR exhibits the highest $R^2$ score. Nevertheless, the disparities are minimal, given that the functions are almost indistinguishable across different models.\\
 
 % \begin{figure}
 %     \centering
@@ -601,8 +688,6 @@ This may also explain the inability of the model to accurately predict FOC for h
 %     \label{fig:two_images}
 % \end{figure}
 
-The resulting bunker-to-speed curves for different models are shown in figure \cref{fig:FOC_plot_etr_combi} for ETR, \cref{fig:FOC_plot_rfr_combi} for RFR and \cref{fig:FOC_plot_dtr_combi} for DTR. Overall, the plot for ETR gives the best $R^2$ score. However, the differences are marginal as the functions are nearly identical across different models.\\ 
-
 \newpage
 
 \begin{figure}[h!]
@@ -629,32 +714,30 @@ The resulting bunker-to-speed curves for different models are shown in figure \c
     \caption{Bunker-to-speed curves generated from DTR}
     \label{fig:FOC_plot_dtr_combi}
 \end{figure}
-
 \newpage
-
 
 \subsection{Key Findings}\label{sec:key_findings}
 
 \subsubsection*{\emph{Performance of BBM}}
 
-The best predictive performance for SOG from different datasets was obtained by ETR, which is able to achieve $R^2$ score of $95\%$ and MAE of 0.53 knots. The performance gap between RFR and ETR is slight, RFR is able to obtain $R^2$ score of $93\%$ and MAE of 0.55 knots. Despite being a relatively simpler model to both RFR and ETR, DTR performs reasonably well for SOG and FOC prediction, it obtained $R^2$ score of $89\%$ and MAE of 0.69 knots. Simple MLR model may be insufficient for implementation, as big performance gap is found between MLR and other tree-based models, with $R^2$ score of $72\%$ and MAE of 1.16 knots.\\
+The best predictive performance for SOG from different datasets was obtained by ETR, which is able to achieve $R^2$ score of $95\%$ and MAE of 0.53 knots. The performance gap between RFR and ETR is slight, RFR is able to obtain $R^2$ score of $93\%$ and MAE of 0.55 knots. Despite being a relatively simpler model to both RFR and ETR, DTR performs reasonably well for SOG and FOC prediction, it obtained a $R^2$ score of $89\%$ and MAE of 0.69 knots. A simple MLR model may be insufficient for implementation, as substantial performance gap is found between MLR and other tree-based models, with $R^2$ score of $72\%$ and MAE of 1.16 knots.\\
 
-The quality and quantity of data are closely interrelated factors that significantly impact model performance. Notably, there are noticeable differences in the performance between the $DS_{winter}$ and $DS_{summer}$ datasets, with an increase of approximately $6\%$ in the $R^2$ score and a reduction of about 0.1 knots in MAE is achievable with an increase in about 50 data points. However, the quantity of data alone is insufficient to ensure an increase in model performance. This observation is evident from the $DS_{year}$ datasets, which contain approximately twice as much data as the other datasets, yet the model's performance is not superior to that of the $DS_{winter}$ dataset. This suggests that the quality of the $DS_{summer}$ dataset may compromise the model's performance when using the $DS_{year}$ dataset.\\
+The quality and quantity of data are closely interrelated factors that significantly impact model performance. There are noticeable differences in the performance between the $DS_{winter}$ and $DS_{summer}$ datasets, with an increase of approximately $6\%$ in the $R^2$ score and a reduction of about 0.1 knots in MAE is achievable with an increase in about 50 data points. However, the quantity of data alone is insufficient to ensure an increase in model performance. This observation is evident from the $DS_{year}$ datasets, which contain approximately twice as much data as the other datasets, yet the model's performance is not superior to that of the $DS_{winter}$ dataset. This suggests that the quality of the $DS_{summer}$ dataset may compromise the model's performance when using the $DS_{year}$ dataset.\\
 
-For BBM, hyperparameter optimisation substantially benefits the DTR model, while the impact of optimization on RFR and ETR models is minimal. Analyzing feature importances and model structure visualisation, the RFR model recognizes draught as the most influential factor affecting SOG prediction. While the ETR and DTR models also identify this factor, but with a lesser degree of recognition.\\
+For BBM, hyperparameter optimisation substantially benefits the DTR model, while the impact of optimization on RFR and ETR models is minimal. Analysing feature importances and model structure visualisation, the RFR model recognizes draught as the most influential factor affecting SOG prediction. While the ETR and DTR models also identify this factor, but with a lesser degree of recognition.\\
 
 \subsubsection*{\emph{Performance of WBM}}
 
 
-Due to the sequential approach of GBM, the predictive performance of BBM are carried over to WBM during FOC prediction. Similar to BBM, ETR achieved $R^2$ score of $88\%$ with MAE of 0.097 T/h for the best dataset. This is then followed with RFR which achieved $R^2$ score of $87\%$ and MAE of 0.099 T/h, DTR obtained $78\%$ for $R^2$ and 0.123 T/h for MAE. MLR sees a very significant decline in $R^2$ score, only achieving $44.28\%$ and MAE of 0.34 T/h.\\
+Due to the sequential approach of GBM, the predictive performance of BBM is carried over to WBM during FOC prediction. Similar to BBM, ETR achieved a $R^2$ score of $88\%$ with MAE of 0.097 T/h for the best dataset. This is then followed by RFR which achieved a $R^2$ score of $87\%$ and MAE of 0.099 T/h, DTR obtained $78\%$ for $R^2$ and 0.123 T/h for MAE. MLR sees a very significant decline in $R^2$ score, only achieving $44.28\%$ and MAE of 0.34 T/h.\\
 
-The nonlinear relation between speed and bunker means that significant deviation of SOG leads to amplified magnitude of errors for FOC. This is evident in the case with MLR, the model already made relatively larger error to other tree-based models during SOG prediction. With that, it is important to ensure that the SOG prediction of BBM is to be optimised as much as possible to ensure accurate FOC prediction. In the case study, the decline in performance in apparent when comparing the SOG prediction in \cref{tbl:SOG_pred_descriptive} and \cref{tbl:FOC_scores_errors}.\\
+The nonlinear relation between speed and bunker means that significant deviation of SOG leads to an amplified magnitude of errors for FOC. This is evident in the case of MLR, the model already made relatively larger errors than other tree-based models during SOG prediction. With that, it is important to ensure that the SOG prediction of BBM is to be optimised as much as possible to ensure accurate FOC prediction. In the case study, the decline in performance is apparent when comparing the SOG prediction in \Cref{tbl:SOG_pred_descriptive} and \Cref{tbl:FOC_scores_errors}.\\
 
-The power estimation method by Holtrop-Mennen method resulted in a 4\textsuperscript{th} order bunker-to-speed function. This result aligns with previous research and therefore, relatively simpler model such as cubic law can be used as a replacement for the WBM part of the GBM. For calm water resistance $R_{CALM}$, all resistance components make noticeable contribution to calm water resistance $R_{CALM}$ and the additional resistance due to wind and wave makes up about $3.5\%$ of total resistance $R_{TOT}$.\\
+The power estimation method by Holtrop-Mennen method resulted in a 4\textsuperscript{th} order bunker-to-speed function. However, the resulting regression function of 3\textsuperscript{rd} order shows comparable performance. Therefore, a relatively simpler model such as cubic law is a feasible replacement for the WBM part of the GBM. For calm water resistance $R_{CALM}$, all resistance components make noticeable contributions to calm water resistance $R_{CALM}$ and the additional resistance due to wind and wave makes up about $3.5\%$ of total resistance $R_{TOT}$.\\
 
 \subsubsection*{\emph{Application of outlier rejection to test data}}
 
-Two possible solutions to improve model performance was presented \cref{sec:result_discussion_BBM}, since the addition of data points is not feasible, the application of outlier rejection is adopted in this section. The outlier in higher speed is not applicable, however, for the lower limit, it was found to be around 8 knots which is based on the mean and standard deviation of $DS_{year}$ shown in \cref{tbl:testyear_dataset_descriptive}. Due to the sparsity of data points at low SOG, the amount of data points are not compromised.\\
+Two possible solutions to improve model performance was presented \Cref{sec:result_discussion_BBM}, since the addition of data points is not feasible, the application of outlier rejection is adopted in this section. The outlier in higher speed is not applicable, however, for the lower limit, it was found to be around 8 knots which are based on the mean and standard deviation of $DS_{year}$ shown in \Cref{tbl:testyear_dataset_descriptive}. Due to the sparsity of data points at low SOG, the amount of data points is not compromised.\\
 \begin{table}[h!]
     % \footnotesize
     \small
@@ -703,11 +786,11 @@ Two possible solutions to improve model performance was presented \cref{sec:resu
 \caption{Performance indices for FOC prediction with outlier rejection}\label{tbl:FOC_scores_errors_rejection}
 \end{table}
 
-The results for SOG and FOC prediction are summarised in \cref{tbl:sog_scores_errors_rejection} and \cref{tbl:FOC_scores_errors_rejection}. In the case of both SOG and FOC prediction, there is an improvement observed in all aspects of the performance metrics for both RFR and ETR. While DTR displays a less accurate fit, it exhibits decrease in prediction errors. Through the outlier rejection, it can be inferred that the model in this particular study is better suited for higher sailing speeds, given its training was performed on datasets with higher sailing speed. Moreover, it is also observed that the RMSE notably reduces, which might be attributed to the removal of data points below the new threshold that were treated as outliers. \\
+The results for SOG and FOC prediction are summarised in \Cref{tbl:sog_scores_errors_rejection} and \Cref{tbl:FOC_scores_errors_rejection}. In the case of both SOG and FOC prediction, there is an improvement observed in all aspects of the performance metrics for both RFR and ETR. While DTR displays a less accurate fit, it exhibits a decrease in prediction errors. Through the outlier rejection, it can be inferred that the model in this particular study is better suited for higher sailing speeds, given its training was performed on training datasets which are clustered at higher sailing speeds. Moreover, it is also observed that the RMSE notably reduces, which might be attributed to the removal of data points below the new threshold that were treated as outliers. \\
 
 \subsubsection*{\emph{Overall performance of GBM}}
 
-Finally, it can be concluded that GBM can predict SOG and FOC using a fusion of AIS data and weather data. This modeling approach benefits from the predictive power of BBM, which is utilised for SOG prediction. Subsequently, WBM facilitates the estimation of actual bunker consumption without neglecting fundamental vessel knowledge.  However, due to the sequential model nature, it is crucial to ensure thorough data processing and model optimisation to minimise errors during initial SOG prediction. Given the nonlinear relationship between bunker consumption and speed, any initial prediction errors in BBM will be amplified.\\
+Finally, it can be concluded that GBM is able to accurately predict SOG and FOC using a fusion of AIS data and weather data. This modelling approach benefits from the predictive power of BBM, which is utilised for SOG prediction. Subsequently, WBM facilitates the estimation of actual bunker consumption without neglecting fundamental vessel knowledge.  However, due to the sequential model nature, it is crucial to ensure thorough data processing and model optimisation to minimise errors during initial SOG prediction. Given the nonlinear relationship between bunker consumption and speed, any initial prediction errors in BBM will be amplified.\\
 
 
 
