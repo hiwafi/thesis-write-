@@ -14,7 +14,7 @@ As such, prompted by volatility and ever-increasing bunker fuel price, developin
 
 This thesis proposes an intuitive, data-driven modelling approach that considers varying ship state and environmental conditions to predict fuel consumption. To ensure the abundance of data during modelling, this thesis utilise data fused between Automatic Identification System (AIS) and weather data.\\
 
-To achieve this, Grey Box Model (GBM) approach is selected. ML approach using tree-based regressor is considered to provide a certain degree of intuitiveness to predict ship over ground (SOG) over different journey periods using fused AIS and weather data. Predicted SOG is then converted to actual ship speed i.e. Speed Through Water (STW). STW will be used as the input for modelling of Fuel Oil Consumption (FOC), which is carried out through Holtrop-Mennen estimation method \bcitep{Holtrop.1978,Holtrop.1982,Holtrop.1984}, a power estimation method based on hydrodynamic laws which consider resistance forces exerted by environmental conditions.\\
+To achieve this, Grey Box Model (GBM) approach is selected. ML approach using tree-based regressor is considered to provide a certain degree of intuitiveness to predict ship over ground (SOG) over different journey periods using fused AIS and weather data. Predicted SOG is then converted to actual ship speed i.e. Speed Through Water (STW). STW will be used as the input for the modelling of Fuel Oil Consumption (FOC), which is carried out through Holtrop-Mennen estimation method \bcitep{Holtrop.1978,Holtrop.1982,Holtrop.1984}, a power estimation method based on hydrodynamic laws which consider resistance forces exerted by environmental conditions.\\
 
 \pagebreak
 
@@ -31,9 +31,9 @@ The following Research Questions (RQs) could be raised during the development of
 The following research boundaries are set throughout this thesis:
 
 \begin{itemize}
-    \item Due to the continuous nature of the SOG, only the regression aspect of ML will be considered.
+    \item The weather information and AIS data are assumed to be true. Any uncertainties from AIS data and weather data are neglected. 
     \item The focus of this work is a detailed study of the performance and possible optimisation configuration of different tree-based predictors for SOG. As such, an exhaustive comparison study between different types of machine learning models will not be performed.
-    \item In the case study, the approximation for ship parameters and dimensions is based on a similar type of ship with nearly identical dimensions. 
+    \item In the case study, the approximation for incomplete ship parameters and dimensions is based on a similar type of ship with nearly identical dimensions. 
 \end{itemize}
 
 \section{Thesis Contributions}\label{sec:contributions}

@@ -257,6 +257,39 @@ autogobble = true
 %     autogobble = true
 % }
 
+% Define Pylance color scheme
+\definecolor{pylance-purple}{RGB}{136, 0, 137}
+\definecolor{pylance-green}{RGB}{49, 133, 80}
+\definecolor{pylance-blue}{RGB}{41, 60, 85}
+\definecolor{pylance-gray}{RGB}{75, 85, 98}
+
+\lstset{
+    language=Python,        % Choose the language
+    basicstyle=\ttfamily\scriptsize\color{pylance-blue},  % Font style for code
+    keywordstyle=\color{pylance-purple},   % Style for keywords
+    commentstyle=\color{pylance-green},     % Style for comments
+    stringstyle=\color{pylance-gray},    % Style for strings
+    numbers=left,           % Line numbers on the left
+    numberstyle=\tiny\color{pylance-gray},  % Style for line numbers
+    stepnumber=1,           % Line numbers increment by 1
+    numbersep=5pt,          % Distance between line numbers and code
+    % basicstyle=\ttfamily\scriptsize,
+    backgroundcolor=\color{white}, % Background color for code
+    showspaces=false,       % Don't show spaces in code
+    showstringspaces=false, % Don't show spaces in strings
+    showtabs=false,         % Don't show tabs in code
+    frame=single,           % Frame around code
+    rulecolor=\color{pylance-gray},
+    tabsize=4,              % Tab size
+    captionpos=b,           % Position of captions
+    breaklines=true,        % Automatically break lines
+    breakatwhitespace=true, % Break lines at white space
+    escapeinside={\%*}{*)}, % Define characters for escaping within code
+    morekeywords={True, False, None}, % Additional keywords
+    autogobble = true
+}
+
+
 
 \ifxetex
 \usepackage{fontspec}
