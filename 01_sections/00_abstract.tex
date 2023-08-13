@@ -1,0 +1,12 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+There has been various efforts to model energy efficient operation of shipping operations which is necessitated by the volatility of bunker fuel price and stringent environmental regulations within the maritime industry. It is widely regarded that ship speed as one of the most influential factors impacting bunker fuel consumption. Machine learning models have demonstrated promising capabilities in predicting fuel consumption (FOC). However, the more powerful machine learning model are comparatively complex and lacking in interpretability, making it challenging to comprehend the rationale behind their decisions. Additionally, in some cases, these models could potentially generate predictions that are not aligned with established knowledge of ship operations. The success of these models is also heavily reliant on the quality and quantity of the data available.\\
+
+Therefore, an intuitive, data-driven modelling approach that considers varying ship state and environmental conditions to predict fuel consumption is proposed in this study. To ensure the abundance of data during modelling, this thesis combines Automatic Identification System data and weather data. Grey Box Modelling approach is implemented for FOC prediction, which divides the prediction of ship speed and FOC into two stage. The prediction of speed over ground utilises Random Forest Regressor, a tree-based machine learning approach that offers a certain degree of intuitiveness. Consequently, the FOC prediction based on predicted speed employs empirical formula by Holtrop-Mennen, ensuring adherence to established physical knowledge of a vessel.\\
+
+In the case study presented in this thesis, the optimal SOG prediction yields mean absolute percentage error of $3.94\%$ knots with $R^2$ score of $93.41\%$. Then the consequent FOC prediction using the predicted achieved $R^2$ score of $86.57\%$ and mean absolute percentage error stands at $12.06\%$. Improvements in predictive capabilities could potentially be attained by using Extra Tree Regressor. Nonetheless, these results indicated the viability of the proposed methodology for forecasting energy-efficient ship operations.\\
+
+
+
+\textbf{\small Keywords: Energy efficient operation, Random Forest Regression, Ship speed prediction, Fuel consumption prediction, Grey Box Model}.

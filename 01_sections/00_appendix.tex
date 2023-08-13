@@ -4,4 +4,783 @@
 
 %====================================================================================
 
-Code available at \url{https://github.com/hiwafi/thesis-ais.git}
+\section*{Python Code}
+
+The code use in this thesis is developed using Python 3.9.15. The following code snippets highlight the most important part of the script. Full code is available at \url{https://github.com/hiwafi/thesis-ais.git}.
+
+\subsection*{Package Loading}
+
+\begin{lstlisting}[language=Python]
+    import pandas as pd
+    import numpy as np
+    import seaborn as sns
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import math
+    import datetime
+    import pickle
+    import joblib
+    import time 
+\end{lstlisting}
+
+\subsection*{Loading Dataset}
+
+\begin{lstlisting}[language=Python]
+    # Load the data to the script
+
+    dfmain = pd.read_csv("AIS_weather_H_ok2_copy.csv",parse_dates=["Time"])
+    dfmain = dfmain[dfmain['LAT'] > 55.04 ]
+
+
+    dfpre = pd.read_csv("AIS_weather_h_rename_copy.csv",parse_dates=["Time"])
+    dfpre = dfpre[dfpre['LAT'] > 55.04 ]
+
+\end{lstlisting}
+
+\subsection*{Splitting Datasets \texttt{KNNImputer}}
+
+\begin{lstlisting}[language=Python]
+    from sklearn.model_selection import train_test_split
+    train_set, test_set = train_test_split(df, test_size=0.25, random_state=42)
+
+\end{lstlisting}
+
+\subsection*{Feature Selection}
+
+\begin{lstlisting}[language=Python]
+    df_ship = df.drop(['Unnamed: 0','Time','LON','LAT','Air density above oceans',
+    'Surface pressure','Width','Length'],axis=1)
+
+    df_ship2 = df_ship.rename({'Max wave height': 'waveheight', 'Draught': 'draught',
+                           'SOG': 'sog', 'Wind Speed': 'windspeed', 
+                           'True Wind Direction': 'truewinddir','Temperature above oceans' : 'oceantemperature',
+                           'COG': 'cog', 'Current Speed' : 'curspeed','True Wave Direction' : 'truewavedir',
+                            'Swell period': 'swellperiod','Wind wave period': 'windwaveperiod','Sea surface temperature': 'surftemp',
+                            'Combined wind waves and swell height': 'windwaveswellheight','Swell height': 'swellheight','Wind wave height': 'windwaveheight',
+                            'Heading': 'heading','True Current Direction': 'truecurrentdir','True Swell Direction': 'trueswelldir',
+                            'True Wind Wave Direction': 'truewindwavedir','Wave period': 'waveperiod',
+                            'True North Wind Direction' : 'truenorthwinddir' , 'True North Current Direction' : 'truenorthcurrentdir'
+                           }, axis=1) 
+
+    df_ship2 = df_ship2.drop(['waveheight','swellheight','windwaveheight',
+                           'windwaveperiod','swellperiod',
+                           'truewindwavedir','trueswelldir',
+                           'truenorthcurrentdir','truenorthwinddir'],axis=1)
+   
+
+
+\end{lstlisting}
+
+\subsection*{Imputing Dataset using \texttt{KNNImputer}}
+
+\begin{lstlisting}[language=Python]
+    # Impute for training data 
+
+    import numpy as np
+    from sklearn.impute import KNNImputer
+    
+    imputer = KNNImputer(n_neighbors=50)
+    imputer.fit(df_ship2)
+    
+    # Transform the imputed dataset
+    
+    X = imputer.transform(df_ship2)
+    
+    # Set column heading to make sure they have same name 
+    
+    df_ship2tr = pd.DataFrame(X, columns=df_ship2.columns, index=df_ship2.index)
+
+\end{lstlisting}
+
+\subsection*{Selecting training label and features}
+
+\begin{lstlisting}[language=Python]
+    x_train = df_ship2tr.drop(['sog'],axis=1)
+    y_train = df_ship2tr.sog
+
+\end{lstlisting}
+
+\subsection*{Training optimised model}
+
+\begin{lstlisting}[language=Python]
+    from sklearn.ensemble import RandomForestRegressor
+    model_rfr_ftr_hpov = RandomForestRegressor(n_estimators = 100, min_samples_split = 2 ,min_samples_leaf = 1, max_features = 10, max_depth=120, random_state=42)
+    model_rfr_ftr_hpov.fit(x_train,y_train)
+
+    from sklearn.ensemble import ExtraTreesRegressor
+
+    model_etr_hpov = ExtraTreesRegressor(random_state=42 n_estimators=800, min_samples_split=9,min_samples_leaf=1, max_features=12, max_depth=120,)
+    model_etr_hpov.fit(x_train,y_train)
+
+    from sklearn.tree import DecisionTreeRegressor
+
+    model_dtr_hpov = DecisionTreeRegressor(min_samples_split=7, min_samples_leaf=10,max_features=12, max_depth=8)
+    model_dtr_hpov.fit(x_train,y_train)
+
+\end{lstlisting}
+
+\subsection*{Saving trained model}
+
+\begin{lstlisting}[language=Python]
+    # # Saving the model to local directory
+  
+    filename = 'savemodel_rfr_ftr_hpov.sav'
+    joblib.dump(model_rfr_ftr_hpov,filename)
+
+    filename = 'savemodel_etr_hpov.sav'
+    joblib.dump(model_etr_hpov,filename)
+    
+    filename = 'savemodel_dtr_hpov.sav'
+    joblib.dump(model_dtr_hpov,filename)
+    
+    filename = 'savemodel_mlr_ftr.sav'
+    joblib.dump(model_mlr,filename)
+
+\end{lstlisting}
+
+\subsection*{Hyperparameter Optimisation for RFR}
+
+\begin{lstlisting}[language=Python]
+    from pprint import pprint
+    from sklearn.model_selection import RandomizedSearchCV
+    # Modify the search space of RFR here
+
+    # Number of trees in random forest
+    n_estimators = [100,200,300,400,500,600,700,800,900,1000]
+    # Number of features to consider at every split
+    max_features = [6,7,8,9,10,11,12]
+    # Maximum number of levels in tree
+    max_depth = [int(x) for x in np.linspace(10, 200, num = 20)]
+    max_depth.append(None)
+    # Minimum number of samples required to split a node
+    min_samples_split = [2, 5, 10]
+    # Minimum number of samples required at each leaf node
+    min_samples_leaf = [1, 2, 3,4,5,6,7,8,9,10]
+    # Method of selecting samples for training each tree
+    # bootstrap = [True]# Create the random grid
+    random_grid = {'n_estimators': n_estimators,
+                'max_features': max_features,
+                'max_depth': max_depth,
+                'min_samples_split': min_samples_split,
+                'min_samples_leaf': min_samples_leaf}
+    pprint(random_grid)
+
+    # Use the random grid to search for best hyperparameters
+    # First create the base model to tune
+    rf = RandomForestRegressor()
+    # Random search of parameters, using 3 fold cross validation, 
+    # search across 100 different combinations, and use all available cores
+    rf_random = RandomizedSearchCV(estimator = model_rfr_ftr, param_distributions = random_grid, n_iter = 100, cv = 5, verbose=2, random_state=42,n_jobs=-1)# Fit the random search model
+    rf_random.fit(x_test, y_test)
+\end{lstlisting}
+
+\subsection*{Visualising trained tree}
+
+\begin{lstlisting}[language=Python]
+    # Plot tree using graphviz, generate 1st tree in RFR (Graphviz must be installed in local computer)
+
+    from IPython.display import display
+    from sklearn import tree
+    import graphviz
+    
+    dot_data_rfr = tree.export_graphviz(model_rfr_ftr_hpov.estimators_[1], 
+                      feature_names=x_train.columns.values.tolist(),  
+                    #   class_names=class_names,  
+                      filled=True, rounded=True,  
+                      special_characters=True,
+                       out_file=None,
+                       max_depth=3,
+                               )
+    
+    display(graphviz.Source(dot_data_rfr))
+    
+    graph = graphviz.Source(dot_data_rfr)
+    graph.format = 'png'
+    graph.render('rfr_mod_it1',view=True)
+\end{lstlisting}
+
+\subsection*{Cross-validation of model}
+
+\begin{lstlisting}[language=Python]
+    def evaluate(model, features_x, labels_y):
+        from sklearn.model_selection import cross_val_score
+
+        score_r2 = cross_val_score(model,features_x,labels_y,
+                            scoring='r2',cv=10)
+        rsquared = score_r2.mean()
+        stadev_rsquared = score_r2.std()
+        max_rsquared = score_r2.max()
+        min_rsquared = score_r2.min()
+
+        score_expVar = cross_val_score(model,features_x,labels_y,
+                            scoring='explained_variance',cv=10)
+        expVar = score_expVar.mean()
+        stadev_expVar = score_expVar.std()
+        max_expVar = score_expVar.max()
+        min_expVar = score_expVar.min()
+
+        score_MAE = cross_val_score(model,features_x,labels_y,
+                            scoring='neg_mean_absolute_error',cv=10)
+        MAE = -score_MAE.mean()
+        stadev_MAE = score_MAE.std()
+        max_MAE = -score_MAE.max()
+        min_MAE = -score_MAE.min()
+
+        score_MAD = cross_val_score(model,features_x,labels_y,
+                            scoring='neg_median_absolute_error',cv=10)
+        MAD = -score_MAD.mean()
+        stadev_MAD = score_MAD.std()
+        max_MAD = -score_MAD.max()
+        min_MAD = -score_MAD.min()
+
+
+
+        score_MSE = cross_val_score(model,features_x,labels_y,
+                            scoring='neg_root_mean_squared_error',cv=10)
+        score_RMSE = np.sqrt(-score_MSE)
+        RMSE = score_RMSE.mean()
+        stadev_RMSE = score_RMSE.std()
+        max_RMSE = score_RMSE.max()
+        min_RMSE = score_RMSE.min()
+
+
+        print(f"Model Performance of {model}")
+        print(f"R^2 = {rsquared:0.4f}, std = {stadev_rsquared:0.4f}, max = {max_rsquared:0.4f}, min = {min_rsquared:0.4f}")
+        print(f"explained Variance = {expVar:0.4f}, std = {stadev_expVar:0.4f}, max = {max_expVar:0.4f}, min = {min_expVar:0.4f}")
+        print(f"MAE = {MAE:0.4f}, std = {stadev_MAE:0.4f}, max = {max_MAE:0.4f}, min = {min_MAE:0.4f}")
+        print(f"RMSE = {RMSE:0.4f}, std = {stadev_RMSE:0.4f}, max = {max_RMSE:0.4f}, min = {min_RMSE:0.4f}")
+        print(f"MAD = {MAD:0.4f}, std = {stadev_MAD:0.4f}, max = {max_MAD:0.4f}, min = {min_MAD:0.4f}\n")
+
+        return score_r2,score_expVar,score_MAE,score_RMSE,score_MAD        
+\end{lstlisting}
+
+\subsection*{Loading of trained model}
+
+\begin{lstlisting}[language=Python]
+    import joblib
+
+    model_rfr_hpov = joblib.load('savemodel_rfr_ftr_hpov.sav')
+    
+    model_etr_hpov = joblib.load('savemodel_etr_hpov.sav')
+    
+    model_dtr_hpov = joblib.load('savemodel_dtr_hpov.sav')
+    
+    model_mlr_ftr = joblib.load('savemodel_mlr_ftr.sav')       
+\end{lstlisting}
+
+\subsection*{Evaluating predictive performance for SOG using testing data}
+
+\begin{lstlisting}[language=Python]
+    def evaluate_SOG(model,x_date,y_date):
+        from sklearn.metrics import mean_squared_error,mean_absolute_percentage_error,r2_score,explained_variance_score,median_absolute_error,mean_absolute_error
+        
+        def label_predict(model,test_features):
+            predictions = model.predict(test_features)
+            return predictions
+        
+        predictions = label_predict(model,x_date)
+
+        Rsquared_SOG = r2_score(y_date,predictions)
+        expVar_SOG = explained_variance_score(y_date,predictions)
+        MAE_SOG = mean_absolute_error(y_date,predictions)
+        RMSE_SOG = np.sqrt(mean_squared_error(y_date, predictions))
+        MAD_SOG = median_absolute_error(y_date,predictions)
+        MAPE_SOG = mean_absolute_percentage_error(y_date, predictions)
+        
+
+        print(f"Model Performance of {model}")
+        print(f"R^2 SOG = {Rsquared_SOG:0.4f}")
+        print(f"Explained Variance SOG = {expVar_SOG:0.4f}")
+        print(f"MSE SOG = {MAE_SOG:0.4f} Knots")    
+        print(f"RMSE SOG = {RMSE_SOG:0.4f} Knots")
+        print(f"MAD SOG = {MAD_SOG:0.4f} Knots")    
+        print(f"MAPE SOG = {MAPE_SOG*100:0.4f} %")     
+\end{lstlisting}
+
+\subsection*{Function to convert SOG to STW}
+
+\begin{lstlisting}[language=Python]
+    def sog_corr(sog,gamma,heading,current_speed):
+        # Conversion of predicted SOG to m/s
+        vgms = sog/1.9438
+        rad_gamma = np.deg2rad(gamma)
+        rad_cog = np.deg2rad(heading)
+        # Calculation of the predicted x-component of SOG
+
+        vgx = vgms * np.sin(rad_cog)
+        vcx = current_speed * np.sin(rad_gamma)
+        stw_x = vgx - vcx
+
+        # Calculation of the predicted y-component of SOG 
+
+        vgy = vgms * np.cos(rad_cog)
+        vcy = current_speed * rad_gamma
+        stw_y = vgy - vcy
+
+        vwms_p = np.sqrt(stw_x**2 + stw_y**2)
+        stw_pred = vwms_p*1.9438
+
+        return stw_pred
+\end{lstlisting}
+
+\subsection*{Power estimation function}
+
+\begin{lstlisting}[language=Python]
+    def foc_fun(stw,T_dyn,windspeed,truewindir,H_s,truewavedir):
+        # Ship Information, that are readily available in ship specification
+        loa = 158 # ship overall length
+        lwl = 144.8 # ship waterline length, m
+        lpp = 0.97*lwl # ship perpendicular length , m, according to information
+        B = 24.5 # Ship breadth, m
+        depth = 13.8 # Ship depth. m
+        T_n = 5.85 # Nominal max draught , m
+        # T_n = 5.7 # Nominal design draught , m
+        dwt = 5110 # ship dead weight , t
+        V_n = 17.7 # ship design speed, knots
+        # V_n = 18 # ship design speed, knots
+
+
+        # Environmental Constants
+
+        g = 9.805 # gravity, kg/ms^2 
+        rho_sea = 1025 # kg/m3
+        nu_sea = 0.00000118 # Dynamic viscosity of sea m^2/s
+        rho_air = 1.25 # density air 
+
+        # Any other additional ship parameters beyond here are approximated based on literature review.
+
+        # Convert STW to m/s, stw with only current correction
+
+        stw_ms = stw / 1.94384
+
+        # Switch between actual and predicted here 
+        # Calculation for Block coefficient,C_b, according to Schneekluth and Bertram 1998
+        # Then Froude number is required
+
+        V_n = 17.7/1.94384
+        # V_n = 18/1.94384
+
+        Fr_n = V_n / math.sqrt(g*lwl)
+
+        C_b = -4.22 + 27.8*math.sqrt(Fr_n) - 39.1*Fr_n + 46.6*(Fr_n)**3
+
+        # calculation for midship section coefficient, C_m according to Jensen from Birk
+
+        C_m = 1 / (1+(1-C_b)**3.5)
+
+        # prismatic coefficient C_p can be calculated according to Biran
+
+        C_p = C_b/C_m 
+
+        # Displacement calculation according to Barras 
+
+        dsp = C_b * lwl * B * T_n
+
+        # coefficient c14 to account for stern shape according to holtrop mennen
+
+        C_stern = 10 # assume u shaped stern
+        c14 = 1 + 0.011*C_stern 
+        
+        # Calculate length of run according to holtrop mennen
+
+        # lcb = -2/100 # according to Barras
+        lcb = -(0.44*Fr_n - 0.094) # according to Guldhammer and Harvald
+
+        # L in holtrop mennen is lwl
+
+        lr = lwl*(1-C_p+(0.06*C_p*lcb/(4*C_p-1)))
+
+        # now the (1+k1) can be calculated
+
+        k1a = 0.487118*c14*(B/lwl)**1.06806
+        k1b = (T_dyn/lwl)**0.46106
+        k1c = (lwl/lr)**0.121563
+        k1d = (lwl**3/dsp)**0.36486
+        k1e = (1-C_p)**-0.604247
+
+        k1_const = 0.93 + k1a*k1b*k1c*k1d*k1e
+
+        # Calculate Reynold number and Coefficient of Friction C_f. Here, the C_f will be dynamic and depend on the velocity of the ship
+
+        Re =( stw_ms * lwl ) / nu_sea
+        C_f = 0.075 / (np.log10(Re-2)**2)
+
+        # Calculate the appendage area of bare hull S_bh
+        # Formula according to Holtrop Mennen
+
+        # Calculate the waterplane area coefficient 
+        # Formula according to Schneekluth and Bertram
+
+        C_wp = (1+2*C_b)/3
+
+        # Calculate transverse bulb area A_bt, Transom area A_t and immersed midship section area A_m according to Kim 2019
+
+        # dfprog['A_m'] = B*dfprog['draught']*C_m
+        # Borrow estimation of Am from Guldahmmer and Harvald
+        A_m = dsp/(lpp*C_p)
+        A_t = 0.051 * A_m
+        A_bt = 0.085*A_m # From approximation of Kracht78, Similar to Charcalis
+
+        sbh_a = lwl*(2*T_dyn+B)*math.sqrt(C_m)
+        sbh_b = 0.453
+        sbh_c = 0.4425*C_b
+        sbh_d = 0.2862*C_m
+        sbh_e = 0.003467*(B/T_dyn)
+        sbh_f = 0.3696*C_wp
+        sbh_g = 2.38*A_bt/C_b
+
+        S_bh = sbh_a*(sbh_b+sbh_c-sbh_d+sbh_e+sbh_f)+sbh_g
+
+        # Calculate R_f
+
+        R_f = 0.5 * rho_sea * stw_ms**2 * C_f * S_bh * k1_const
+ 
+        # Calculate resistance due to appendage
+
+        # Assume S_app
+        # Taken from Holtrop Mennen worked example
+        # S_app = 50 # m^2 
+
+        # Calculation of appendage area according to Hollenbach method, the formula is for twin screw ship
+
+        # Lower limit
+        S_app_lo = S_bh.mean()*(0.028+0.01*math.exp(-(lpp*T_n)/1000))
+
+        # Upper limit
+        S_app_hi = S_bh.mean()*(0.0325+0.045*math.exp(-(lpp*T_n)/1000))
+
+        # The following appendage area are scaled from the picture of the ship
+        # Constant k here means (1+k_2) !
+
+        D_shaft = 0.55 # m, approx
+        l_shaft = 13.54 # m, approx
+
+        S_app_shaft = 2*math.pi * D_shaft * l_shaft
+        k2_shaft = 3   
+
+        h_rudder = 4.06 #m, approx
+        B_rudder = 1.99 #m, approx
+        S_app_rudder = 2 * h_rudder * B_rudder #m, two side
+        k2_rudder = 3
+
+        h_skeg = 4.41 #m, approx
+        l_skeg = 26.23 #m, approx
+        S_app_skeg =  h_skeg * l_skeg #two side (triangle)
+        k2_skeg = 1.5
+
+        S_app = S_app_shaft + S_app_rudder + S_app_skeg
+
+        k2_const = (k2_shaft*S_app_shaft + k2_rudder*S_app_rudder + k2_skeg*S_app_skeg)/S_app
+
+        # # from holtrop mennen, take case of twin screw
+        # k2_const = 2.8
+
+        # Add resistance due to Bow Thrusters
+
+        d_th = 2.15 #m, approx
+
+        # Use formula from Hollenach
+        C_dth = 0.003 + 0.003*((10*d_th/T_n)-1)
+        # C_dth = 0.003 # The picture shows that the thruster are fairly parallel to midship area
+        # There are two bow thruster in this ship
+        R_th = rho_sea*stw_ms**2*math.pi*d_th**2*C_dth
+
+        R_app = (0.5 * rho_sea * stw_ms**2 * C_f * S_app *k2_const) + 2*R_th
+
+        # Calculate wave-making and wave-breaking resistance
+
+        c7 = B/lwl
+        T_fwd = T_dyn # See reasoning from Rakke16 
+        h_b = 0.6*T_n # must not exceed 0.6 T_f, here T_n = T_f (design), reasong and coefficient value taken from Rakke
+    
+
+        # All formulas here are listed by Holtrop Mennen
+
+        c3 = 0.56 * A_bt**1.5 / (B*T_dyn*(0.31*np.sqrt(A_bt)+T_fwd-h_b))
+        c2 = np.exp(-1.89*np.sqrt(c3))
+        c5 = 1 - 0.8*(A_t/(B*T_dyn*C_m))
+        lambda_const = (1.446 * C_p) - 0.03*(lwl/B)
+        c16 = 8.07981*C_p - 13.8673*C_p**2 + 6.984388*C_p**3
+        m_1 = 0.0140407 * (lwl/T_dyn) - 1.75254*(dsp**(1/3)/lwl) -  4.79323*(B/lwl) - c16
+        c15 = -1.69385
+
+        # Use dynamic Froude here to refect the actual resistance due to ship movement 
+
+        Fr_n_dyn = stw_ms / math.sqrt(g*lwl)
+        # Updated formula use m_4
+        m4 = 0.4 * c15 * np.exp(-0.034*Fr_n_dyn **-3.29)
+
+        i_e = 1 + 89*math.exp(-(lwl/B)**0.80856*(1-C_wp)**0.30484*(1-C_p-0.0225*lcb)**0.6367*(lr/B)**0.34574*((100*dsp)/lwl**3)**0.16302)
+        c1 = 2223105 * c7**3.78613 * (T_dyn/B)**1.07961*(90-i_e)**-1.37565
+        d = -0.9
+
+        # Use updated formula with m4
+
+        R_w = c1*c2*c5*dsp*g*rho_sea*np.exp(m_1*Fr_n_dyn **d+m4*np.cos(lambda_const*Fr_n_dyn **-2))
+
+        P_b = 0.56*np.sqrt(A_bt)/(T_fwd-1.5*h_b)
+        Fn_i = stw_ms / np.sqrt(g*(T_fwd-h_b-0.25*np.sqrt(A_bt))+0.15*stw_ms**2)
+        R_b = 0.11 * np.exp(-3*P_b**-2)*Fn_i**3*A_bt**1.5*rho_sea*g/(1+Fn_i**2)
+
+        #Calculate Transom Resistance 
+
+        Fn_tr = stw_ms / np.sqrt(2*g*A_t/(B+(B*C_wp)))
+
+        # Use condition to calculate Froude due to transom
+
+        cond_Fn_tr = [Fn_tr < 5 ]
+        cond_c6 = [0.2*(1-0.2*Fn_tr)]
+
+        c6 = np.select(cond_Fn_tr,cond_c6,0)
+        R_tr = 0.5*rho_sea*10**2*A_t*c6
+
+        # Model ship correlation resistance
+
+        cond_Tf_lwl = [(T_fwd/lwl) <= 0.04 ]
+        cond_c4 = [T_fwd/lwl]
+        c4 = np.select(cond_Tf_lwl,cond_c4,0.04)
+
+        C_a = 0.00546*(lwl+100)**-0.16 - 0.002 + 0.003*math.sqrt(lwl/7.5)*C_b**4*c2*(0.04-c4)
+
+        R_a = 0.5*rho_sea*stw_ms**2*C_a*(S_bh+S_app)
+
+        # Calculate Additional Resistance, consist of wind resistance and wave resistance
+        # Calculate Apparent velocities and Apparent Angle 
+
+        V_aw = np.sqrt(windspeed**2 + stw_ms**2 + 2*windspeed*stw_ms*np.cos(np.deg2rad(truewindir)))
+
+        awa_c1 = (windspeed/V_aw)*np.sin(np.deg2rad(truewindir))
+
+        # Epsilon is Apparent Wind Angle AWA
+
+        epsilon = np.rad2deg(np.arcsin(awa_c1))
+
+        # Values and method from Blendermann
+
+        C_DlAf = 0.45
+        A_f = 325.3
+        A_l = 2125.8
+        C_Dt = 0.9
+        delta = 0.8
+        C_Dl = C_DlAf * A_f / A_l
+        L_bwl = 43.75 # m, acquired from picture
+
+        Raa_const1 = (rho_air/2) * V_aw**2 * A_l * C_Dl
+        Raa_const2 = np.cos(np.deg2rad(epsilon))
+        Raa_const3 = 1 - (delta/2) * ((1-(C_Dl/C_Dt))*(np.sin(np.deg2rad(2*epsilon)))**2)
+
+        R_aa = Raa_const1 * Raa_const2 / Raa_const3 
+
+        # Calculate Wave Resistance according to STAWAVE-1
+
+        Rawl = (1/16) * rho_sea * g * H_s**2 * math.sqrt(B/L_bwl) * B
+
+        condwave = [truewavedir<=45]
+        choicewave = [Rawl]
+
+        R_awl = np.select(condwave,choicewave,0)
+
+        R_tot = (R_f + R_app + R_w + R_b + R_a + R_tr  + R_aa + R_awl)/1e3 
+
+        # Calculate Efficiencies
+
+        # Diameter value for ship estimated from Bertram 
+
+        # D = 0.215*16 #m 
+        # Revised D, 08.07.23
+        D = 4 # m, from flyer
+        PD_const = 1.135  # From Bertram
+
+        # Update C_v formula
+
+        C_v = (k1_const*R_f + R_app + R_a) / (0.5*rho_sea*stw_ms**2*(S_bh+S_app))
+        w = 0.3095 * C_b + 10*C_v*C_b - (0.23*D)/np.sqrt(B*T_dyn) 
+        t = 0.325*C_b - 0.1885*D/np.sqrt(B*T_dyn)
+        eff_h = (1-t) / (1-w)
+        eff_r = 0.9737 + 0.111*(C_p - 0.225*lcb) - 0.06325*PD_const
+        eff_s = 0.99 # Set according to holtrop mennen and man
+        eff_o = 0.7 # Approximation from Wageningen Line from Breslin94, since Holtrop perform their measurement in Wageningen basin 
+
+        eff_tot = eff_h* eff_r* eff_s*eff_o # consider sea margin
+
+        # Calculate power and FOC
+
+        P_b = (R_tot * stw_ms)/eff_tot # in kW
+        SFOC = 169.4 # g/kWh, taken from datasheet Waertsilla 8V31
+        FOC = (P_b * SFOC)/1e6 # get FOC t/h
+        FOC_day = FOC * 11 #Per day 11 hour journey
+
+        return R_f,R_app,R_w,R_b,R_tr,R_a,R_aa,R_awl,R_tot,eff_tot,P_b,FOC
+\end{lstlisting}
+
+\subsection*{Function for FOC regression fit}
+
+\begin{lstlisting}[language=Python]
+    def poly_reg_best_fit(DataSet,STW,FOC):
+        from sklearn.model_selection import train_test_split
+        from sklearn.preprocessing import PolynomialFeatures
+        from sklearn.linear_model import LinearRegression
+        from sklearn.metrics import mean_squared_error
+        from matplotlib.ticker import MultipleLocator,FixedLocator
+        from matplotlib.transforms import ScaledTranslation
+
+        plt.rcParams['figure.dpi'] = 300
+
+        sorted_Xreg = np.sort(STW)
+        sorted_Yreg = np.sort(FOC)
+
+        Xreg = sorted_Xreg.reshape(-1,1)
+        Yreg = sorted_Yreg
+
+        Xreg_train, Xreg_test, Yreg_train, Yreg_test = train_test_split(Xreg, Yreg, test_size=0.25, random_state=42)
+
+        train_errors = []
+        test_errors = []
+        coefficients_list = []
+        scores_poly = []
+
+
+        # Loop through different orders
+        for order in range(1, 6):
+            # Create polynomial features for the current order
+            poly = PolynomialFeatures(degree=order)
+            X_poly_train = poly.fit_transform(Xreg_train)
+            X_poly_test = poly.transform(Xreg_test)
+
+            # Fit the linear regression model
+            model = LinearRegression()
+            model.fit(X_poly_train, Yreg_train)
+
+            # Make predictions on training and test data
+            y_pred_train = model.predict(X_poly_train)
+            y_pred_test = model.predict(X_poly_test)
+
+            # Calculate the score (R-squared) of the model
+            score = model.score(X_poly_test, Yreg_test)
+
+            # Calculate mean squared errors for training and test data
+            train_error = mean_squared_error(Yreg_train, y_pred_train)
+            test_error = mean_squared_error(Yreg_test, y_pred_test)
+
+            # Append the errors to the lists
+            train_errors.append(train_error)
+            test_errors.append(test_error)
+            coefficients_list.append(model.coef_)
+            scores_poly.append(score)
+            # # Uncomment to get each order's performance
+            # print(score)
+            # print(test_error)
+        
+        # # Find the best model (lowest test error)
+        
+        # best_order = np.argmin(test_errors)
+        
+        # Brute force, seems that there is a bug with summer dataset actual dataset, in general order 4 is the most acceptable performance  
+        best_order = 4
+        
+        best_coefficients = coefficients_list[best_order]
+
+        # Create polynomial features for the best model
+        poly = PolynomialFeatures(degree=best_order)
+        X_poly = poly.fit_transform(Xreg)
+
+        # Fit the best model on the entire dataset
+        best_model = LinearRegression()
+        best_model.fit(X_poly, Yreg)
+
+        # Get coefficients of the best model
+        coefficients = best_model.coef_
+        intercept = best_model.intercept_
+
+        # # Print the polynomial equation
+        # equation = "y = {:.4f}".format(best_model.intercept_)
+        # for i, coef in enumerate(best_coefficients[1:], 1):
+        #     equation += " + {:.4f}x^{}".format(coef, i)
+
+        # print("Best Polynomial Equation:")
+        # print(equation)
+
+        # LaTeX format for polynomial equation
+        def format_equation(coefficients, intercept):
+            equation = f"$y = {intercept:.4f}"
+            for i, coef in enumerate(coefficients[1:], 1):
+                equation += f" + ({coef:.4f})x^{i}"
+            equation += "$"
+            return equation
+        
+        # Print the best polynomial equation
+        equation = format_equation(coefficients, intercept)
+        print("Best Polynomial Equation:")
+        print(equation)
+        # print(score.max())
+        # get score for the 4th order
+        Rsquared = scores_poly[3]
+
+        # Generate points for plotting the best-fitted line
+        X_plot = np.linspace(Xreg.min(), Xreg.max(), 100).reshape(-1, 1)
+        X_plot_poly = poly.transform(X_plot)
+        y_plot = best_model.predict(X_plot_poly)
+
+        # Plot the original data points and the best-fitted line
+        # Follow definition from 3rd GHG study
+        slow_steam = 0.2*9760*(169.4/1e6)
+        normal = 0.65*9760*(169.4/1e6)
+        max_Pb = 9760*(169.4/1e6)
+
+        # Actual Plot
+        plt.scatter(STW, FOC,marker='d',linewidths=.8,facecolors='none',edgecolors='blue',label = 'Predicted STW',s=12)
+        # # # Temporary plot for actual STW 
+        # plt.scatter(STW, FOC,marker='x',linewidths=.8,color='black', label = 'Actual STW',s=12)
+        plt.plot(X_plot, y_plot, color='black',label='Regression',linewidth=.8)
+        plt.title(f'Regression fit for ${DataSet}$')
+        plt.xlabel('STW [kn]')
+        plt.ylabel('FOC [T/h]')
+        # plt.xticks(range(6, 22, 1))
+        plt.xlim(5,21)
+        plt.ylim(0,2)
+        plt.yticks([i/10 for i in range(21)])
+        # Show only the values at every 0.5 interval on the y-axis
+        ax = plt.gca()
+        ax.yaxis.set_major_locator(MultipleLocator(base=0.5))
+        # Show minor ticks at every 0.1 interval on the y-axis
+        ax.yaxis.set_minor_locator(FixedLocator([i/10 for i in range(1, 20)]))
+        # Show minor ticks at every 1 interval on the x-axis
+        ax.xaxis.set_minor_locator(MultipleLocator(base=1))
+        plt.axhline(y=slow_steam,linestyle = 'dotted',c='k',alpha=0.6)
+        plt.axhline(y=normal,linestyle = 'dotted',c='k',alpha=0.6)
+        plt.axhline(y=max_Pb,linestyle = 'dotted',c='k',alpha=.6)
+
+        plt.text(6.1,1.01*max_Pb,'Max Power',rotation=360,alpha=.6,fontsize=6)
+        plt.text(6.1,1.1*slow_steam,'Slow Steaming',rotation=360,alpha=0.6,fontsize=6)
+        plt.text(6.1,1.03*normal,'Normal Crusing',rotation=360,alpha=0.6,fontsize=6)
+        plt.text(4.2, -.25, equation, bbox=dict(facecolor='white', alpha=0.9),fontsize=12)
+        plt.text(5.6, 1.5, rf'$R^2$ = {Rsquared:0.4f}', bbox=dict(facecolor='white', alpha=0.9),fontsize=14)
+
+        # plt.grid(linestyle = '--', linewidth = 0.25,which='both')
+        plt.legend(loc='upper left')
+        # plt.show()
+        
+        return best_model
+\end{lstlisting}
+
+\subsection*{Evaluation of prediction performance of SOG using testing data}
+
+\begin{lstlisting}[language=Python]
+def evaluate_FOC(model,FOC_act,FOC_pred):
+    from sklearn.metrics import mean_squared_error,mean_absolute_percentage_error,r2_score,explained_variance_score,median_absolute_error,mean_absolute_error
+    
+    Rsquared_FOC = r2_score(FOC_act,FOC_pred)
+    expVar_FOC = explained_variance_score(FOC_act,FOC_pred)
+    MAE_FOC = mean_absolute_error(FOC_act,FOC_pred)
+    RMSE_FOC = np.sqrt(mean_squared_error(FOC_act, FOC_pred))
+    MAD_FOC = median_absolute_error(FOC_act,FOC_pred)
+    MAPE_FOC = mean_absolute_percentage_error(FOC_act, FOC_pred)
+    
+    print(f"Model Performance of {model}")
+    print(f"R^2 {Rsquared_FOC:0.4f}")
+    print(f"Explained Variance {expVar_FOC:0.4f}")
+    print(f"MAE {MAE_FOC:0.4f} T/h")    
+    print(f"RMSE FOC {RMSE_FOC:0.4f} T/h")
+    print(f"MAD {MAD_FOC:0.4f} T/h")    
+    print(f"MAPE FOC {MAPE_FOC*100:0.4f} %")
+\end{lstlisting}
