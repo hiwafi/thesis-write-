@@ -89,8 +89,7 @@ WBMs for predicting FOC utilize physics and hydrodynamic laws to compute the ves
 
 \section{Methodology}\label{sec:big_methodology}
 
-This chapter covers the methodology used to construct the grey box model (GBM). The grey box approach employed in this study is categorised as sequential GBM, which entails a two-stage development process. The initial stage focuses on machine learning modelling using tree-based models. The modelling is carried out using Python in conjunction with \texttt{Scikit-Learn} \citep{FabianPedregosa.2011}. The modelling will use the combination of T-AIS data with weather data from CMEMS and ECMWF. 
-
+This chapter covers the methodology used to construct the grey box model (GBM). The grey box approach employed in this study is categorised as sequential GBM, which entails a two-stage development process. The initial stage focuses on machine learning modelling using tree-based models. The modelling is carried out using Python in conjunction with \texttt{Scikit-Learn} \citep{FabianPedregosa.2011}. 
 \begin{figure}[h]
   \centering
       \includegraphics[width=.75\textwidth]{00_figures/flowmethod_BBM_alt.png}
@@ -105,6 +104,52 @@ The second stage of the modelling process revolves around the power estimation m
       \includegraphics[width=.75\textwidth]{00_figures/flowmethod_WBM.png}
       \caption{Scheme of proposed BBM methodology}
       \label{fig:flowchart_GBM}
+\end{figure}
+
+\subsection{Data Acquisition}\label{sec:data_acquisition}
+
+The data is collected from a ferry serving between the ports of K{\o}ge, R{\o}nne, Ystad, and Sassnitz. The trip duration between K{\o}ge and R{\o}nne is approximately 5 hours and 30 minutes, while the voyage between Rønne and Sassnitz takes around 3 hours and 20 minutes. The Danish Maritime Authority's (DMA) T-AIS system tracks the journey. Weather data along the ferry's route is sourced from ECMWF, providing information on wind, waves, and seawater temperature. This data has a temporal resolution of 1 hour and a spatial granularity of 0.25° (longitude) x 0.25° (latitude). Current information, obtained from CMEMS, is available at a temporal resolution of 3 hours and a spatial granularity of 0.25° (longitude) x 0.25° (latitude).
+
+\begin{figure}[ht]
+  \begin{minipage}{0.55\linewidth} % Adjust the width as needed
+    \footnotesize
+    \centering
+    \begin{tabular}{l r}
+        \hline
+        IMO & 9812107 \\
+        Type \& Service & Passenger ferry \\
+        $L_{OA}$ & 158.00 m\\
+        $L_{WL}$ & 144.80 m\\
+        $B$ (moulded) & 24.5 m\\
+        $T_{DESIGN}$ & 5.70 m\\
+        $T_{MAX}$ & 5.85 m \\ 
+        Gross Tonnage (GT) & 18,009 \\
+        Deadweight (dwt) & 4,830 t \\
+        Main Engines & Wärtsillä 8V31 2 x 4,880 kW \\
+        SFOC & 169.4 g/kWh \\
+        Service Speed & 17.7 knots \\
+        Bow Thrusters & 2 x 1500 kW \\
+        \hline
+    \end{tabular}
+    \caption{Particular of M/S Hammershus}
+    \label{tbl:Hammershus_Data}
+  \end{minipage}
+  \hspace{0.01\linewidth}
+%   \hfill
+  \begin{minipage}{0.43\linewidth} % Adjust the width as needed
+    \centering
+    % \vspace*{0.1cm}
+    \includegraphics[width=\linewidth]{00_figures/Bornholmerfærgen_route_map.png} % Replace example-image.jpg with your picture file name
+    \caption{Journey of the ferry}
+    \label{fig:Hammershus_journey_map}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+      \includegraphics[width=.75\textwidth]{00_figures/Hammershus_Pict.jpg}
+      \caption{Schematics of M/S Hammershus}
+      \label{fig:Hammershus_Pict}
 \end{figure}
 
 \subsection{Modelling methodologies}\label{sec:tree_model_development}
