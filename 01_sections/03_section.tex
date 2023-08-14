@@ -9,7 +9,7 @@ This chapter will cover the methodology employed to develop the grey box model. 
         \label{fig:flowchart_BBM}
 \end{figure}
 
-The second stage of the modelling process is centred around the WBM component of the GBM. In this phase, the predicted SOG serves as input for the WBM to forecast the necessary brake power required for propelling the ship. This involves an initial conversion of SOG to STW for estimation of encountered resistance during the voyage, this then facilitates the estimation of the required power i.e. energy. The framework outlined in \Cref{fig:flowchart_WBM} provides a graphical depiction summarising the concepts discussed in \Cref{sec:power_calc}.
+The second stage of the modelling process is centred around the WBM component of the GBM. In this phase, the predicted SOG serves as input for the WBM to forecast the necessary brake power required for propelling the ship. This involves an initial conversion of SOG to STW for estimation of encountered resistance during the voyage, this then facilitates the estimation of the required power i.e. energy required to propel the ship. The framework outlined in \Cref{fig:flowchart_WBM} provides a graphical depiction summarising the concepts discussed in \Cref{sec:power_calc}.
 
 \begin{figure}[h]
     \centering
@@ -445,7 +445,7 @@ Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This param
 
 \subsubsection*{Depth of Tree}\label{sec:max_depth}
 
-Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at a certain depth while ETR benefits from allowing full growth of the tree. It can also be observed that the models' performance are identical for {\tt max\_depth=1}, which is evident as shown in \Cref{fig:hpo_max_depth}  
+Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter is defined as the count of nodes along a path from the root node to its parent node. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at a certain depth while ETR benefits from allowing full growth of the tree. It can also be observed that the models' performance are identical for {\tt max\_depth=1}, which is evident as shown in \Cref{fig:hpo_max_depth}  
 
 \begin{figure}[h]
     \centering

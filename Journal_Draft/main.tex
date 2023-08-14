@@ -39,39 +39,122 @@
 \maketitle
 
 \begin{abstract}
-  There has been various efforts to model energy efficient operation of shipping operations which is necessitated by the volatility of bunker fuel price and stringent environmental regulations within the maritime industry. It is widely regarded that ship speed is one of the most influential factors impacting bunker fuel consumption. Machine learning models have demonstrated promising capabilities in predicting fuel consumption (FOC). However, the more powerful machine learning model is comparatively complex and lacking in interpretability, making it challenging to comprehend the rationale behind their decisions. Additionally, in some cases, these models could potentially generate predictions that are not aligned with established knowledge of ship operations. The success of these models is also heavily reliant on the quality and quantity of the data available.\\
+Efforts to model energy-efficient operation of shipping operations using machine-learning methods have emerged due to volatile bunker fuel prices and stringent environmental regulations. It is widely regarded that ship speed is one of the most influential factors impacting ships' fuel oil consumption and as such, accurate modelling of ship speed is paramount to ensure the accuracy of subsequent FOC prediction.\\
 
-  Therefore, an intuitive, data-driven modelling approach that considers varying ship states and environmental conditions to predict fuel consumption is proposed in this study. To ensure the abundance of data during modelling, this thesis combines Automatic Identification System data and weather data. Grey Box Modelling approach is implemented for FOC prediction, which divides the prediction of ship speed and FOC into two stages. The prediction of speed over ground utilises Random Forest Regressor, a tree-based machine learning approach that offers a certain degree of intuitiveness. Consequently, the FOC prediction based on predicted speed employs empirical formula by Holtrop-Mennen, ensuring adherence to established physical knowledge of a vessel.\\
+This study proposes an intuitive data-driven modelling approach, integrating Automatic Identification System and weather data for modelling of ship states and environmental conditions' impact on FOC. Grey Box Modelling approach divides the speed and FOC prediction into stages, the first stage involves the prediction of speed over ground using Random Forest Regressor. Consequently, the FOC prediction based on predicted speed employs the empirical formula by Holtrop-Mennen, maintaining adherence with established vessel knowledge.\\
   
-  In the case study presented in this thesis, the optimal SOG prediction yields a mean absolute percentage error of $3.94\%$ knots with $R^2$ score of $93.41\%$. Then the consequent FOC prediction using the predicted achieved $R^2$ score of $86.57\%$ and mean absolute percentage error stands at $12.06\%$. Improvements in predictive capabilities could potentially be attained by using Extra Tree Regressor. Nonetheless, these results indicated the viability of the proposed methodology for forecasting energy-efficient ship operations.\\
+In the presented case study, optimised SOG prediction achieves $3.94\%$ mean absolute percentage error (MAPE) and $93.41\%$ $R^2$ score. Subsequent FOC prediction from estimated speed yields $86.57\%$ $R^2$ and $12.06\%$ MAPE. The results affirm the proposed approach's viability in predicting energy-efficient ship operations.
 \end{abstract}
 
 \begin{keywords}
-Sections; Energy efficient operation; Random Forest Regression; Ship speed prediction; Fuel consumption prediction; Grey Box Model
+Energy-efficient operation; Random Forest Regression; Ship speed prediction; Fuel consumption prediction; Grey Box Model; AIS 
 \end{keywords}
 
 
 \section{Introduction}
 
-In order to assist authors in the process of preparing a manuscript for a journal, the Taylor \& Francis `\textsf{Interact}' layout style has been implemented as a \LaTeXe\ class file based on the \texttt{article} document class. A \textsc{Bib}\TeX\ bibliography style file and a sample bibliography are also provided in order to assist with the formatting of your references \citep{Alb05}
+The marine industry is actively researching efficient ship operation due to rising fuel prices and stricter environmental rules. Fuel costs, known as "bunkers," comprise over 50\% of voyage expenses and up to 75\% of total operating costs, impacting profitability \citep{Bialystocki.2016}. Energy-efficient practices reduce costs and greenhouse gas emissions, crucial with shipping contributing 2.51\% of global emissions \citep{IMO.2020}. This mutual motivation aligns economic benefits with environmental compliance. Stakeholders seek solutions to energy-efficient operation by considering technical and operational approaches. Technical solutions require costly structural and power system alterations \citep{Yan.2021,Li.2022}, prompting interest in the cost-effective, optimisation of operational measures.\\
 
-Commands that differ from or are provided in addition to standard \LaTeXe\ are described in this document, which is \emph{not} a substitute for a \LaTeXe\ tutorial.
+Significant emphasis is given in this study on optimisation of ship speed due to its substantial impact on fuel consumption which is caused by a third-order non-linear correlation between fuel consumption and ship speed \citep{Wang.2012,Du.2019}. However, the process of optimising the speed prediction model is intricate, appropriate features must be considered as the ship speed is influenced by factors like vessel performance and weather conditions.\\
 
-The \texttt{interactcadsample.tex} file can be used as a template for a manuscript by cutting, pasting, inserting and deleting text as appropriate, using the preamble and the \LaTeX\ environments provided (e.g.\ \verb"\begin{abstract}", \verb"\begin{keywords}").
-
-
-\subsection{The \textsf{Interact} class file}\label{class}
-
-The \texttt{interact} class file preserves the standard \LaTeXe\ interface such that any document that can be produced using \texttt{article.cls} can also be produced with minimal alteration using the \texttt{interact} class file as described in this document.
-
-If your article is accepted for publication it will be typeset as the journal requires in Minion Pro and/or Myriad Pro. Since most authors will not have these fonts installed, the page make-up is liable to alter slightly with the change of font. Also, the \texttt{interact} class file produces only single-column format, which is preferred for peer review and will be converted to two-column format by the typesetter if necessary during preparation of the proofs. Please therefore do not try to match the typeset format exactly, but use the standard \LaTeX\ fonts instead and ignore details such as slightly long lines of text or figures/tables not appearing in exact synchronization with their citations in the text: these details will be dealt with by the typesetter. Similarly, it is unnecessary to spend time addressing warnings in the log file -- if your .tex file compiles to produce a PDF document that correctly shows how you wish your paper to appear, such warnings will not prevent your source files being imported into the typesetter's program.
+Fuel consumption models based on historical data and ship parameters lack robustness and sensitivity to noise. To address this, recent research employs data-driven techniques, like machine learning (ML), for ship speed and fuel consumption prediction. ML models showcase strong generalisation capabilities and low prediction errors, although some experts are reluctant to accept the generated models by the machine learning approach due to their complexity, unintuitiveness, and potential violation of vessel physics. The success of data-driven models is also highly dependent on data quality and quantity \citep{Yan.2021,Gkerekos.2019}. Given volatile fuel prices, developing an accurate Fuel Oil Consumption (FOC) prediction model is valuable for maritime stakeholders. This aids in timely economic decisions without violating environmental regulations.\\
 
 
-\subsection{Submission of manuscripts prepared using \emph{\LaTeX}}
+\section{Literature Review}\label{sec:literature_review}
 
-Manuscripts for possible publication should be submitted to the Editors for review as directed in the journal's Instructions for Authors, and in accordance with any technical instructions provided in the journal's ScholarOne Manuscripts or Editorial Manager site. Your \LaTeX\ source file(s), the class file and any graphics files will be required in addition to the final PDF version when final, revised versions of accepted manuscripts are submitted.
+\subsection{Modelling Approach for Ship Operation}\label{sec:modelling_type}
 
-Please ensure that any author-defined macros used in your article are gathered together in the preamble of your .tex file, i.e.\ before the \verb"\begin{document}" command. Note that if serious problems are encountered in the coding of a document (missing author-defined macros, for example), the typesetter may resort to rekeying it.
+\citet{haranen2016white} and \citet{Coraddu.2017} categorised fuel consumption prediction models into three strategies:\\
+
+\textbf{White Box Models (WBM)}: Built on prior mechanistic knowledge and physical principles of a vessel's system, including its structure, design parameters, and propulsion configuration.\\
+
+\textbf{Black Box Models (BBM)}: Data-driven and developed using data from different sailing journeys and historical observations. The Machine Learning (ML) modelling approach focuses on the prediction of bunker consumption at different points in time.\\
+
+\textbf{Grey Box Models (GBM)}: A fusion of WBM and BBM, resulting in a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
+
+Each strategy has strengths and weaknesses. WBM is transparent and comprehensible, rooted in physics and hydrodynamics, but lacks adaptability and generalisation due to its deterministic nature and dependence on prior knowledge. BBM excels in fitting and predicting data but lacks vessel-specific knowledge and can be complex. To achieve good prediction, it requires an abundance of data quantity and good data quality \citep{Halevy.2009}. GBM mitigates these limitations by combining mechanistic understanding with predictive capabilities.\\
+
+The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using ML approach, For black-box modelling using ML techniques, it is crucial to have sufficient high-quality data for accurate training \citep{Halevy.2009}. \citet{Yan.2021} categorise the data sources for FOC modelling as follows:
+\\
+
+Besides its intended role as a collision avoidance system, Automatic Identification System (AIS) data finds potential in ship behaviour analysis and environmental assessment. The International Maritime Organization (IMO) utilized AIS data to study Greenhouse Gas (GHG) emissions, estimating global shipping emissions \citep{IMO.2020,T.W.P.Smith.2015}. \citet{Rakke.2016} introduced ECAIS as a methodology to compute ship emissions from AIS-derived fuel consumption data using Holtrop-Mennen and literature-based approximations. The study by \citet{Kim.2020b} used AIS data, ship information, and environmental data for estimating Energy Efficiency Operational Indicator (EEOI). The use of AIS data in research aims for data independence, reducing reliance on commercial databases.\\
+
+\subsection{Predictive performance of tree based models}\label{sec:perf_tree_litreview}
+
+Tree-based model is a supervised, highly interpretable BBM modelling approach using machine learning approach which is adept in classification and regression tasks. The model is inherently resistant to multicollinearity problems \citep{Yan.2021}.  Several literature studies reveal its advantages and performance superiority. \citet{Soner.2018} employed ferry data to predict FOC using tree-based models including bagging, random forest (RF), and bootstrap. RF achieved $43.5$ L/h RMSE for fuel consumption, outperforming Artificial Neural Network (ANN) model employed by \citet{Petersen.2012}.\\
+
+\citet{Yan.2020} predicted FOC for a dry bulk ship's voyage using RF. The model incorporated sailing speed, cargo weight, and meteorological conditions, it is able to attain mean absolute percentage error (MAPE) of $7.91\%$ and the RF model outperformed decision tree, ANN, LASSO, and SVR. \citet{Gkerekos.2019} compared ML models to predict daily FOC, RF model achieved $89\%$ and $96\%$ $R^2$ scores with noon data and ADLM system data, respectively. \citet{Li.2022} fused meteorological, voyage, and AIS data to explore the effect of data on ML models for FOC prediction. Tree-based models (bagging and boosting ensembles) including ETR, RFR, AB, GB, XG, and LB were recommended for energy-efficient operation modelling, with RFR particularly displaying the best robustness among the presented ML models in the study. \citet{Abebe.2020} predicted ship speed over ground (SOG) using AIS and weather data. The RF model achieved $98\%$ $R^2$ score and $0.25$ knots RMSE.\\
+
+WBMs for predicting FOC utilize physics and hydrodynamic laws to compute the vessel's resistance, encompassing calm water resistance and additional effects like wind and waves. Then the engine power can be subsequently estimated at a specific speed, facilitating FOC calculation \citep{haranen2016white}. Holtrop-Mennen power estimation method \citet{Holtrop.1984}, is applicable in a wide range \citep{Rakke.2016,Kim.2020b}. \citet{Rakke.2016} utilized AIS data and mechanical information to estimate engine power using Holtrop-Mennen, achieving about $5\%$ model testing error for FOC and GHG emissions estimation. Similarly, \citet{Kim.2020b} estimated Energy Efficiency Operational Index (EEOI) through Holtrop-Mennen-based engine power estimation, enabled by AIS data and weather information.\\
+
+\section{Methodology}\label{sec:big_methodology}
+
+This chapter covers the methodology used to construct the grey box model (GBM). The grey box approach employed in this study is categorised as sequential GBM, which entails a two-stage development process. The initial stage focuses on machine learning modelling using tree-based models. The modelling is carried out using Python in conjunction with \texttt{Scikit-Learn} \citep{FabianPedregosa.2011}. The modelling will use the combination of T-AIS data with weather data from CMEMS and ECMWF. 
+
+\begin{figure}[h]
+  \centering
+      \includegraphics[width=.75\textwidth]{00_figures/flowmethod_BBM_alt.png}
+      \caption{Scheme of proposed BBM methodology}
+      \label{fig:flowchart_BBM}
+\end{figure}
+
+The second stage of the modelling process revolves around the power estimation method \citep{Holtrop.1984}. This involves an initial conversion of SOG to STW for estimation of encountered resistance during the voyage, this then facilitates the estimation of the required power i.e. the energy required to propel the ship.
+
+\begin{figure}[h]
+  \centering
+      \includegraphics[width=.75\textwidth]{00_figures/flowmethod_WBM.png}
+      \caption{Scheme of proposed BBM methodology}
+      \label{fig:flowchart_GBM}
+\end{figure}
+
+\subsection{Modelling methodologies}\label{sec:tree_model_development}
+
+\subsubsection{Decision Tree (DT) Regressor}\label{sec:dt_theo_j}
+
+The Decision Tree operates by employing nested {\tt if-then} statements based on predefined rules, resulting in a partitioned data space. This process can also be visualized as a binary tree, enhancing interpretability by representing diverse input responses within a single tree \citet{Kuhn.2013, Hastie.2009}.\\
+
+A Decision Tree encompasses distinct nodes: the \textbf{\emph{Root node}} represents the top-level node; \textbf{\emph{Leaf nodes}} (or terminal nodes) yield final prediction outcomes; and \textbf{\emph{Internal nodes}} lie between the root and leaf nodes. The procedure of dividing a node into subsequent nodes is termed \textbf{\emph{splitting}}, where the original node is the \textbf{\emph{parent node}} and the resultant nodes are \textbf{\emph{child nodes}}. In regression tasks, tree growth is often controlled by Mean Square Error (MSE), guided by the Classification and Regression Tree (CART) algorithm, The notation $J(\text{k},\text{t}_k)$ represents the cost function that needs to be minimised.
+
+\begin{equation}\label{eqn:sse}
+  \text{MSE}_{\text{s}_i} = \frac{1}{n_{\text{s}_i}}\text{SSE}_{\text{s}_i} \quad \textbf{where} \quad i = (1,2)   
+\end{equation}
+\begin{equation}\label{eqn:costfun}
+  J(\text{k},\text{t}_k) = \frac{1}{n_{\text{s}_1}}\text{SSE}_{\text{s}_1} + \frac{1}{n_{\text{s}_2}}\text{SSE}_{\text{s}_2}
+  \begin{cases}
+      \text{SSE}_{\text{s}_i} = \sum\limits_{i \in \text{s}_i}(\hat{y}_{\text{s}_i} - y_{\text{s}_i} )^2 \\
+      \hat{y}_{\text{s}_i} = \frac{1}{n_{\text{s}_i}}\sum\limits_{i\in \text{s}_i} y
+  \end{cases}  
+\end{equation}
+
+The process of tree growth stops until either the number of samples for splitting reaches a predefined threshold or when no further split can be found which reduces the MSE. The decisions from optimal splits are visualised through a binary tree representation, enhancing the interpretability and ease of implementation. The inherent logic structure of decision trees enables them to handle diverse data types without extensive preprocessing, including sparse, skewed, continuous, and categorical data. Decision trees also inherently perform feature selection, which is a valuable aspect in modelling \citep{Kuhn.2013}.\\
+
+\begin{figure}
+  \label{fig:dtr_tree_trained}
+  \centering
+  \includegraphics[width=.9\textwidth]{00_figures/dtr_mod_1tree.png}
+  \caption{Structure of a Decision Tree (DT) Regressor}
+\end{figure}
+
+However, an unconstrained single decision tree is prone to overfitting due to its tendency to closely match the training data. This model's instability can lead to substantial changes in its structure when the data is altered, resulting in a completely different interpretation of splits \citep{Hastie.2009, Kuhn.2013}. To mitigate overfitting, it becomes essential to regularise the decision tree's growth during training. The following parameters control the growth of a single decision tree : 
+
+\begin{itemize}
+  \item \texttt{max\_depth}: This hyperparameter is defined as the count of nodes along a path from the root node to its parent node. The default parameter allows full unpruned growth of the tree.
+  \item \texttt{min\_samples\_leaf}: This hyperparameter controls the number of samples required to be at the leaf node, where the split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch.
+  \item \texttt{min\_samples\_split}: This hyperparameter controls the minimum number of samples i.e. data points required to split a node.    
+\end{itemize}
+
+\subsubsection{Random Forest (RF) Regressor}\label{sec:rf_theo_j}
+
+Ensemble learning offers a solution to enhance the performance of Decision Tree (DT) regressors. This concept involves combining the strengths of multiple simpler base models \citep{Hastie.2009}. One prominent ensemble method is the \textbf{\emph{Random Forest}}, introduced by \citet{Breiman.2001}, which involves creating bootstrap samples, randomly selecting splitting features, and aggregating predictions. This approach combines various learning algorithms, referred to as weak learners, with each corresponding to an individual decision tree in the Random Forest. Random forest uses the Bagging (\emph{bootstrap aggregating}) strategy, where it trains each tree using bootstrap samples, where instances from the training set are randomly selected with replacement.\\ 
+
+To further improve bagging, reducing the correlation between trees is applied. This involves introducing randomness during tree construction. Random split selection, as introduced by \citet{Dietterich.2000}, involves selecting a feature from a random subset for each split. This, coupled with the inherent instability of a single decision tree, addresses overfitting and the lack of robustness of DTR. The Random Forest methodology addresses these issues by creating an ensemble of independent, strong learners, resulting in reduced variance and robustness against noisy data \citep{Breiman.2001}. While losing some interpretability compared to basic tree-based models, the impact of each feature in the ensemble can still be quantified \citep{Kuhn.2013}. Random Forest performs better with larger sample sizes, and extensive parameter tuning is often unnecessary for good prediction results \citep{Kuhn.2013, Hastie.2009}.\\
+
+In addition to the hyperparameters used to fine-tune the decision tree, the RF model provides additional hyperparameters to control the growth of the tree:
+
+\begin{itemize}
+  \item \texttt{max\_features}: This hyperparameter controls the number of features to be considered when looking for the best split. The default parameter considers all features during training.
+  \item \texttt{n\_estimators}: This hyperparameter controls the number of trees i.e. predictors in a forest.
+\end{itemize}
 
 
 \section{Using the \texttt{interact} class file}
@@ -437,6 +520,9 @@ If a reference has more than ten named authors, list only the first seven, follo
 If a reference has no author or editor, order by title; if a date of publication is impossible to find, use `n.d.' in its place.
 
 The following list shows some sample references prepared in the Taylor \& Francis Chicago author-date style.
+
+\bibliographystyle{tfcad}
+\bibliography{interactcadsample}
 
 \begin{thebibliography}{}
 
