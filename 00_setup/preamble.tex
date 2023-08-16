@@ -32,6 +32,8 @@
 \usepackage{textpos}
 % \usepackage{cite}
 \usepackage[round]{natbib}
+\bibpunct[, ]{(}{)}{;}{a}{}{,}% Citation support using natbib.sty
+\renewcommand\bibfont{\fontsize{11}{12}\selectfont}% Bibliography support using natbib.sty
 % \usepackage{doi}
 \usepackage{kpfonts}
 \usepackage[a4paper,hmargin=2.8cm,vmargin=2.0cm,includeheadfoot]{geometry}
@@ -308,7 +310,8 @@ autogobble = true
   pdfstartview=FitH,
   pdfpagemode={UseOutlines},% None, FullScreen, UseOutlines
   bookmarksnumbered=true, bookmarksopen=true, colorlinks,
-    citecolor=NavyBlue,%
+    % citecolor=NavyBlue,%
+    citecolor=black,%
     filecolor=NavyBlue,%
     linkcolor=black,%
     urlcolor=NavyBlue}
