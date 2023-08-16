@@ -59,25 +59,60 @@ Significant emphasis is given in this study on optimisation of ship speed due to
 
 Fuel consumption models based on historical data and ship parameters lack robustness and sensitivity to noise. To address this, recent research employs data-driven techniques, like machine learning (ML), for ship speed and fuel consumption prediction. ML models showcase strong generalisation capabilities and low prediction errors, although some experts are reluctant to accept the generated models by the machine learning approach due to their complexity, unintuitiveness, and potential violation of vessel physics. The success of data-driven models is also highly dependent on data quality and quantity \citep{Yan.2021,Gkerekos.2019}. Given volatile fuel prices, developing an accurate Fuel Oil Consumption (FOC) prediction model is valuable for maritime stakeholders. This aids in timely economic decisions without violating environmental regulations.
 
+The following Research Questions (RQs) could be raised during the development of the model :
+
+\begin{itemize}
+    \item \textbf{RQ1}: What are the steps that should be taken to optimise the predictive performance of the model?
+    \item \textbf{RQ2}: Is it feasible to fuse AIS data and meteorological data to accurately predict the ship's SOG and subsequently FOC of the ship?
+    \item \textbf{RQ3}: Which approximations and empirical equations are suitable to estimate the resistance forces required to estimate the power required by the ship? 
+\end{itemize} 
+
+The following research boundaries are set throughout this thesis:
+
+\begin{itemize}
+    \item The weather information and AIS data are assumed to be true. Any uncertainties from AIS data and weather data are neglected. 
+    \item The focus of this work is a detailed study of the performance and possible optimisation configuration of Random Forest (RF) as predictors for SOG. As such, an exhaustive comparison study between different types of machine learning models will not be performed.
+    \item In the case study, the approximation for incomplete ship parameters and dimensions is based on a similar type of ship with nearly identical dimensions. 
+\end{itemize}
+
+The Grey Box (GB) modelling approach using the fusion of AIS data and weather data provides the following contributions : 
+
+\begin{itemize}
+    \item Economical and independent data source.
+    \item Robust modelling approach that requires minimal data pre-processing and minimal model configuration.
+    \item Comprehensible model that adheres to physical principles and hydrodynamic laws of the vessel.  
+\end{itemize} 
+
 
 \section{Literature Review}\label{sec:literature_review}
 
 \subsection{Modelling Approach for Ship Operation}\label{sec:modelling_type}
 
-\citet{haranen2016white} and \citet{Coraddu.2017} categorised fuel consumption prediction models into three strategies:\\
+\citet{haranen2016white} and \citet{Coraddu.2017} categorised fuel consumption prediction models into three strategies:
 
-\textbf{White Box Models (WBM)}: Built on prior mechanistic knowledge and physical principles of a vessel's system, including its structure, design parameters, and propulsion configuration.\\
+\textbf{White Box Models (WBM)}: Built on prior mechanistic knowledge and physical principles of a vessel's system, including its structure, design parameters, and propulsion configuration.
 
-\textbf{Black Box Models (BBM)}: Data-driven and developed using data from different sailing journeys and historical observations. The Machine Learning (ML) modelling approach focuses on the prediction of bunker consumption at different points in time.\\
+\textbf{Black Box Models (BBM)}: Data-driven and developed using data from different sailing journeys and historical observations. The Machine Learning (ML) modelling approach focuses on the prediction of bunker consumption at different points in time.
 
-\textbf{Grey Box Models (GBM)}: A fusion of WBM and BBM, resulting in a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.\\
+\textbf{Grey Box Models (GBM)}: A fusion of WBM and BBM, resulting in a single model that considers both \emph{a priori} knowledge of the vessel and historical sailing data, This method aims to complement the performance of WBM and BBM.
 
 Each strategy has strengths and weaknesses. WBM is transparent and comprehensible, rooted in physics and hydrodynamics, but lacks adaptability and generalisation due to its deterministic nature and dependence on prior knowledge. BBM excels in fitting and predicting data but lacks vessel-specific knowledge and can be complex. To achieve good prediction, it requires an abundance of data quantity and good data quality \citep{Halevy.2009}. GBM mitigates these limitations by combining mechanistic understanding with predictive capabilities.
 
 The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using ML approach, For black-box modelling using ML techniques, it is crucial to have sufficient high-quality data for accurate training \citep{Halevy.2009}. \citet{Yan.2021} categorise the data sources for FOC modelling as follows:
 
+\subsection{Automatic Identification System (AIS) data}\label{sec:ais_theo_j}
 
 Besides its intended role as a collision avoidance system, Automatic Identification System (AIS) data finds potential in ship behaviour analysis and environmental assessment. The International Maritime Organization (IMO) utilized AIS data to study Greenhouse Gas (GHG) emissions, estimating global shipping emissions \citep{IMO.2020,T.W.P.Smith.2015}. \citet{Rakke.2016} introduced ECAIS as a methodology to compute ship emissions from AIS-derived fuel consumption data using Holtrop-Mennen and literature-based approximations. The study by \citet{Kim.2020b} used AIS data, ship information, and environmental data for estimating Energy Efficiency Operational Indicator (EEOI). The use of AIS data in research aims for data independence, reducing reliance on commercial databases.
+
+It is also stated by \citet{Yang.2019} that AIS data can be combined with data from other databases to provide additional information such as:
+
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item Port-to-port average speed: the voyage time can be calculated from the time stamps reported by AIS data; the voyage distance can be found from corresponding navigation distance tables.
+    \item Cargo weight which can be estimated from draught and ship size.
+    \item Technical ship specification from fleet database which can be derived from IMO number.
+    \item Port-to-port bunker consumption which can be estimated based on the speed, technical ship specification and distance between two ports.
+\end{itemize}
 
 \subsection{Predictive performance of tree based models}\label{sec:perf_tree_litreview}
 
@@ -108,7 +143,7 @@ The second stage of the modelling process revolves around the power estimation m
 
 \subsection{Data Acquisition}\label{sec:data_acquisition}
 
-The data is collected from a ferry serving between the ports of K{\o}ge, R{\o}nne, Ystad, and Sassnitz. The trip duration between K{\o}ge and R{\o}nne is approximately 5 hours and 30 minutes, while the voyage between Rønne and Sassnitz takes around 3 hours and 20 minutes. The Danish Maritime Authority's (DMA) T-AIS system tracks the journey. Weather data along the ferry's route is sourced from ECMWF, providing information on wind, waves, and seawater temperature. This data has a temporal resolution of 1 hour and a spatial granularity of 0.25° (longitude) x 0.25° (latitude). Current information, obtained from CMEMS, is available at a temporal resolution of 3 hours and a spatial granularity of 0.25° (longitude) x 0.25° (latitude). The resulting combined dataset maintains a temporal resolution of 1 hour. To address the temporal resolution disparity between CMEMS and ECMWF data, the weather information is synchronized. This synchronization ensures that the wind, waves, seawater temperature, and sea current data are aligned with the same weather grid and maintain consistent temporal resolutions.\\
+The data is collected from a ferry serving between the ports of K{\o}ge, R{\o}nne, Ystad, and Sassnitz. The trip duration between K{\o}ge and R{\o}nne is approximately 5 hours and 30 minutes, while the voyage between Rønne and Sassnitz takes around 3 hours and 20 minutes. The Danish Maritime Authority's (DMA) T-AIS system tracks the journey. Weather data along the ferry's route is sourced from ECMWF, providing information on wind, waves, and seawater temperature. This data has a temporal resolution of 1 hour and a spatial granularity of 0.25° (longitude) x 0.25° (latitude). Current information, obtained from CMEMS, is available at a temporal resolution of 3 hours and a spatial granularity of 0.25° (longitude) x 0.25° (latitude). The resulting combined dataset maintains a temporal resolution of 1 hour. To address the temporal resolution disparity between CMEMS and ECMWF data, the weather information is synchronized. This synchronization ensures that the wind, waves, seawater temperature, and sea current data are aligned with the same weather grid and maintain consistent temporal resolutions.
 
 \begin{figure}
   \begin{minipage}{0.55\linewidth} % Adjust the width as needed
@@ -214,7 +249,7 @@ In a statistical context, heading and COG exhibit significant correlations. Howe
 
 \subsubsection{Decision Tree (DT) Regressor}\label{sec:dt_theo_j}
 
-The Decision Tree operates by employing nested {\tt if-then} statements based on predefined rules, resulting in a partitioned data space. This process can also be visualized as a binary tree, enhancing interpretability by representing diverse input responses within a single tree \citet{Kuhn.2013, Hastie.2009}.\\
+The Decision Tree operates by employing nested {\tt if-then} statements based on predefined rules, resulting in a partitioned data space. This process can also be visualized as a binary tree, enhancing interpretability by representing diverse input responses within a single tree \citet{Kuhn.2013, Hastie.2009}.
 
 A Decision Tree encompasses distinct nodes: the \textbf{\emph{Root node}} represents the top-level node; \textbf{\emph{Leaf nodes}} (or terminal nodes) yield final prediction outcomes; and \textbf{\emph{Internal nodes}} lie between the root and leaf nodes. The procedure of dividing a node into subsequent nodes is termed \textbf{\emph{splitting}}, where the original node is the \textbf{\emph{parent node}} and the resultant nodes are \textbf{\emph{child nodes}}. In regression tasks, tree growth is often controlled by Mean Square Error (MSE), guided by the Classification and Regression Tree (CART) algorithm, The notation $J(\text{k},\text{t}_k)$ represents the cost function that needs to be minimised.
 
@@ -229,14 +264,7 @@ A Decision Tree encompasses distinct nodes: the \textbf{\emph{Root node}} repres
   \end{cases}  
 \end{equation}
 
-The process of tree growth stops until either the number of samples for splitting reaches a predefined threshold or when no further split can be found which reduces the MSE. The decisions from optimal splits are visualised through a binary tree representation, enhancing the interpretability and ease of implementation. The inherent logic structure of decision trees enables them to handle diverse data types without extensive preprocessing, including sparse, skewed, continuous, and categorical data. Decision trees also inherently perform feature selection, which is a valuable aspect in modelling \citep{Kuhn.2013}.\\
-
-\begin{figure}
-  \label{fig:dtr_tree_trained}
-  \centering
-  \includegraphics[width=.9\textwidth]{00_figures/dtr_mod_1tree.png}
-  \caption{Structure of a Decision Tree (DT) Regressor}
-\end{figure}
+The process of tree growth stops until either the number of samples for splitting reaches a predefined threshold or when no further split can be found which reduces the MSE. The decisions from optimal splits are visualised through a binary tree representation, enhancing the interpretability and ease of implementation. The inherent logic structure of decision trees enables them to handle diverse data types without extensive preprocessing, including sparse, skewed, continuous, and categorical data. Decision trees also inherently perform feature selection, which is a valuable aspect in modelling \citep{Kuhn.2013}.
 
 However, an unconstrained single decision tree is prone to overfitting due to its tendency to closely match the training data. This model's instability can lead to substantial changes in its structure when the data is altered, resulting in a completely different interpretation of splits \citep{Hastie.2009, Kuhn.2013}. To mitigate overfitting, it becomes essential to regularise the decision tree's growth during training. The following parameters control the growth of a single decision tree : 
 
@@ -248,9 +276,9 @@ However, an unconstrained single decision tree is prone to overfitting due to it
 
 \subsubsection{Random Forest (RF) Regressor}\label{sec:rf_theo_j}
 
-Ensemble learning offers a solution to enhance the performance of Decision Tree (DT) regressors. This concept involves combining the strengths of multiple simpler base models \citep{Hastie.2009}. One prominent ensemble method is the \textbf{\emph{Random Forest}}, introduced by \citet{Breiman.2001}, which involves creating bootstrap samples, randomly selecting splitting features, and aggregating predictions. This approach combines various learning algorithms, referred to as weak learners, with each corresponding to an individual decision tree in the Random Forest. Random forest uses the Bagging (\emph{bootstrap aggregating}) strategy, where it trains each tree using bootstrap samples, where instances from the training set are randomly selected with replacement.\\ 
+Ensemble learning offers a solution to enhance the performance of Decision Tree (DT) regressors. This concept involves combining the strengths of multiple simpler base models \citep{Hastie.2009}. One prominent ensemble method is the \textbf{\emph{Random Forest}}, introduced by \citet{Breiman.2001}, which involves creating bootstrap samples, randomly selecting splitting features, and aggregating predictions. This approach combines various learning algorithms, referred to as weak learners, with each corresponding to an individual decision tree in the Random Forest. Random forest uses the Bagging (\emph{bootstrap aggregating}) strategy, where it trains each tree using bootstrap samples, where instances from the training set are randomly selected with replacement.
 
-To further improve bagging, reducing the correlation between trees is applied. This involves introducing randomness during tree construction. Random split selection, as introduced by \citet{Dietterich.2000}, involves selecting a feature from a random subset for each split. This, coupled with the inherent instability of a single decision tree, addresses overfitting and the lack of robustness of DTR. The Random Forest methodology addresses these issues by creating an ensemble of independent, strong learners, resulting in reduced variance and robustness against noisy data \citep{Breiman.2001}. While losing some interpretability compared to basic tree-based models, the impact of each feature in the ensemble can still be quantified \citep{Kuhn.2013}. Random Forest performs better with larger sample sizes, and extensive parameter tuning is often unnecessary for good prediction results \citep{Kuhn.2013, Hastie.2009}.\\
+To further improve bagging, reducing the correlation between trees is applied. This involves introducing randomness during tree construction. Random split selection, as introduced by \citet{Dietterich.2000}, involves selecting a feature from a random subset for each split. This, coupled with the inherent instability of a single decision tree, addresses overfitting and the lack of robustness of DTR. The Random Forest methodology addresses these issues by creating an ensemble of independent, strong learners, resulting in reduced variance and robustness against noisy data \citep{Breiman.2001}. While losing some interpretability compared to basic tree-based models, the impact of each feature in the ensemble can still be quantified \citep{Kuhn.2013}. Random Forest performs better with larger sample sizes, and extensive parameter tuning is often unnecessary for good prediction results \citep{Kuhn.2013, Hastie.2009}.
 
 In addition to the hyperparameters used to fine-tune the decision tree, the RF model provides additional hyperparameters to control the growth of the tree:
 
@@ -319,50 +347,75 @@ Since the speed that is represented in AIS data is SOG, $v_G$, given the current
   v_{\text{S}} = \sqrt{(v_{\text{S}}^x)^2 + (v_{\text{S}}^y)^2} 
 \end{equation}
 
-For the calculation of the total resistance, the following equations based on the study by \citet{Holtrop.1978,Holtrop.1982,Holtrop.1984} summarised in the work by \citet{Birk.2019}:
+Holtrop-Mennen method has a wide applicability range and it is the only method that adopted the use of the ITTC form factor $k$. The resistances in this method are calculated as dimensional force. Furthermore, the method also gives estimates of hull-propeller interaction, thrust deduction, full-scale wake fraction and relative rotative efficiency \citep{Birk.2019}. For the calculation of the total resistance, the following equations based on the study by \citet{Holtrop.1978,Holtrop.1982,Holtrop.1984}:
 
 \begin{equation}\label{eqn:R_calm}
   R_{CALM} = R_F(1+k_1) + R_{APP} + R_W + R_B + R_{TR} + R_A
 \end{equation}
 
+\textbf{$R_F$} is calculated using the ITTC-1957 frictional resistance correlation line $C_F$ as the basis of a representation of a resistance plate with a wetted surface area $S$ of bare hull. The frictional coefficient $C_F$ can be calculated through the Reynold number $Re$ for a given ship speed $v_{S}$ and kinematic viscosity $\nu$: 
+
 \begin{equation}\label{eqn:R_f}
   R_F = \frac{1}{2}\rho v_{S}^2 S C_F 
 \end{equation}
 
+An appendage is defined as the addition(s) to the main part or main structure of a vessel \citep{Molland.2011}. Examples of appendages include rudders, shaft brackets, skeg and bilge keels. The form factors associated with these appendages are denoted as $k_{2_i}$. In practice, reasonable estimates can be made based on these form factors, as model tests are not the most suitable method for accurately quantifying appendage resistance. Furthermore, the effects of appendages are typically considered as a whole and not as individual units \citep{Birk.2019}.\\
+
 \begin{equation}\label{eqn:R_app}
   R_{APP} = \frac{1}{2}\rho v_S^2 (1+k_{2_i})_{eq} C_F \sum_i S_{APP_i} + \sum R_{TH}
 \end{equation}
+
+If bow thruster is present, the resistance due to the bow thruster tunnel $R_{TH}$ can be obtained through:
 
 \begin{equation}
   \label{eqn:R_th}
   R_{TH} = \rho v_S^2  d_{TH}^2 C_{D_{TH}}
 \end{equation}
 
+The coefficient $C_{D_{TH}}$ defines the drag coefficient for the tunnel, and it ranges between $0.003$ and $0.012$.\\
+
+The estimation of wave resistance $R_W$ is dependent on Froude number $Fr$. And it can be obtained through Equation \ref{eqn:R_w_low}. To obtain the formulae to compute the constants, consider the literature work by \citet{Holtrop.1978,Holtrop.1982,Holtrop.1984} and \citet{Birk.2019}.
+
 \begin{equation}\label{eqn:R_w_low}
   R_{W_a}(Fr) = c_1 c_2 c_5 \rho g V  \exp \biggl[ m_1 Fr^d + m_4 \cos(\lambda Fr ^{-2}) \biggr]
 \end{equation}
+
+The approximation of the resistance due to bulbous bow $R_B$ can be obtained through the immersion Froude number $F_{r_i}$ for the bulbous bow and the constant $P_B$ which is a measure of the emergence of the bow: 
 
 \begin{equation}
   \label{eqn:Rbulb}
   R_B = 0.11 \rho g (\sqrt{A_{BT}})^3 \frac{Fr_{i}^3}{1+Fr_{i}^2}e^{(-3.0P_B^-2)}
 \end{equation}
 
+The term transom refers to the flat section located at the stern of the ship. When the transom becomes immersed in water, it leads to pressure loss, resulting in resistance. This resistance is denoted by the term $R_{TR}$ and is associated with an immersed transom area $A_T > 0$. The transom resistance can be described as a function of the depth Froude number $Fr_{T}$:
+
+\begin{equation}
+  \label{eqn:Fr_t}
+  Fr_T = \frac{v_S}{\sqrt{\frac{2gA_T}{(B+BC_{WP})}}}
+\end{equation}
+
+The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the transom. When the average draught is smaller than the speed, there will be clean separation of the flow at transom edge and the resistance due to transom vanishes. Immersion resistance $R_{TR}$ is considered if $Fr_{T} > 5$
+
 \begin{equation}
   \label{eqn:R_transom}
   R_{TR} = \frac{1}{2}\rho v_S^2 A_T c_6
 \end{equation}
+
+The resistance term $R_A$ considers other effects that are not captured by other resistance components. 
 
 \begin{equation}
   \label{eqn:R_a}
   R_A = \frac{1}{2}\rho v_S^2 C_A (S+\sum S_{APP})
 \end{equation}
 
-For the wind resistance, the following equation by \citet{Blendermann.1994}
+The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the area of the ship superstructure and relative wind. Therefore, for a ship with large lateral areas above the water level, this added resistance due to wind can be significant. The estimation of added resistance due to wind in this study considers the method by \citet{Blendermann.1994}:
 
 \begin{equation}
   \label{eqn:Raa_blendermann}
   R_{AA} = \frac{\rho_{air}}{2}u^2A_{L}CD_l \frac{\cos{(\varepsilon)}}{1-\frac{\delta}{2}(1-\frac{CD_l}{CD_t}\sin^2{(2\varepsilon)})}
 \end{equation}
+
+Where $u$ is the apparent wind velocity, $A_L$, the lateral plane area, $\varepsilon$, the apparent wind angle ($\varepsilon = 0$ in headwind), $\delta$ the cross-force parameter, and coefficients $CD_t$ and $CD_l$ the non-dimensional drag in beam wind and headwind. For given true wind velocity $u_{TW}$ and true wind angle (TWA), $\beta$, The calculation for the apparent wind $u$ and apparent wind angle $\epsilon$ is performed using the following equations:
 
 \begin{equation}
   \label{eqn:u_AW}
@@ -373,6 +426,8 @@ For the wind resistance, the following equation by \citet{Blendermann.1994}
   \label{eqn:epsilon_AWA}
   \frac{u_{TW}}{\sin(\varepsilon)} = \frac{u}{\sin({\beta})}
 \end{equation}
+
+According to \citet{Schneekluth.1998}, maximum wind resistance is encountered when $0^\circ<\varepsilon<20^\circ$ and it is more convenient to express the longitudinal drag with respect to the frontal area $A_F$.
 
 \begin{equation}
   \label{eqn:CDlaf}
@@ -403,12 +458,66 @@ For the wind resistance, the following equation by \citet{Blendermann.1994}
   \label{tbl:BlendermannCoeff}
 \end{table}
 
-Then the calculation of additional resistance due to wave based on STAWAVE-I is presented in the following equation:
+The added resistance due to wave, $R_{AW}$ is estimated using the STAWAVE-1 method recommended by \citet{ITTCProcedures.2014}. This method only considers waves encountered within the bow sector i.e. within $\pm 45^\circ$ off the bow and does not consider wave correction for other encounters. Also, STAWAVE-1 is valid for the following condition:
 
 \begin{equation}
   \label{eqn:stawave1}
   R_{AWL} = \frac{1}{16}\rho g H_{1/3}^2 B \sqrt{\frac{B}{L_{BWL}}} 
 \end{equation}
+
+In which, $L_{BWL}$ is the length of the bow on the water line to $95\%$ of maximum breadth.\\
+
+The open water efficiency \begin{math}\eta_O\end{math}, can be understood as the propeller working in open water conditions i.e. the propeller operates in a homogenous wake field with no hull in front of it. The curve of different propulsion devices with their respective efficiencies is summarised in the work of \citet{Breslin.1994}:\\
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.5\textwidth]{00_figures/Breslin94_openwater_eff.jpg}
+  \caption{Efficiencies of various propulsion devices \citep{Breslin.1994}}
+  \label{fig:breslin_open water efficiencies}
+\end{figure}
+
+The Hull efficiency $\eta_H$ can be calculated using the following equation:
+
+\begin{equation}
+    \label{eqn:hull_eff}
+    \eta_H = \frac{1 - t}{1 - w_S}
+\end{equation}
+
+The term $t$ refers to the thrust deduction fraction, which represents the thrust force required to overcome the towing resistance of the ship $R_{TOTAL}$ and the additional resistance caused by the propeller's interaction with the hull. On the other hand, the term $w_S$ corresponds to the wake fraction, characterising the influence of the ship's hull on the water flow into the propeller \citep{Diesel.2011,Birk.2019}. The following equations are presented for twin-screw vessels.
+
+\begin{equation}
+    \label{eqn:wake_ws}
+    w_S = 0.3095 C_B + 10 C_V C_B -0.23 \frac{D}{\sqrt{BT}}
+\end{equation}
+
+\begin{equation}
+    \label{eqn:thrust_t}
+    t = 0.325 C_B - 0.1885 \frac{D}{\sqrt{BT}}
+\end{equation}
+
+where $C_V$ is the viscous resistance coefficient, which combines all friction-related components of the resistance and the correlation resistance:
+
+\begin{equation}
+    \label{eqn:C_V}
+    C_V = \frac{(1+k_1)R_F+R_{APP}+R_A}{\frac{1}{2}\rho v_S^2 (S+\sum_i S_{APP_i})}
+\end{equation}
+
+The relative rotative efficiency \begin{math} \eta_R \end{math} can be expressed by the following ratio, with $v_A$ defined as the arriving water velocity to propeller \citep{Diesel.2011}:
+
+\begin{equation}
+    \label{eqn: n_rot_MAN}
+    \eta_R = \frac{\text{Power absorbed in open water at }v_A}{\text{Power absorbed in wake behind the ship at }v_A}
+\end{equation}
+
+According to \citet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estimated using the following formula, with $P/D$ defined as the propeller pitch-to-diameter ratio:
+
+\begin{equation}
+    \label{eqn: eta_rot_holtrop}
+    \eta_R = 0.9737 + 0.111(C_P-0.0225\ell_{CB}) - 0.06325\frac{P}{D}
+\end{equation}
+
+The shaft efficiency \begin{math}\eta_S\end{math} is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
+
 
 \subsubsection{Selection and validation of optimal model}\label{sec:select_and_val_model}
 
@@ -457,7 +566,7 @@ For further clarity regarding the methodology, the following steps are taken whi
     \item Highly correlated features are combined/removed based on physical and statistical reasoning.
     \item Impute missing values using {\tt KNNImputer}.
     \item Split the dataset into training and testing.
-    \item Train the model using the whole dataset with default hyperparameter.
+    \item Train the model using the whole dataset with the default hyperparameter.
     \item Evaluate model performance using k-fold cross-validation.
     \item Tune the model until the best model is obtained.
     \item For the case study, the best models will be used to predict the SOG using the test dataset.
@@ -486,32 +595,30 @@ The dataset used in the case study will represent the journey of the ferry betwe
 
 \subsection{Model Optimisation}\label{sec:hpo_journal}
 
-From \texttt{GridSearchCV}, it cam be observed that the most optimal model shown in Figure \ref{tbl:hpo_optimal} can reduce the training time. This is most notably caused by limiting the depth of the tree, from \texttt{max\_depth = None} to \texttt{max\_depth = 100}.  
+From \texttt{GridSearchCV}, it cam be observed that the most optimal model shown in Figure \ref{tbl:hpo_optimal} can reduce the training time. This is most notably caused by limiting the depth of the tree, from \texttt{max\_depth = None} to \texttt{max\_depth = 100}. Table \ref{tbl:cv_rfr_j} and Figure \ref{fig:learn_curve_RFR_MAE} shows that the process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of \citet{Kuhn.2013} and \citet{Hastie.2009}.
 
 \begin{table}
-\tbl{Optimal hyperparameter with training time of each model}
-  % \footnotesize
-  % \centering
-  % \resizebox {\textwidth}{!}
-  {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth}  p{0.3\linewidth} p{0.25\linewidth}}
-  \hline
-  Model & Training time [s] &  Optimal Hyperparameter & Search Range \\
-  \hline
-  RFR & 4.112 & None \\
-  $\text{RFR}_{OPT}$ & 3.431  & {\tt min\_samples\_split = 2} & [2,10]\\
-  &&{\tt min\_samples\_leaf = 1} & [1,10]\\
-  &&{\tt max\_features = 10} & [6,12]\\
-  &&{\tt max\_depth = 120} & [10,200] and [None]\\
-  &&{\tt n\_estimators = 100} & [100,1000]\\
-  \hline
-  \end{tabular}}
-\label{tbl:hpo_optimal}
+  \tbl{Optimal hyperparameter with training time of each model}
+    % \footnotesize
+    % \centering
+    % \resizebox {\textwidth}{!}
+    {\begin{tabular}{ p{0.1\linewidth} p{0.2\linewidth}  p{0.3\linewidth} p{0.25\linewidth}}
+    \hline
+    Model & Training time [s] &  Optimal Hyperparameter & Search Range \\
+    \hline
+    RFR & 4.112 & None \\
+    $\text{RFR}_{OPT}$ & 3.431  & {\tt min\_samples\_split = 2} & [2,10]\\
+    &&{\tt min\_samples\_leaf = 1} & [1,10]\\
+    &&{\tt max\_features = 10} & [6,12]\\
+    &&{\tt max\_depth = 120} & [10,200] and [None]\\
+    &&{\tt n\_estimators = 100} & [100,1000]\\
+    \hline
+    \end{tabular}}
+  \label{tbl:hpo_optimal}
 \end{table}
 
-Figure \ref{tbl:cv_rfr_j} shows that the process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of \citet{Kuhn.2013} and \citet{Hastie.2009}.
-
 \begin{table}
-  \tbl{Cross Validation results of Random Forest (RF) Regressor}
+\tbl{Cross Validation results of Random Forest (RF) Regressor}
     % \footnotesize
     % \centering
     % \resizebox {\textwidth}{!}
@@ -532,11 +639,175 @@ Figure \ref{tbl:cv_rfr_j} shows that the process of hyperparameter tuning for th
 \begin{figure}
     \centering
     \includegraphics[width=.8\linewidth]{00_figures/learning_curve_rfr_mae.png}
-    \caption{Correlation Heat Map}
+    \caption{Learning curve of Random Forest (RF) Regressor}
     \label{fig:learn_curve_RFR_MAE}
 \end{figure}
 
+\subsection{Evaluation of Random Forest Regressor}\label{sec:testing_discission_j}
 
+The optimised model will be assessed by testing its performance on a dataset comprising 957 data points from the entire year 2021, labelled as $DS_{year}$. To examine how different data points impact model performance, the dataset is split into two distinct seasons: $DS_{summer}$, covering May 2021 to October 2021, containing 454 data points; and $DS_{winter}$, including data from January 2021 to April 2021, and November 2021 to December 2021, totalling 503 data points. Missing values within the testing dataset will be handled using the {\tt KNNImputer} method.
+
+\begin{table}
+\tbl{Descriptive statistics of $DS_{year}$}
+  % \footnotesize
+  % \centering
+  % \resizebox {\textwidth}{!}
+  {\begin{tabular}{ p{0.21\linewidth} c c c c c c c c }
+  \hline
+  Features & Count & Mean & Std. & Min & 25\% & 50\% & 75\% & Max \\
+  \hline
+  \textbf{{\tt sog}} & 957.00 & 16.99 & 3.10 & 5.10 & 16.68 & 18.05 & 18.72 & 21.00\\
+  \hline
+  {\tt cog} & 957.00 & 196.73 & 86.72&	56.02 & 102.32& 185.22& 282.18& 319.85\\ 
+  {\tt heading} & 957.00 & 188.30&	89.17&	63.49&	100.86&	124.24&	279.38&	308.04\\
+  {\tt draught} & 957.00 & 5.23 & 0.19& 4.74& 5.11& 5.29& 5.38&5.66\\
+  {\tt windspeed} & 957.00 & 6.45 & 3.04 & 0.40 & 4.11 & 6.13 &	8.21 & 15.85\\
+  {\tt oceantemperature} & 957.00 & 282.28 & 6.48 & 267.25& 276.80& 281.91& 288.42& 295.70 \\
+  {\tt waveperiod} & 957.00 & 3.69 & 0.88 & 1.67 & 3.06& 3.55& 4.22& 7.01\\
+  {\tt surftemp} & 957.00 &283.20& 5.72& 273.15& 277.98& 282.65& 288.82 &294.93\\
+  {\tt windwaveswellheight} &  957.00 & 0.77 & 0.54 & 0.08 &0.37 &0.63 &	0.95 &  3.24  \\
+  {\tt curspeed} & 957.00 &0.09 & 0.07& 0.00 & 0.05& 0.07 & 0.13 & 0.50\\
+  {\tt truewinddir} & 957.00 & 91.39 & 56.23 &	0.03 & 38.80 &	95.25 & 142.83 & 179.86\\
+  {\tt truecurrentdir} & 957.00 & 90.75 & 57.76 & 0.26 & 31.52 & 90.44 & 144.65 & 179.95 \\
+  {\tt truewavedir} & 957.00 & 86.79 & 55.76& 0.06& 35.81 & 82.32 & 138.93 & 179.81 \\
+  \hline
+  \end{tabular}}
+% \caption{Descriptive statistics of $DS_{year}$}
+\label{tbl:testyear_dataset_descriptive}
+\end{table}
+
+The results of SOG prediction of optimised RFR on optimised model are summarised in Table \ref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the random forest is compared against Multiple Linear Regressor (MLR) model.
+
+\begin{table}
+\tbl{Performance indices for SOG predictions}
+  % \footnotesize
+  % \small
+  % \centering
+  % \resizebox {\textwidth}{!}
+  {\begin{tabular}{ l l c c c c c c }
+  \hline
+  Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+  & & [$\%$] & [$\%$] & [$kn$] & [$kn$] & [$kn$] & [$\%$]  \\ 
+  \hline
+  $\text{RFR}_{OPT}$ & $DS_{year}$  & 90.10 & 90.13 & 0.619 & 0.974 & 0.417 & 4.29 \\
+  & $DS_{winter}$ & 93.41 & 93.53 & 0.548 & 0.832 & 0.372 & 3.94 \\
+  & $DS_{summer}$ & 85.48 & 85.48 & 0.693 & 1.108 & 0.452 & 4.63 \\
+  MLR & $DS_{year}$ & 69.57 & 69.62 & 1.147 & 1.709 & 0.917 & 7.75 \\
+  & $DS_{winter}$ & 67.82 & 67.83 & 1.133 & 1.838 & 0.875 & 8.05 \\
+  & $DS_{summer}$ & 71.24 & 71.63 & 1.159 & 1.559 & 0.952 & 7.38 \\
+  \hline
+  \end{tabular}}
+% \caption{Performance indices for SOG predictions}
+\label{tbl:testing_dataset_sog_result}
+\end{table}
+
+The results show that RFR is able to generally make good predictions across different datasets and show considerable robustness as indicated by the variance between the best and the worst result. With the $DS_{winter}$ dataset, RF regressor is able to showcase the best performance, achieving $R^2$ score of 93.41 \% and MAPE of 3.94\%. The result also showcase that the performance of the model is not only dependent on the quantity of the data, but it is also dependent on the quality of the data as well.
+
+The results show that RFR consistently generates accurate predictions across various datasets, displaying notable robustness evident in the variance between the best and worst prediction results. In the case of the $DS_{winter}$ dataset, the RF regressor exhibits the best performance, attaining $R^2$ score of 93.41\% and a MAPE of 3.94\%. These findings also demonstrated that the model's effectiveness is influenced not solely by data quantity, but also by data quality.
+
+To further understand the structure of the RF regressor, a feature importance plot is generated. Excluding ship heading and COG. The ship draught $T$ emerges as a significant factor influencing the prediction of SOG. This aligns with the theory of frictional resistance $R_F$ encountered by the ship, which is a function of the wetted surface area of bare hull $S$. Deeper draught $T$ will result in more submerged area of the hull and this will consequently increase the frictional force $R_F$ of the ship. Given a constant supply of power to the ship propulsion system, the speed of the ship will decrease.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\linewidth]{00_figures/rfr_ftr_importance_nodir.png}
+  \caption{Learning curve of Random Forest (RF) Regressor}
+  \label{fig:learn_curve_RFR_MAE}
+\end{figure}
+
+Regarding weather conditions, RFR models highlight current-based variables like current speed and true current direction as the most influential factors affecting SOG prediction. This observation aligns with the suggested approach for current correction, which emphasizes the importance of considering both current magnitude and direction when converting SOG to STW. Following these, the subsequent significant attributes according to the rankings of the RFR models are wave-related parameters: significant wave height ($H_{1/3}$), true wave direction, and wave period ({\tt waveperiod}). This agreement corresponds to the additional resistance generated by waves ($R_{AW}$) in the computation of the total resistance ($R_{TOTAL}$) experienced by the ship. Wind-related factors, including wind speed and true wind direction, contribute to the added resistance caused by wind force ($R_{AA}$). However, these aspects have the least impact on SOG prediction.
+
+\begin{figure}
+  \label{fig:dtr_tree_trained}
+  \centering
+  \includegraphics[width=.9\textwidth]{00_figures/rfr_mod_it1.png}
+  \caption{Partial structure of RF Regressor}
+\end{figure}
+
+\subsection{Evaluation of the power estimation method}\label{sec:power_estimate_eval_j}
+
+Table \ref{tbl:FOC_scores_errors} presents the results for FOC prediction of RF Regressor. Notably, there is a decline in the $R^2$ score and MAPE for the RFR. This decrease in performance could be attributed to the inherent nonlinearity of the WBM, which tends to amplify FOC prediction errors at higher ship speeds. This phenomenon is exemplified by the case study conducted by \citet{Birk.2019}. In the case study, a discrepancy of $1$ knot in ship speed resulted in a power difference of around $1200$ kW at lower speeds. However, at higher speeds, the power difference escalated to about $2300$ kW. Nevertheless, the FOC prediction is still reasonable, achieving $R^2$ score of 86.57\% and MAPE of 12.06\%.
+
+\begin{table}
+\tbl{Performance indices for FOC prediction}  
+  % \footnotesize
+  % % \small
+  % \centering
+  % \resizebox {\textwidth}{!}
+  {\begin{tabular}{ l l c c c c c c }
+  \hline
+  Model & Dataset & $R^2$ & expVar & MAE & RMSE & MAD & MAPE \\
+  & & [$\%$] & [$\%$] & [$T/h$] & [$T/h$] & [$T/h$] & [$\%$]  \\ 
+  \hline
+  $\text{RFR}_{OPT}$ & $DS_{year}$  & 81.81 & 81.87 & 0.117 & 0.171 & 0.079 & 13.64 \\
+  & $DS_{winter}$ & 86.57 & 86.58 & 0.099 & 0.141 & 0.068 & 12.06 \\
+  & $DS_{summer}$ & 76.82 & 77.20 & 0.137 & 0.198 & 0.088 & 15.31 \\
+  MLR & $DS_{year}$ & 29.16 & 31.81 & 0.223 & 0.337 & 0.171 & 29.39 \\
+  & $DS_{winter}$ & 10.39 & 11.37 & 0.212 & 0.363 &0.161& 33.19 \\
+  & $DS_{summer}$ & 44.33 & 49.66 & 0.235 & 0.307 & 0.191 & 25.24 \\
+  \hline
+  \end{tabular}}
+% \caption{Performance indices for FOC prediction}
+\label{tbl:FOC_scores_errors}
+\end{table}
+
+The resulting bunker-to-speed curve plots are displayed in Figure \ref{fig:foc_curve_rfr_dsyear}. These resulting functions are in alignment with the findings reported by \citet{Psaraftis.2013}. According to the cubic law, the fuel consumption rate can be represented by a proportional factor multiplied by the sailing speed raised to the power of $\alpha = 3$ \citep{Du.2019}. However, \citet{Psaraftis.2013} noted that the cubic law might not be valid for low speeds, and the factor $\alpha$ could be 4, 5, or even higher for specific ship types or when operating at high speeds.
+
+\begin{figure}
+  \label{fig:foc_curve_rfr_dsyear}
+  \centering
+  \includegraphics[width=.8\textwidth]{00_figures/rfr_year_foccurve.png}
+  \caption{Generated FOC to speed curve for dataset $DS_{year}$}
+\end{figure}
+
+The FOC to speed curve also reveal situations where the model predicts ship speeds surpassing the maximum engine rating, a physically impossible scenario. This concern arises from the conversion of SOG to STW. By analysing publicly available data from the study conducted by \citet{JoanPeturPetersen.2011}\footnote{http://cogsys.imm.dtu.dk/propulsionmodelling/}, a noticeable divergence between SOG and STW becomes apparent, typically differing by a factor of around 0.85. Even after incorporating current correction in this case study, the speed difference remains slight. This implies that the conversion of SOG to STW should also account for the impact of speed reduction due to wind and waves. Direct speed loss formulas for wind and wave effects are presented by \citet{Aertssen.1975} and \citet{kwon.2008}. However, these formulas have limited applicability ranges and are not optimized for different vessel types.
+
+\subsection{Key Findings}\label{sec:key_finding}
+
+\subsubsection{Performance of BBM}
+
+\begin{itemize}
+  
+\item RFR is able to perform reasonable SOG prediction, achieving $R^2$ score of 93.41\% and a MAPE of 3.94\%. A simple MLR model may be insufficient for implementation, as a substantial performance gap is found between MLR and other tree-based models, with $R^2$ score of $72\%$ and MAE of 1.16 knots.
+
+\item The quality and quantity of data are closely interrelated factors that significantly impact model performance. There are noticeable differences in the performance between the $DS_{winter}$ and $DS_{summer}$ datasets, with an increase of approximately $6\%$ in the $R^2$ score and a reduction of about 0.1 knots in MAE is achievable with an increase in about 50 data points.
+
+\item However, the quantity of data alone is insufficient to ensure an increase in model performance. This observation is evident from the $DS_{year}$ datasets, which contain approximately twice as much data as the other datasets, yet the model's performance is not superior to that of the $DS_{winter}$ dataset. This suggests that the quality of the $DS_{summer}$ dataset may compromise the model's performance when using the $DS_{year}$ dataset.
+
+\item The impact of optimization on RFR and ETR models is minimal. Analysing feature importances and model structure visualisation, the RFR model recognizes draught as the most influential factor affecting SOG prediction. While the ETR and DTR models also identify this factor, but with a lesser degree of recognition.
+
+\end{itemize}
+
+\subsubsection{Performance of power estimation method}
+
+\begin{itemize}
+
+\item Due to the sequential approach of GBM, the predictive performance of BBM is carried over to WBM during FOC prediction. RFR is able to achieve a $R^2$ score of 86.57\% and MAPE of 12.06\%. 
+
+\item The nonlinear relation between speed and bunker means that significant deviation of SOG leads to an amplified magnitude of errors for FOC. This is evident in the case of MLR, the model already made relatively larger errors than other tree-based models during SOG prediction. With that, it is important to ensure that the SOG prediction of BBM is to be optimised as much as possible to ensure accurate FOC prediction. 
+
+\item The power estimation method by Holtrop-Mennen method resulted in a 4\textsuperscript{th} order bunker-to-speed function.
+ 
+\end{itemize}
+
+\section{Conclusion}
+
+This study proposed a comprehensive approach that combines data-driven techniques with empirical models to estimate FOC for a sailing vessel. The optimised machine learning model effectively forecasts FOC for vessels navigating at varying speeds, draughts, and weather conditions. The outcomes substantiate the viability of integrating AIS data and weather data for SOG prediction, which will then be used for FOC estimation. Technical details about the ship can be derived from AIS data. Along with suitable approximations from suitable and relevant literature, FOC can be forecasted using the empirical formulas proposed by Holtrop-Mennen. The results of predicted FOC can be used to generate bunker-to-fuel functions to estimate FOC for varying STW. The main findings are summarised in the following points.\\
+
+\begin{itemize}
+  \item Machine learning-based FOC models rely on feature engineering like feature selection and importance identification. High correlation filter analysis is a common approach, removing highly correlated features. Removing a feature should primarily be based on the understanding of physical and vessel-related knowledge.
+  \item Hourly AIS data resolution offers an advantage over noon data, especially for predicting within shorter periods. The hourly model in this study effectively forecasts FOC within seasonal or yearly intervals.
+  \item Holtrop-Mennen method is a viable method for estimating energy for operation. The introduction of this empirical model ensures adherence to physical principles of the vessel. Missing input values can be approximated using formulas or similar cases. However, approximations introduce errors; interpolation using measurements from towing tank resistance test data is preferred.
+  \item The Random Forest Regressor effectively predicts SOG in the Black Box Model. This approach requires minimal data pre-processing and model configuration. Tree-based models' feature importance aids in implicit feature selection. 
+  \item Integrating the White Box Model diminishes the domain knowledge-free advantage of the Black Box Model, and the sequential approach may propagate prediction errors during energy estimation.
+\end{itemize}
+
+\section*{Replication and data sharing}
+
+Readers can find the computer code and dataset used in this study in the provided URL: https://github.com/hiwafi/thesis-ais.git. 
+
+\section*{Disclosure statement}
+
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 
 \bibliographystyle{tfcad}
