@@ -367,7 +367,7 @@ The most important form in which ocean waves are described. Wave spectrum charac
 A ship's bunker fuel consumption in actual operating conditions is affected by several factors including the operating parameter of the ship's engine, propeller efficiency, and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{AA}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
 
 \begin{equation}\label{eqn:R_tot}
-    R_{TOTAL} = R_{TOTAL} + R_{AW} + R_{AA} 
+    R_{TOTAL} = R_{CALM} + R_{AW} + R_{AA} 
 \end{equation}
 
 \begin{equation}\label{eqn:P_e}
@@ -649,7 +649,7 @@ The equivalent form factor for multiple appendages, $(1+k_{2_i})_{eq}$ is given 
 If bow thruster is present, the resistance due to the bow thruster tunnel $R_{TH}$ can be obtained through:
 
 \begin{equation}\label{eqn:R_th}
-    R_{TH} = \rho v_S^2 \pi \d_{TH}^2 C_{D_{TH}} \quad \textbf{where} \quad C_{D_{TH}} = 0.003 + 0.003 \Biggl( \frac{10{d_{TH}}}{t} - 1 \Biggr) 
+    R_{TH} = \rho v_S^2 \pi d_{TH}^2 C_{D_{TH}} \quad \textbf{where} \quad C_{D_{TH}} = 0.003 + 0.003 \Biggl( \frac{10{d_{TH}}}{t} - 1 \Biggr) 
 \end{equation}
 
 The coefficient $C_{D_{TH}}$ defines the drag coefficient for the tunnel, and it ranges between $0.003$ and $0.012$. Smaller values indicate thrusters which are in the cylindrical part of the bulbous bow. The coefficient can also be estimated using the equation by \bcitet{Hollenbach.1999} in \Cref{eqn:R_th}.\\
