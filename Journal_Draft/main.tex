@@ -53,9 +53,9 @@ Energy-efficient operation; Random Forest Regression; Ship speed prediction; Fue
 
 \section{Introduction}
 
-The marine industry is actively researching efficient ship operation due to rising fuel prices and stricter environmental rules. Fuel costs, known as "bunkers," comprise over 50\% of voyage expenses and up to 75\% of total operating costs, impacting profitability \citep{Bialystocki.2016}. Energy-efficient practices reduce costs and greenhouse gas emissions, crucial with shipping contributing 2.51\% of global emissions \citep{IMO.2020}. This mutual motivation aligns economic benefits with environmental compliance. Stakeholders seek solutions to energy-efficient operation by considering technical and operational approaches. Technical solutions require costly structural and power system alterations \citep{Yan.2021,Li.2022}, prompting interest in the cost-effective, optimisation of operational measures.
+The marine industry is actively researching efficient ship operations due to rising fuel prices and stricter environmental rules. Fuel onboard ship, known as "bunkers," comprise over 50\% of voyage expenses and up to 75\% of total operating costs, impacting profitability \citep{Bialystocki.2016}. Energy-efficient practices reduce costs and greenhouse gas emissions, crucial with shipping contributing 2.51\% of global emissions \citep{IMO.2020}. This mutual motivation aligns economic benefits with environmental compliance. Stakeholders seek solutions to energy-efficient operations by considering technical and operational approaches. Technical solutions require costly structural and power system alterations \citep{Yan.2021,Li.2022}, prompting interest in the cost-effective, optimisation of operational measures.
 
-Significant emphasis is given in this study on optimisation of ship speed due to its substantial impact on fuel consumption which is caused by a third-order non-linear correlation between fuel consumption and ship speed \citep{Wang.2012,Du.2019}. However, the process of optimising the speed prediction model is intricate, appropriate features must be considered as the ship speed is influenced by factors like vessel performance and weather conditions.
+Significant emphasis is given in this study on the optimisation of ship speed due to its substantial impact on fuel consumption which is caused by a third-order non-linear correlation between fuel consumption and ship speed \citep{Wang.2012,Du.2019}. However, the process of optimising the speed prediction model is intricate, appropriate features must be considered as the ship speed is influenced by factors like vessel performance and weather conditions.
 
 Fuel consumption models based on historical data and ship parameters lack robustness and sensitivity to noise. To address this, recent research employs data-driven techniques, like machine learning (ML), for ship speed and fuel consumption prediction. ML models showcase strong generalisation capabilities and low prediction errors, although some experts are reluctant to accept the generated models by the machine learning approach due to their complexity, unintuitiveness, and potential violation of vessel physics. The success of data-driven models is also highly dependent on data quality and quantity \citep{Yan.2021,Gkerekos.2019}. Given volatile fuel prices, developing an accurate Fuel Oil Consumption (FOC) prediction model is valuable for maritime stakeholders. This aids in timely economic decisions without violating environmental regulations.
 
@@ -67,7 +67,7 @@ The following Research Questions (RQs) could be raised during the development of
     \item \textbf{RQ3}: Which approximations and empirical equations are suitable to estimate the resistance forces required to estimate the power required by the ship? 
 \end{itemize} 
 
-The following research boundaries are set throughout this thesis:
+The following research boundaries are set throughout this study:
 
 \begin{itemize}
     \item The weather information and AIS data are assumed to be true. Any uncertainties from AIS data and weather data are neglected. 
@@ -75,7 +75,7 @@ The following research boundaries are set throughout this thesis:
     \item In the case study, the approximation for incomplete ship parameters and dimensions is based on a similar type of ship with nearly identical dimensions. 
 \end{itemize}
 
-The Grey Box (GB) modelling approach using the fusion of AIS data and weather data provides the following contributions : 
+The modelling approach using the fusion of AIS data and weather data provides the following contributions : 
 
 \begin{itemize}
     \item Economical and independent data source.
@@ -98,7 +98,7 @@ The Grey Box (GB) modelling approach using the fusion of AIS data and weather da
 
 Each strategy has strengths and weaknesses. WBM is transparent and comprehensible, rooted in physics and hydrodynamics, but lacks adaptability and generalisation due to its deterministic nature and dependence on prior knowledge. BBM excels in fitting and predicting data but lacks vessel-specific knowledge and can be complex. To achieve good prediction, it requires an abundance of data quantity and good data quality \citep{Halevy.2009}. GBM mitigates these limitations by combining mechanistic understanding with predictive capabilities.
 
-The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using ML approach, For black-box modelling using ML techniques, it is crucial to have sufficient high-quality data for accurate training \citep{Halevy.2009}. \citet{Yan.2021} categorise the data sources for FOC modelling as follows:
+The modelling of FOC using GBM requires both components of WBM and BBM. For the BBM modelling part using ML approach, For black-box modelling using ML techniques, it is crucial to have sufficient high-quality data for accurate training \citep{Halevy.2009}.
 
 \subsection{Automatic Identification System (AIS) data}\label{sec:ais_theo_j}
 
@@ -120,7 +120,7 @@ Tree-based model is a supervised, highly interpretable BBM modelling approach us
 
 \citet{Yan.2020} predicted FOC for a dry bulk ship's voyage using RF. The model incorporated sailing speed, cargo weight, and meteorological conditions, it is able to attain mean absolute percentage error (MAPE) of $7.91\%$ and the RF model outperformed decision tree, ANN, LASSO, and SVR. \citet{Gkerekos.2019} compared ML models to predict daily FOC, RF model achieved $89\%$ and $96\%$ $R^2$ scores with noon data and ADLM system data, respectively. \citet{Li.2022} fused meteorological, voyage, and AIS data to explore the effect of data on ML models for FOC prediction. Tree-based models (bagging and boosting ensembles) including ETR, RFR, AB, GB, XG, and LB were recommended for energy-efficient operation modelling, with RFR particularly displaying the best robustness among the presented ML models in the study. \citet{Abebe.2020} predicted ship speed over ground (SOG) using AIS and weather data. The RF model achieved $98\%$ $R^2$ score and $0.25$ knots RMSE.
 
-WBMs for predicting FOC utilize physics and hydrodynamic laws to compute the vessel's resistance, encompassing calm water resistance and additional effects like wind and waves. Then the engine power can be subsequently estimated at a specific speed, facilitating FOC calculation \citep{haranen2016white}. Holtrop-Mennen power estimation method \citet{Holtrop.1984}, is applicable in a wide range \citep{Rakke.2016,Kim.2020b}. \citet{Rakke.2016} utilized AIS data and mechanical information to estimate engine power using Holtrop-Mennen, achieving about $5\%$ model testing error for FOC and GHG emissions estimation. Similarly, \citet{Kim.2020b} estimated Energy Efficiency Operational Index (EEOI) through Holtrop-Mennen-based engine power estimation, enabled by AIS data and weather information.
+WBMs for predicting FOC utilize physics and hydrodynamic laws to compute the vessel's resistance, encompassing calm water resistance and additional effects like wind and waves. Then the engine power can be subsequently estimated at a specific speed, facilitating FOC calculation \citep{haranen2016white}. The wide application range of Holtrop-Mennen power estimation method \citet{Holtrop.1984} motivates \citet{Rakke.2016} to estimate engine power using the methof, achieving about $5\%$ model testing error for FOC and GHG emissions estimation. Similarly, \citet{Kim.2020b} estimated Energy Efficiency Operational Index (EEOI) through Holtrop-Mennen-based engine power estimation, enabled by AIS data and weather information.
 
 \section{Methodology}\label{sec:big_methodology}
 
@@ -203,7 +203,7 @@ To select appropriate features for the model, feature correlation is analyzed. F
 
 Features from AIS data such as \emph{time, latitude, longitude, width,} and \emph{length} are excluded, as they only represent ship location and constant dimensions. Features from weather data, such as \emph{combined wind wave swell height, swell height, maximum wave height,} and \emph{wind wave height,} are interconnected by physical relationships. The combined wind wave swell height corresponds to significant wave height $H_{1/3}$. Additionally, significant wave height can be used to identify whether the sea is dominated by swell or wind-generated waves \citep{BitnerGregersen.2005}. Hence, it is evident that retaining the significant wave height is essential for the model, given that various wave properties can be deduced from it. 
 
-In a statistical context, heading and COG exhibit significant correlations. However, both features are retained due to their representation of distinct ship parameters. Course Over Ground (COG) signifies the ship's course heading while heading signifies the ship's actual heading at a specific time point. A similar rationale applies to the relationship between air temperature above the ocean and sea surface temperature. Air temperature above oceans represents wind temperature, whereas sea surface temperature reflects the temperature of the water surface.
+In a statistical context, heading and COG exhibits significant correlations. However, both features are retained due to their representation of distinct ship parameters. Course Over Ground (COG) signifies the ship's course heading while heading signifies the ship's actual heading at a specific time point. A similar rationale applies to the relationship between air temperature above the ocean and sea surface temperature. Air temperature above oceans represents wind temperature, whereas sea surface temperature reflects the temperature of the water surface.
 
 \begin{figure}[h!]
   \centering
@@ -251,7 +251,7 @@ In a statistical context, heading and COG exhibit significant correlations. Howe
 
 The Decision Tree operates by employing nested {\tt if-then} statements based on predefined rules, resulting in a partitioned data space. This process can also be visualized as a binary tree, enhancing interpretability by representing diverse input responses within a single tree \citet{Kuhn.2013, Hastie.2009}.
 
-A Decision Tree encompasses distinct nodes: the \textbf{\emph{Root node}} represents the top-level node; \textbf{\emph{Leaf nodes}} (or terminal nodes) yield final prediction outcomes; and \textbf{\emph{Internal nodes}} lie between the root and leaf nodes. The procedure of dividing a node into subsequent nodes is termed \textbf{\emph{splitting}}, where the original node is the \textbf{\emph{parent node}} and the resultant nodes are \textbf{\emph{child nodes}}. In regression tasks, tree growth is often controlled by Mean Square Error (MSE), guided by the Classification and Regression Tree (CART) algorithm, The notation $J(\text{k},\text{t}_k)$ represents the cost function that needs to be minimised.
+A Decision Tree encompasses distinct nodes: the \textbf{\emph{Root node}} represents the top-level node; \textbf{\emph{Leaf nodes}} (or terminal nodes) yield final prediction outcomes; and \textbf{\emph{Internal nodes}} lie between the root and leaf nodes. The procedure of dividing a node into subsequent nodes is termed \textbf{\emph{splitting}}, where the original node is the \textbf{\emph{parent node}} and the resultant nodes are \textbf{\emph{child nodes}}. In regression tasks, tree growth is often controlled by Mean Square Error (MSE), guided by the Classification and Regression Tree (CART) algorithm, The notation $J(\text{k},\text{t}_k)$ represents the cost function that needs to be minimised \citep{Geron.2019}.
 
 \begin{equation}\label{eqn:sse}
   \text{MSE}_{\text{s}_i} = \frac{1}{n_{\text{s}_i}}\text{SSE}_{\text{s}_i} \quad \textbf{where} \quad i = (1,2)   
@@ -347,7 +347,7 @@ Since the speed that is represented in AIS data is SOG, $v_G$, given the current
   v_{\text{S}} = \sqrt{(v_{\text{S}}^x)^2 + (v_{\text{S}}^y)^2} 
 \end{equation}
 
-Holtrop-Mennen method has a wide applicability range and it is the only method that adopted the use of the ITTC form factor $k$. The resistances in this method are calculated as dimensional force. Furthermore, the method also gives estimates of hull-propeller interaction, thrust deduction, full-scale wake fraction and relative rotative efficiency \citep{Birk.2019}. For the calculation of the total resistance, the following equations based on the study by \citet{Holtrop.1978,Holtrop.1982,Holtrop.1984}:
+Holtrop-Mennen method has a wide applicability range and it is the only method that adopted the use of the ITTC form factor $k$. The resistances in this method are calculated as a dimensional force. Furthermore, the method also gives estimates of hull-propeller interaction, thrust deduction, full-scale wake fraction and relative rotative efficiency \citep{Birk.2019}. For the calculation of the total resistance, the following equations based on the study by \citet{Holtrop.1978,Holtrop.1982,Holtrop.1984}:
 
 \begin{equation}\label{eqn:R_calm}
   R_{CALM} = R_F(1+k_1) + R_{APP} + R_W + R_B + R_{TR} + R_A
@@ -394,7 +394,7 @@ The term transom refers to the flat section located at the stern of the ship. Wh
   Fr_T = \frac{v_S}{\sqrt{\frac{2gA_T}{(B+BC_{WP})}}}
 \end{equation}
 
-The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the transom. When the average draught is smaller than the speed, there will be clean separation of the flow at transom edge and the resistance due to transom vanishes. Immersion resistance $R_{TR}$ is considered if $Fr_{T} > 5$
+The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the transom. When the average draught is smaller than the speed, there will be a clean separation of the flow at the tr+ansom edge and the resistance due to transom vanishes. Immersion resistance $R_{TR}$ is considered if $Fr_{T} > 5$
 
 \begin{equation}
   \label{eqn:R_transom}
@@ -595,7 +595,7 @@ The dataset used in the case study will represent the journey of the ferry betwe
 
 \subsection{Model Optimisation}\label{sec:hpo_journal}
 
-From \texttt{GridSearchCV}, it cam be observed that the most optimal model shown in Figure \ref{tbl:hpo_optimal} can reduce the training time. This is most notably caused by limiting the depth of the tree, from \texttt{max\_depth = None} to \texttt{max\_depth = 100}. Table \ref{tbl:cv_rfr_j} and Figure \ref{fig:learn_curve_RFR_MAE} shows that the process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of \citet{Kuhn.2013} and \citet{Hastie.2009}.
+From \texttt{GridSearchCV}, it can be observed that the most optimal model shown in Figure \ref{tbl:hpo_optimal} can reduce the training time. This is most notably caused by limiting the depth of the tree, from \texttt{max\_depth = None} to \texttt{max\_depth = 100}. Table \ref{tbl:cv_rfr_j} and Figure \ref{fig:learn_curve_RFR_MAE} show that the process of hyperparameter tuning for the Random Forest Regressor (RFR) model did not show any significant improvement in model performance. This outcome aligns with the findings of \citet{Kuhn.2013} and \citet{Hastie.2009}.
 
 \begin{table}
   \tbl{Optimal hyperparameter with training time of each model}
@@ -676,7 +676,7 @@ The optimised model will be assessed by testing its performance on a dataset com
 \label{tbl:testyear_dataset_descriptive}
 \end{table}
 
-The results of SOG prediction of optimised RFR on optimised model are summarised in Table \ref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the random forest is compared against Multiple Linear Regressor (MLR) model.
+The results of SOG prediction of optimised RFR on the optimised model are summarised in Table \ref{tbl:testing_dataset_sog_result}. Each model is tested against 3 different testing datasets, the yearly dataset $DS_{year}$, summer dataset, $DS_{summer}$ and winter dataset $DS_{winter}$. The performance of the random forest is compared against Multiple Linear Regressor (MLR) model.
 
 \begin{table}
 \tbl{Performance indices for SOG predictions}
@@ -701,7 +701,7 @@ The results of SOG prediction of optimised RFR on optimised model are summarised
 \label{tbl:testing_dataset_sog_result}
 \end{table}
 
-The results show that RFR is able to generally make good predictions across different datasets and show considerable robustness as indicated by the variance between the best and the worst result. With the $DS_{winter}$ dataset, RF regressor is able to showcase the best performance, achieving $R^2$ score of 93.41 \% and MAPE of 3.94\%. The result also showcase that the performance of the model is not only dependent on the quantity of the data, but it is also dependent on the quality of the data as well.
+The results show that RFR is able to generally make good predictions across different datasets and show considerable robustness as indicated by the variance between the best and the worst result. With the $DS_{winter}$ dataset, RF regressor is able to showcase the best performance, achieving $R^2$ score of 93.41 \% and MAPE of 3.94\%. The result also showcases that the performance of the model is not only dependent on the quantity of the data, but it is also dependent on the quality of the data as well.
 
 The results show that RFR consistently generates accurate predictions across various datasets, displaying notable robustness evident in the variance between the best and worst prediction results. In the case of the $DS_{winter}$ dataset, the RF regressor exhibits the best performance, attaining $R^2$ score of 93.41\% and a MAPE of 3.94\%. These findings also demonstrated that the model's effectiveness is influenced not solely by data quantity, but also by data quality.
 
@@ -796,7 +796,7 @@ This study proposed a comprehensive approach that combines data-driven technique
 \begin{itemize}
   \item Machine learning-based FOC models rely on feature engineering like feature selection and importance identification. High correlation filter analysis is a common approach, removing highly correlated features. Removing a feature should primarily be based on the understanding of physical and vessel-related knowledge.
   \item Hourly AIS data resolution offers an advantage over noon data, especially for predicting within shorter periods. The hourly model in this study effectively forecasts FOC within seasonal or yearly intervals.
-  \item Holtrop-Mennen method is a viable method for estimating energy for operation. The introduction of this empirical model ensures adherence to physical principles of the vessel. Missing input values can be approximated using formulas or similar cases. However, approximations introduce errors; interpolation using measurements from towing tank resistance test data is preferred.
+  \item Holtrop-Mennen method is a viable method for estimating energy for operation. The introduction of this empirical model ensures adherence to the physical principles of the vessel. Missing input values can be approximated using formulas or similar cases. However, approximations introduce errors; interpolation using measurements from towing tank resistance test data is preferred.
   \item The Random Forest Regressor effectively predicts SOG in the Black Box Model. This approach requires minimal data pre-processing and model configuration. Tree-based models' feature importance aids in implicit feature selection. 
   \item Integrating the White Box Model diminishes the domain knowledge-free advantage of the Black Box Model, and the sequential approach may propagate prediction errors during energy estimation.
 \end{itemize}
