@@ -1,6 +1,6 @@
 \chapter{Research Methodology} \label{chp:method}
 
-This chapter will cover the methodology employed to develop the grey box model. The grey box modelling approach adopted in this thesis falls within the category of sequential GBM. Consequently, the development process is divided into two stages. The initial stage of the modelling process focuses on machine learning, specifically the development of the BBM using tree-based models. This is carried out using Python in conjunction with \scikit/ \bcitep{FabianPedregosa.2011}. This stage encompasses data acquisition, data preprocessing, hyperparameter optimization, and model evaluation. The training of the models involves a fusion of T-AIS data and weather data, followed by the selection of relevant features for predicting the SOG. These processes are visually illustrated in \Cref{fig:flowchart_BBM}.
+This chapter will cover the methodology employed to develop the sequential grey box (GB) model. Consequently, the development process is divided into two stages. The initial stage of the modelling process focuses on machine learning, specifically the development of the BBM using tree-based models. This is carried out using Python in conjunction with \scikit/ \bcitep{FabianPedregosa.2011}. This stage encompasses data acquisition, data preprocessing, hyperparameter optimisation, and model evaluation. The model is trained using the combination of T-AIS data and weather data, followed by the selection of relevant features for predicting the SOG. These processes are visually illustrated in \Cref{fig:flowchart_BBM}.
 
 \begin{figure}[h]
     \centering
@@ -9,7 +9,7 @@ This chapter will cover the methodology employed to develop the grey box model. 
         \label{fig:flowchart_BBM}
 \end{figure}
 
-The second stage of the modelling process is centred around the WBM component of the GBM. In this phase, the predicted SOG serves as input for the WBM to forecast the necessary brake power required for propelling the ship. This involves an initial conversion of SOG to STW for estimation of encountered resistance during the voyage, this then facilitates the estimation of the required power i.e. energy. The framework outlined in \Cref{fig:flowchart_WBM} provides a graphical depiction summarising the concepts discussed in \Cref{sec:power_calc}.
+The second stage of the modelling process is centred around the WBM component of the GBM. In this phase, the predicted SOG serves as input for the WBM to forecast the necessary brake power required to propel the ship. This involves an initial conversion of SOG to STW for estimation of encountered resistance during the voyage, this then facilitates the estimation of the required power i.e. the energy required to propel the ship. The framework outlined in \Cref{fig:flowchart_WBM} provides a graphical depiction summarising the concepts discussed in \Cref{sec:power_calc}.
 
 \begin{figure}[h]
     \centering
@@ -31,7 +31,7 @@ The development process of GBM is summarised in \Cref{fig:flowchart_GBM}. Detail
 
 \section{Data Acquisition}\label{sec:data_acquisition}
 
-The data is collected from a ferry serving between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz, as shown in \Cref{fig:Hammershus_journey_map} \bcitep{HammershusJourney}. The trip between K{\o}ge, R{\o}nne takes about 5 h 30 minutes and it sails between R{\o}nne and Sassnitz for 3 h and 20 minutes. The journey is tracked by the T-AIS system of the Danish Maritime Authority (DMA). The weather data along her sailing path are acquired from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with a temporal resolution of 1 hour at a granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with a temporal resolution of 3 hours at a granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
+The data is collected from a ferry serving between ports of K{\o}ge, R{\o}nne, Ystad and Sassnitz, as shown in \Cref{fig:Hammershus_journey_map} \bcitep{HammershusJourney}. The trip between K{\o}ge, R{\o}nne takes about 5 h 30 minutes and it sails between R{\o}nne and Sassnitz for 3 h and 20 minutes. The journey is tracked by the T-AIS system of the Danish Maritime Authority (DMA). The weather data along her sailing path are acquired from ECMWF\footnote{European Centre for Medium-Range Weather Forecast} with a temporal resolution of 1 hour at a spatial granularity of 0.25° (longitude) x 0.25° (latitude), data from ECMWF provides information for wind, waves and seawater temperature. The information for current is obtained from CMEMS\footnote{Copernicus Marine Environment Monitoring Service} with a temporal resolution of 3 hours at a spatial granularity of  0.25° (longitude) x 0.25° (latitude).\\ 
 
 \begin{figure}[ht]
   \begin{minipage}{0.55\linewidth} % Adjust the width as needed
@@ -76,6 +76,8 @@ The data is collected from a ferry serving between ports of K{\o}ge, R{\o}nne, Y
         \label{fig:Hammershus_Pict}
 \end{figure}
 
+\pagebreak
+
 The resulting combined dataset maintains a temporal resolution of 1 hour. To address the disparity between the temporal resolutions of the data from CMEMS and ECMWF, the weather information is synchronised. This synchronisation ensures that the wind, waves, seawater temperature, and sea current data align with the same weather grid and possess consistent temporal resolutions. The features \textbf{wind direction},\textbf{swell direction}, and \textbf{wind wave direction} are oriented to true north. However, to reflect the actual direction of weather effects that are acting on the ship, these features are converted to true direction; where true direction is defined as the direction of weather effect with respect to the bow of the ship. The value ranges between 0° and 180°. Subsequently, through vector decomposition, the northward and eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
 
 \begin{equation}\label{eqn:vwindabs}
@@ -106,7 +108,7 @@ Similarly, information of Northward and Eastward current Velocity is converted t
     \end{cases}   
 \end{equation}
 
-The initial dataset offers data in true directions, indicating the direction in which weather conditions are encountered relative to the ship's bow. The static information from AIS data, which includes the ship's identity and navigational status, is excluded from the dataset. The original structure encompasses 27 features: 9 AIS features and 18 weather features. The layout of the initial dataset, prior to data preprocessing and feature selection, is outlined in Table \Cref{tbl:dataset_init_struct}.
+The static information from AIS data, which includes the ship's identity and navigational status, is excluded from the dataset. The original structure encompasses 27 features: 9 AIS features and 18 weather features. The layout of the initial dataset, prior to data preprocessing and feature selection, is outlined in Table \Cref{tbl:dataset_init_struct}.
 
 \begin{table}[h!]
     \footnotesize
@@ -164,18 +166,16 @@ This section presents the steps taken during data preprocessing. The dataset wil
 
 \subsection{Data Cleaning}\label{sec:data_cleaning}
 
-The plotted trajectory reveals an incomplete representation of the voyage between R{\o}nne and Sassnitz. This may stem from the constraints of the T-AIS system, attributed to limited coverage within the area connecting Sassnitz and R{\o}nne. This is shown by the plot shown in \Cref{fig:aiscoverage}. Therefore, the data plot for the journey between Sassnitz and R{\o}nne will be excluded. Furthermore, a latitude threshold of 55.04° N is applied, which excludes the journey segment between Sassnitz and R{\o}nne.\\
+The plotted trajectory reveals an incomplete representation of the voyage between R{\o}nne and Sassnitz. This may stem from the constraints of the T-AIS system, attributed to limited coverage within the area connecting Sassnitz and R{\o}nne. This is shown by the plot shown in \Cref{fig:aiscoverage}. Therefore, the data plot for the journey between Sassnitz and R{\o}nne will be excluded by applying a latitude threshold of 55.04° N.\\
 
 \begin{figure}
     \centering
         \includegraphics[width=0.8\textwidth]{02_figures/AIS_Coverage.png}
-        \caption{Shore based AIS Coverage based on data from AIS database \cite{webaisdk.2023}}
+        \caption{Shore based AIS Coverage based on data from AIS database \bcitep{webaisdk.2023}}
         \label{fig:aiscoverage}
 \end{figure}
 
-In its initial state, the dataset contains 7453 data points which described the journey of the ship in one year. The initial data points represented all navigational statuses of the ship, which include ``mooring'', ``anchoring'' and ``underway using engine''. This is observed in the histogram for the SOG \Cref{fig:anomalies_sog_curspeed}.\\ 
-
-To ensure the dataset accurately reflects the ship's operational status under steady conditions, a threshold for SOG is implemented. While variations in SOG can arise from changing sea conditions, they can also result from deliberate speed reduction during port departures or arrivals. Thus, any data points with SOG below 5 knots, which is indicative of manoeuvring, are removed \bcitep{Abebe.2020,Yan.2020}. Following this filtering step, the dataset size notably decreases from 7453 data points to 3828 data points. This reduction shows that approximately half of the original data points correspond to the ship's stationary activities.\\
+In its initial state, the dataset contains 7453 data points which described the journey of the ship in one year. The initial data points represented all navigational statuses of the ship, which include ``mooring'', ``anchoring'' and ``underway using engine''. This is observed in the histogram for the SOG \Cref{fig:anomalies_sog_curspeed}. To ensure the dataset accurately reflects the ship's operational status under steady conditions, a threshold for SOG is implemented. While variations in SOG can arise from changing sea conditions, they can also result from deliberate speed reduction during port departures or arrivals. Thus, any data points with SOG below 5 knots, which is indicative of manoeuvring, are removed \bcitep{Abebe.2020,Yan.2020}. Following this filtering step, the dataset size notably decreases from 7453 data points to 3828 data points. This reduction shows that approximately half of the original data points correspond to the ship's stationary activities.\\
 
 % \begin{figure}
 %     \centering
@@ -199,13 +199,13 @@ Preliminary analysis reveals a potential source of error in data points represen
         \label{fig:SOG_greater_five}
 \end{figure}
 
-To address the presence of missing values, the \texttt{KNNImputer} feature from \scikit/ is utilized to impute the missing values for eastward current and northward current. This step is essential as the modelling package provided by \scikit/ cannot handle instances with missing values. During the imputation process, the missing values for each sample are filled in using the mean value of the nearest neighbours found within the training dataset \bcitep{FabianPedregosa.2011}. The choice of using a k-nearest neighbour imputation strategy is appropriate, as it aims to capture the weather conditions within the vicinity of the missing values. Once the missing values for the northward and southward currents have been imputed, the current speed for these instances will be re-calculated. This k-nearest neighbour imputation approach is also extended to other weather features that contain missing values, specifically the \texttt{NaN} values.\\
+To address the presence of missing values, the \texttt{KNNImputer} feature from \scikit/ is utilised to impute the missing values for eastward current and northward current. This step is essential as the modelling package provided by \scikit/ cannot handle instances with missing values. During the imputation process, the missing values for each sample are filled in using the mean value of the nearest neighbours found within the training dataset \bcitep{FabianPedregosa.2011}. The k-nearest neighbour imputation strategy is selected as it aims to capture the weather conditions within the vicinity of the missing values, other strategy such as the removal of \texttt{NaN} values is not considered as this strategy will heavily compromise the quantity of the data. Once the missing values for the northward and southward currents have been imputed, the current speed for these instances will be re-calculated. This k-nearest neighbour imputation approach is also extended to other weather features that contain missing values, specifically the \texttt{NaN} values.\\
 
 \subsection{Feature Selection}\label{sec:feature_select}
 
-In order to choose suitable features for the model, the correlation among different features is initially examined. Feature selection is essential to simplify the model and consequently reduce computational expenses during the training phase. The process of feature selection follows a statistical technique known as the High Correlation Filter, as proposed by \bcitet{Abebe.2020}. This method treats pairs of features with correlation coefficients exceeding 0.7 as a single entity. Nonetheless, the process of selecting highly correlated features must align with established physical principles. Hence, feature selection in this study is predominantly guided by physical reasoning, and this principle takes precedence over purely statistical considerations.\\
+In order to choose suitable features for the model, the correlation among different features is studied. Feature selection is essential to simplify the model and consequently reduce computational costs during the training phase. The process of feature selection follows a statistical technique known as the High Correlation Filter, as proposed by \bcitet{Abebe.2020}. This method treats pairs of features with correlation coefficients exceeding 0.7 as a single entity. Nonetheless, the process of selecting highly correlated features must align with established physical principles. Hence, feature selection in this study is predominantly guided by physical reasoning, and this principle takes precedence over purely statistical considerations.\\
 
-From AIS data, the information on \emph{time, latitude, longitude, width and length} are excluded, considering that time, latitude and longitude only describe the location of the ship at a particular position and the width and length of the ship are constant dimensions. As elaborated in \Cref{sec:weather_definition}, certain features like \emph{combined wind wave swell height, swell height, maximum wave height,} and \emph{wind wave height} are interconnected by physical relationships. The combined wind wave swell height corresponds to the significant wave height $H_{1/3}$, which is mathematically described by \Cref{eqn:H_sig_root}. Furthermore, \Cref{eqn:H_s_and_Tp} illustrates how the significant wave height serves to identify whether the sea is dominated by swell or wind-generated waves.\\
+From AIS data, the information on \emph{time, latitude, longitude, width and length} are excluded, considering that time, latitude and longitude only describe the location of the ship at a particular position and the width and length of the ship are constant dimensions. As elaborated in \Cref{sec:weather_definition}, certain features like \emph{combined wind wave swell height, swell height, maximum wave height,} and \emph{wind wave height} are correlated by physical relationships. The combined wind wave swell height corresponds to the significant wave height $H_{1/3}$, which is mathematically described by \Cref{eqn:H_sig_root}. Furthermore, \Cref{eqn:H_s_and_Tp} illustrates how the significant wave height serves to identify whether the sea is dominated by swell or wind-generated waves.\\
 
 \begin{table}
     \footnotesize
@@ -246,9 +246,9 @@ Hence, it is evident that retaining the significant wave height is essential for
     \label{fig:heatmap_ovr}
 \end{figure}
 
-\Cref{fig:heatmap_ovr} illustrates a significant correlation between wave period, swell period, and wind wave period. As outlined in \Cref{sec:weather_definition}, the sea state's description involves the significant height $H_{1/3}$ and spectral peak $\text{T}_p$ through the Torsethaugen peak method \bcitep{K.Torsethaugen.2004}. Consequently, the features swell period and wind wave period will be omitted, as they primarily differentiate whether the sea is influenced by swell or wind. However, the wave period feature will be retained. Therefore, the attributes ``true wind wave direction'' and ``true swell direction'' will also be disregarded since the features accounting for their magnitude have been removed.\\
+\Cref{fig:heatmap_ovr} illustrates a significant correlation between wave period, swell period, and wind wave period. As outlined in \Cref{sec:weather_definition}, the sea state's description involves the significant height $H_{1/3}$ and spectral peak $\text{T}_p$ through the Torsethaugen peak method \bcitep{K.Torsethaugen.2004}. Consequently, the features swell period and wind wave period will be omitted, as they primarily differentiate whether the sea is influenced by swell or wind. As such, the ``true wind wave direction'' and ``true swell direction'' will also be disregarded since the features accounting for their magnitude have been removed.  However, the wave period feature will be retained.\\
 
-In a statistical sense, heading and COG are significantly correlated, yet both features are retained due to their representation of distinct ship parameters. Course Over Ground (COG) signifies the ship's course heading while heading signifies the ship's actual heading at a specific time point. A similar rationale applies to the relationship between air temperature above the ocean and sea surface temperature. Air temperature above oceans represents wind temperature, whereas sea surface temperature reflects the temperature of the water surface. Following this principle, 5 features from the AIS data and 11 features from the weather data are omitted through feature selection. For predicting ship speed, SOG is selected as the target label for model training. The remaining attributes are chosen as training features. This is summarised in \Cref{tbl:struct_train_final}.\\
+In a statistical sense, heading and COG are significantly correlated, yet both features are still considered due to their representation of distinct ship parameters. \emph{Course Over Ground (COG)} signifies the ship's course heading while \emph{heading} signifies the ship's actual heading at a specific time point. A similar rationale applies to the relationship between air temperature above the ocean and sea surface temperature. Air temperature above oceans represents wind temperature, whereas sea surface temperature reflects the temperature of the water surface. Following this principle, 5 features from the AIS data and 11 features from the weather data are omitted through feature selection. SOG is selected as the label for model training and the remaining attributes are chosen as training features, which is summarised in \Cref{tbl:struct_train_final}.\\
 
 % \begin{table}
 %     \footnotesize
@@ -316,12 +316,14 @@ In a statistical sense, heading and COG are significantly correlated, yet both f
 
 \section{Black Box Modelling}\label{sec:BBM_modelling}
 
-In this section, the modelling of ship speed based on SOG using the selected features will be conducted employing a tree-based regressor model. The considered tree-based regressor models comprise the decision tree regressor (DTR), random forest regressor (RFR), and extra-tree regressor (ETR). Additionally, to establish a benchmark, the tree-based models are compared against multiple linear regressors (MLR). The dataset is divided into training and test datasets with a ratio of 75:25 for training and testing, respectively. This results in 2871 data points for training and 957 data points for testing. To facilitate robust evaluation, the training dataset is subjected to 10-fold splitting. The hyperparameters of the tree-based regressors will be systematically fine-tuned through iterative processes until no further improvement to the model's performance can be achieved.\\
+In this section, the modelling of ship SOG using the selected features will be conducted employing a tree-based regressor model. The considered tree-based regressor models comprise the decision tree regressor (DTR), random forest regressor (RFR), and extra-tree regressor (ETR). Additionally, to establish a benchmark, the tree-based models are compared against multiple linear regressors (MLR). The dataset is divided into training and test datasets with a ratio of 75:25 for training and testing, respectively. This results in 2871 data points for training and 957 data points for testing. To facilitate robust evaluation, the training dataset is subjected to 10-fold splitting. The hyperparameters of the tree-based regressors will be systematically fine-tuned through iterative processes until no further improvement to the model's performance can be achieved.\\
 
 
 \subsection{Performance Metrics for Validation}\label{sec:perf_metrics}
 
-To obtain a meaningful assessment of the model's performance and its precision, a cross-validation technique known as k-folding will be employed. K-fold cross-validation involves dividing the training set into k subsets, referred to as folds. Subsequently, the model will undergo k training iterations, using k-1 subsets for training and the remaining subset for validation. This process is visually depicted in Figure \ref{fig:kfold}. During each iteration, the model's performance will be evaluated using various metrics, including the \textbf{Coefficient of Determination ($R^2$), Explained Variance (EV), Mean Absolute Error (MAE), Root Mean Square Error (RMSE), Median Absolute Deviation (MAD), and Mean Absolute Percentage Error (MAPE)}. The outcomes from each iteration will be averaged, enabling an assessment of the model's precision, which can be further understood through the standard deviation. The application of k-fold cross-validation aids in evaluating the model's robustness across different datasets. The characteristics of each performance metric will be discussed in the subsequent sections.\\
+To obtain a meaningful assessment of the model's performance and its precision, a cross-validation technique known as k-folding will be employed. K-fold cross-validation involves dividing the training set into k subsets, referred to as folds. Subsequently, the model will undergo k training iterations, using k-1 subsets for training and the remaining subset for validation. This process is visually depicted in \Cref{fig:kfold}.\\
+
+During each iteration, the model's performance will be evaluated using various metrics, including the \textbf{Coefficient of Determination ($R^2$), Explained Variance (EV), Mean Absolute Error (MAE), Root Mean Square Error (RMSE), Median Absolute Deviation (MAD), and Mean Absolute Percentage Error (MAPE)}. The outcomes from each iteration will be averaged, enabling an assessment of the model's precision, which can be further understood through the standard deviation of the prediction. The application of k-fold cross-validation aids in evaluating the model's robustness across different datasets. The characteristics of each performance metric will be discussed in the subsequent sections.\\
 
 \begin{figure}
     \centering
@@ -332,7 +334,7 @@ To obtain a meaningful assessment of the model's performance and its precision, 
 
 \subsubsection*{Coefficient of Determination ({$R^2$})}\label{sec:rsquared}
 
-The coefficient of determination $R^2$ gives a measure on prediction quality, $R^2$ quantifies the ability of the regression model to approximate the actual values. $R^2 $ is defined by \Cref{eqn:rsquared}, where $y$ represents true target output, $\hat{y}$ represents the predictor output and $\overline{y}$ represents the mean. $R^2$ score range between 0 and 1, higher values i.e. $R^2 \rightarrow 1$ indicate better model fit and a score of 1 indicates perfect prediction.\\
+The coefficient of determination $R^2$ gives a measure of prediction quality, $R^2$ quantifies the ability of the regression model to approximate the actual values. $R^2 $ is defined by \Cref{eqn:rsquared}, where $y$ represents true target output, $\hat{y}$ represents the predictor output and $\overline{y}$ represents the mean. $R^2$ score range between 0 and 1, higher values i.e. $R^2 \rightarrow 1$ indicate better model fit and a score of 1 indicates perfect prediction.\\
 
 \begin{equation}\label{eqn:rsquared}
     R^2(y,\hat{y}) = 1 - \frac{\sum_{i = 1}^{n} (y_{\text{i}} - \hat{y}_{\text{i}} )^2 }{\sum_{i = 1}^{n} (y_{\text{i}} - \overline{y}_{\text{i}})^2} \quad \textbf{where} \quad \overline{y} = \frac{1}{n}\sum_{1}^{n} y_\text{i}
@@ -407,7 +409,7 @@ The subject of parameter tuning was briefly discussed in \Cref{sec:dt_theo}. In 
 \caption{Comparison of tree-based model from \Cref{sec:tree_intro}}\label{tbl:table_trees}
 \end{table}
 
-\scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with their value range are evaluated using cross-validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves the construction of grids containing all possible combinations of hyperparameter value in a specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values. The exhaustive nature of {\tt GridSearchCV} means that it is computationally costly to perform, especially when there are multiple hyperparameters to be considered and the value search space is large. {\tt RandomizedSearchCV} gives more control to computing budget by setting the number of iterations and usually produces more accurate results than {\tt GridSearchCV} approach. \bcitep{Geron.2019,J.Bergstra.2012}. \\
+\scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with their value range are evaluated using cross-validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves the construction of grids containing all possible combinations of hyperparameter value in a specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values from a specified search range. The exhaustive nature of {\tt GridSearchCV} means that it is computationally costly to perform, especially when there are multiple hyperparameters to be considered and the value search space is large. {\tt RandomizedSearchCV} gives more control to computing budget by setting the number of iterations and usually produces more accurate results than {\tt GridSearchCV} approach. \bcitep{Geron.2019,J.Bergstra.2012}. \\
 
 To address this issue, the {\tt RandomizedSearchCV} technique will be applied to identify the optimal hyperparameters. However, it's important to note that a lack of \emph{a priori} knowledge regarding hyperparameter values remains a challenge. Despite the ability of {\tt RandomizedSearchCV} to manage computational resources, obtaining the best hyperparameter values can still demand a significant amount of time. This could potentially lead to spending computational resources on searches within unpromising search spaces. Therefore, an initial investigation into the impact of each hyperparameter on model performance will be conducted. This preliminary exploration aims to provide a clearer understanding of which search spaces should be considered during the subsequent hyperparameter optimization process. In the forthcoming subsections, the influence of tunable hyperparameters within the tree-based models from \scikit/ will be examined. This exploration seeks to establish baseline values for the search space. Throughout this analysis, MAE will serve as the chosen performance metric. The hyperparameter optimization pursued within this thesis is aimed towards minimising prediction errors.\\
 
@@ -434,7 +436,7 @@ Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hype
 
 \subsubsection*{Number of sample in a leaf node}\label{sec:min_samples_leaf}
 
-Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls the number of samples required to be at the leaf node, where the split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at a certain breakeven point. But, after this breakeven point, the model's performance degrades. It is also observed that tuning this parameter will negatively impact RFR and ETR model's performance. 
+Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls the number of samples required to be at the leaf node, where the split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at a certain breakeven point. But, it demonstrated degradation in performance after this breakeven point. It is also observed that tuning this parameter will negatively impact RFR and ETR model's performance. 
 
 \begin{figure}[h]
     \centering
@@ -445,7 +447,7 @@ Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This param
 
 \subsubsection*{Depth of Tree}\label{sec:max_depth}
 
-Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter controls the growth of the tree. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at a certain depth while ETR benefits from allowing full growth of the tree. It can also be observed that the models' performance are identical for {\tt max\_depth=1}, which is evident as shown in \Cref{fig:hpo_max_depth}  
+Defined with default value as {\tt max\_depth=None} in \scikit/. This hyperparameter is defined as the count of nodes along a path from the root node to its parent node. Leaving it at {\tt max\_depth=None} means the tree will grow until all leaves are pure i.e. until minimum MSE is obtained or when the number of samples is less than the minimum number of samples required to split an internal node. Similar to {\tt min\_samples\_leaf}, DTR shows improvement until a certain breakeven point. RFR performance seems to stabilise at a certain depth while ETR benefits from allowing full growth of the tree. It can also be observed that the models' performance are identical for {\tt max\_depth=1}, which is evident as shown in \Cref{fig:hpo_max_depth}  
 
 \begin{figure}[h]
     \centering
@@ -470,7 +472,7 @@ This section involves the integration of the predicted SOG from the BBM into the
 
 \subsection{Calculation of Total Resistance}\label{sec:Rtot_calc_method}
 
-The formula used to calculate total resistance $R_{TOTAL}$ in this section is presented in \Cref{sec:holtrop_mennen_calc} with the principle dimension of the ship which was given in \Cref{tbl:Hammershus_Data}. Some assumptions are made for the sea state and the values of some form coefficients are calculated based on empirical formulas presented in \Cref{sec:Ship_design_param}. In this case study, Holtrop-Mennen method can be used as it fulfils the condition set in \Cref{eqn:holtrop_cond}:
+The formula used to calculate total resistance $R_{TOTAL}$ in this section is presented in \Cref{sec:holtrop_mennen_calc} with the principle dimension of the ship which was given in \Cref{tbl:Hammershus_Data}.In this case study, Holtrop-Mennen method can be used as it fulfils the condition set in \Cref{eqn:holtrop_cond}:
 \begin{equation}
     \label{eqn:holtrop_cond_fulfill}
     % \begin{multlined}
@@ -486,7 +488,7 @@ The calculations of resistance are dynamics as the Froude number $Fr$ is based o
 
 \subsubsection*{Calculation of frictional resistance $R_F$}
 
-For the calculation of the surface area of bare hull $S$, it is assumed that the aft has a U-shaped section. Then the appropriate $C_{stern}$ can be calculated to obtain the constant $c_{14}$ \Cref{eqn:c_14}. For the calculation of length of run $L_R$, approximation for $\ell_{CB}$ are made based on \Cref{eqn:lcb}. The constants $c_{14}$ and $L_R$ are used to calculate the form factor $1+k_1$ which will be used to calculate $R_F$.
+For the calculation of the surface area of bare hull $S$, it is assumed that the aft has a U-shaped section. Then the appropriate $C_{stern}$ can be calculated to obtain the constant $c_{14}$ \Cref{eqn:c_14}. For the calculation of the length of run $L_R$, approximation for $\ell_{CB}$ are made based on \Cref{eqn:lcb}. The constants $c_{14}$ and $L_R$ are used to calculate the form factor $1+k_1$ which will be used to calculate $R_F$.
 
 \subsubsection*{Calculation of appendage resistance $R_{APP}$}
 
@@ -537,7 +539,7 @@ Additionally, there are two bow thrusters installed with approximated diameter o
 
 \subsubsection*{Calculation of wave resistance $R_{W}$}
 
-The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using equation \Cref{eqn:R_w_low}. The estimation is done by adding the constants presented between \Cref{eqn:c_7} and \Cref{eqn:m4}. There are some use cases for some equations, which is summarised in \Cref{tbl:R_w_use_case}.
+The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using equation \Cref{eqn:R_w_low}. The estimation is done by adding the constants presented between \Cref{eqn:c_7} and \Cref{eqn:m4}. The use cases for some equations are summarised in \Cref{tbl:R_w_use_case}.
 
 \begin{table}[h]
     \footnotesize
@@ -575,7 +577,7 @@ Since the immersed transom area is unknown, \bcitet{Rakke2016} approximated the 
     A_{TR} = 0.051 A_M
 \end{equation}
 
-This approximation must be used with caution as it is only based on case study of \bcitet{Holtrop.1982}. However, to author's best knowledge, there are no other literature that provide empirical estimation of $A_{TR}$. Therefore, this estimation will be selected in this case study. The selection for the value of constant $c_6$ is dependent on the value of $Fr_T$, which is a function of $v_S$. From there, the transom resistance can be calculated using \Cref{eqn:R_transom}
+This approximation must be employed with caution as it relies solely on the case study of \bcitet{Holtrop.1982}. Despite potential limitations, due to the absence of alternative literature providing empirical estimation for $A_{TR}$, this estimation is chosen for this particular case study. The selection for the value of constant $c_6$ is dependent on the value of $Fr_T$, which is a function of $v_S$. From there, the transom resistance can be calculated using \Cref{eqn:R_transom}
 
 \subsubsection*{Calculation of correlation allowance resistance $R_A$}
 
@@ -583,11 +585,11 @@ The selection of constant $c_4$ in equation \Cref{eqn:c4} is based on the $T_F$,
 
 \subsubsection*{Calculation of added resistance due to wind $R_{AA}$}
 
-Two assumptions are made during the calculation of $R_{AA}$, since the information of lateral area $A_L$ and $A_F$ are not readily available, these values are assumed based on the dimension of similar ferry in the case study of \bcitet{Blendermann.1994}. It is assumed that the ferry has an $A_L$ of \textbf{2125.80} $m^2$ and $A_F$ of \textbf{325.30} $m^2$. From \Cref{tbl:BlendermannCoeff}, the case for ferry ship is taken to get the necessary constants for the calculation of $R_{AA}$. 
+Two assumptions are made during the calculation of $R_{AA}$, since the information of lateral area $A_L$ and $A_F$ are not readily available, these values are assumed based on the dimension of a similar ship type in the case study of \bcitet{Blendermann.1994}. It is assumed that the ferry has an $A_L$ of \textbf{2125.80} $m^2$ and $A_F$ of \textbf{325.30} $m^2$. From \Cref{tbl:BlendermannCoeff}, the case for ferry ship is taken to get the necessary constants for the calculation of $R_{AA}$. 
 
 \subsubsection*{Calculation of added resistance due to wave $R_{AW}$ }
 
-This part of the equation is relatively straightforward, $L_{BWL}$ will be approximated to about \textbf{43.75} m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
+Based on schematics of the ship, $L_{BWL}$ will be approximated to about \textbf{43.75} m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
 
 \pagebreak
 
@@ -618,7 +620,7 @@ The value of shaft efficiency is estimated as $\eta_S =$ \textbf{0.99} based on 
 
 \subsection{Calculation of FOC}\label{sec:FOC_calc_method}
 
-Once $R_{TOTAL}$ and $\eta_{TOTAL}$ are determined, the brake power of the ship, denoted as $P_B$, can be computed using Equation \ref{eqn:P_b}. The resultant $P_B$ values will then be graphed against the ship's STW ($v_S$), producing a power-speed curve. A regression line will be fitted to the data points on this curve. Since each BBM model generates distinct SOG predictions, the regression equation for the line signifies the characteristics of different BBM models. To assess the performance of each BBM, the regression models produced by each BBM will be compared against the regression model derived from actual data. This evaluation will gauge the predictive capabilities of each model. Subsequently, the FOC can be calculated using Equation \ref{eqn:FOC}. The specific fuel oil consumption (SFOC) information can be extracted from Table \ref{tbl:Hammershus_Data}. Without multiplication by the operational time $\tau_{OP}$, the fuel consumption in metric tons per hour ($T/h$) can be computed by dividing the value by $1 \times 10^6$.
+Once $R_{TOTAL}$ and $\eta_{TOTAL}$ are determined, the brake power of the ship, denoted as $P_B$, can be computed using \Cref{eqn:P_b}. The resultant $P_B$ values will then be graphed against the ship's STW ($v_S$), producing a power-speed curve. A regression line will be fitted to the data points on this curve. Since each BBM model generates distinct SOG predictions, the regression equation for the line signifies the characteristics of different BBM models. Subsequently, the FOC can be calculated using \Cref{eqn:FOC}. The specific fuel oil consumption (SFOC) information can be extracted from \Cref{tbl:Hammershus_Data}. Without multiplication by the operational time $\tau_{OP}$, the fuel consumption in metric tons per hour ($T/h$) can be computed by dividing the value by $1 \times 10^6$.
 
 
 \begin{table}
