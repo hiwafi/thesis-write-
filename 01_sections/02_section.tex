@@ -22,7 +22,7 @@ Hence, GBMs are introduced to address the limitations of both WBMs and BBMs by c
 
 \pagebreak
 
-\subsection{Review of data source used for FOC model}\label{sec:data_use}
+\subsection{Review of Data Source Used for FOC Model}\label{sec:data_use}
 
 The modelling of FOC using GBM requires both components of WBM and BBM. For black-box modelling using ML techniques, it is crucial to have sufficient high-quality data for accurate training \bcitep{Halevy.2009}. \bcitet{Yan.2021} categorise the data sources for FOC modelling as follows:
 \\
@@ -69,7 +69,7 @@ The methods from \bcitet{Guldhammer.1974}, \bcitet{Hollenbach.1999}, and \bcitet
 
 As categorised by \bcitet{Yan.2021}, the GBM model in this thesis falls under the category of sequential GBM, Here, the BBM and the WBM are sequentially developed and then combined to form the GBM. The BBM is designed for predictions of unseen data, and its outcomes are subsequently fed into the WBM. The use of the tree-based ML model addresses the challenge of limited interpretability faced by certain machine learning models. Furthermore, tree-based models can outperform most of the available machine learning models while providing added benefits of little requirement for data preprocessing and relatively cheap computational cost. The selection of Holtrop-Mennen as energy estimation method is justified by the application range of the methodology and reported successes in prior studies.\\ 
 
-\section{Tree-based model}\label{sec:tree_intro}
+\section{Tree-Based Model}\label{sec:tree_intro}
 
 In this section, the theory of Decision Tree (DT), Random Forest (RF) and Extra Tree (ET) will be discussed in detail in \Cref{sec:dt_theo}, \Cref{sec:rf_theo} and \Cref{sec:et_theo}, respectively.\\  
 
@@ -295,11 +295,11 @@ Then the resulting equation to determine STW,$v_{\text{S}}$, including the curre
 
 AIS data may still contain errors and inaccuracies. Manual data entries, particularly for static information and voyage-related details such as estimated time of arrival (ETA) and draught, are primary sources of errors. Instances have been observed where the Maritime Mobile Service Identity (MMSI) is shared by different ships, despite its intended uniqueness. Furthermore, data collected automatically by sensors can also be erroneous, which may arise from sensor malfunctions or improper installations \bcitep{Yang.2019}. Therefore, it is necessary to preprocess the AIS data to ensure an accurate representation of the ship's state during her voyage.\\    
 
-\section{Weather data}\label{sec:weather_theo}
+\section{Weather Data}\label{sec:weather_theo}
 
 Throughout a voyage, a vessel can encounter winds and waves originating from different directions and with varying magnitudes. These atmospheric and hydrodynamic factors can influence the vessel's trajectory during the journey, impact vessel performance elements like speed and engine power, and even affect a vessel's ability to navigate challenging sea conditions i.e. a vessel's seakeeping capabilities \bcitep{Molland.2011}. To ensure an accurate estimation of the engine power needed by the vessel, it is important to account for different weather conditions. Therefore, this section will primarily focus on the definition of wind and wave effects and explore the correlation between some of these key parameters.\\ 
 
-\subsection{Definitions of weather parameters}\label{sec:weather_definition}
+\subsection{Definitions of Weather Parameters}\label{sec:weather_definition}
 
 \subsubsection*{Wind Waves and Swell}
 
@@ -357,7 +357,7 @@ The most important form in which ocean waves are described. Wave spectrum charac
 
 \pagebreak
 
-\section{General concept of ship propulsion}\label{sec:power_calc}
+\section{General Concept of Ship Propulsion}\label{sec:power_calc}
 
 A ship's bunker fuel consumption in actual operating conditions is affected by several factors including the operating parameter of the ship's engine, propeller efficiency, and encountered resistance by the ship. Furthermore, a ship's propulsion power is correlated to the sailing speed (SOG) and meteorological conditions \bcitep{XiaoLang.2020}. Therefore, in addition to the calm water resistance $R_{CALM}$, the additional resistance caused by wind $R_{AA}$ and wave $R_{AW}$ should be considered to estimate the total resistance of the ship $R_{TOTAL}$. The power needed to propel a ship forward at a given ship STW $v_S$, to overcome $R_{TOTAL}$ is defined as \textbf{effective power $P_e$}:
 
@@ -369,7 +369,7 @@ A ship's bunker fuel consumption in actual operating conditions is affected by s
     P_e = R_{TOTAL}\cdot v_{S}
 \end{equation}
 
-The effective power $P_e$ is transmitted through the shaft connected to the main engine of the ship which generates power to rotate the propeller of the ship, which is termed as \textbf{brake power of the engine, $P_b$}. The brake power can be calculated through effective power by considering the \textbf{shaft efficiency $\eta_s$, hull efficiency $\eta_h$, relative rotative efficiency $\eta_r$ and open water efficiency $\eta_o$}:
+The effective power $P_e$ is transmitted through the shaft connected to the main engine of the ship, which generates power to rotate the propeller of the ship, which is termed as \textbf{brake power of the engine, $P_b$}. The brake power can be calculated through effective power by considering the \textbf{shaft efficiency $\eta_s$, hull efficiency $\eta_h$, relative rotative efficiency $\eta_r$ and open water efficiency $\eta_o$}:
 
 \begin{equation}\label{eqn:P_b}
     P_b = \frac{P_e}{\eta_s\cdot\eta_h\cdot\eta_r\cdot\eta_o}
@@ -381,9 +381,9 @@ The bunker fuel consumption can then be calculated by multiplying the brake powe
     FOC = P_b\cdot SFOC\cdot \tau_{OP} 
 \end{equation}
 
-\subsection{Ship dimensions and form coefficients}\label{sec:Ship_design_param}
+\subsection{Ship Dimensions and Form Coefficients}\label{sec:Ship_design_param}
 
-\subsubsection*{Principal Dimension of a vessel}
+\subsubsection*{Principal Dimension of a Vessel}
 
 The summary of important ship dimensions and parameters are shown in \Cref{fig:biran14_shipside} and \Cref{fig:biran14_shipfront} \bcitep{Biran.2014b}:
 
@@ -404,7 +404,7 @@ The summary of important ship dimensions and parameters are shown in \Cref{fig:b
 
 The outer surface of the ship is usually not uniform as not all plates have the same thickness, Therefore the hull surface is measured with respect to the inner surface of the plating which is termed as \emph{moulded surface} of the hull. All dimensions measured to this surface are defined as \emph{moulded} dimensions whereas dimensions measured to the outer surface of the hull or of an appendage are qualified as \emph{extreme} dimensions \bcitep{Biran.2014b}.
 
-\subsubsection*{Coefficients of form}
+\subsubsection*{Coefficients of Form}
 
 The form coefficients are non-dimensional numbers required to classify the hulls and to find relationships between forms and their properties, the summary of some important form coefficients are summarised in \Cref{fig:man_formcoeff} 
 
@@ -431,7 +431,7 @@ The Froude number $Fr$ is defined with the following equation:
 \end{equation}
 
 \subsubsection*{Midship Coefficient}
-\textbf{Midship Coefficient $C_M$} is defined as the ratio of the midship-section area $A_M$ to the product of breadth and draught, $BT$. According to \bcitet{Schneekluth.1998}, changing $C_M$ value will have an effect on separation resistance and wave resistance. \bcitet{jensen1994moderne} presented a method based on regression equation on a graph to calculate $C_M$:  
+\textbf{Midship Coefficient $C_M$} is defined as the ratio of the midship-section area $A_M$ to the product of breadth and draught, $BT$. According to \bcitet{Schneekluth.1998}, changing $C_M$ value will affect separation resistance and wave resistance. \bcitet{jensen1994moderne} presented a method based on regression equation on a graph to calculate $C_M$:  
 
 \begin{equation}
     \label{eqn:CM_jensen}
@@ -463,9 +463,9 @@ The Froude number $Fr$ is defined with the following equation:
 
 \pagebreak
 
-\subsubsection*{Waterplane area coefficient}
+\subsubsection*{Waterplane Area Coefficient}
 
-\textbf{Waterplane area coefficient $C_{WP}$} is defined as the ratio between the ship's waterline area $A_{W}$ and the product of $L$ and $B$. In ship design, $C_{WP}$ significantly impacts resistance and stability \bcitep{Schneekluth.1998}. \bcitet{Diesel.2011} approximated that $C_{WP}$ is 0.10 higher than $C_B$, alternatively \bcitet{Schneekluth.1998} provided the following formulation for $C_{WP}$:
+\textbf{Waterplane area coefficient $C_{WP}$} is defined as the ratio between the ship's waterline area $A_{W}$ and the product of $L$ and $B$. In ship design, $C_{WP}$ significantly impacts resistance and stability \bcitep{Schneekluth.1998}. According to \bcitet{Diesel.2011}, it can be approximated that $C_{WP}$ is 0.10 higher than $C_B$. Alternatively \bcitet{Schneekluth.1998} provided the following formulation for $C_{WP}$:
 
 \begin{equation}
     \label{eqn:cwp_Schneekluth}
@@ -538,7 +538,7 @@ The publication from \bcitet{Holtrop.1978,Holtrop.1982,Holtrop.1984} does not pr
     % \end{multlined}
 \end{equation}
 
-\subsubsection{Calm water resistance}\label{sec:Calm_Resistance}
+\subsubsection{Calm Water Resistance}\label{sec:Calm_Resistance}
 
 The calm water resistance $R_{CALM}$ is broken down into several components and can be approximated using the following relation:
 
@@ -777,7 +777,7 @@ and $a$ can be obtained through:
     m_4 = 0.4 c_{15} \exp{(-0.034Fr^{-3.29})}
 \end{equation}
 
-\subsubsection*{Resistance of bulbous bow}
+\subsubsection*{Resistance of Bulbous Bow}
 
 The approximation of the resistance due to bulbous bow $R_B$ can be obtained through the immersion Froude number $F_{r_i}$ for the bulbous bow and the constant $P_B$ which is a measure of the emergence of the bow: 
 
@@ -838,7 +838,7 @@ The expression $A_T/(B+BC_{WP})$ is a measure for the average draught of the tra
     R_{TR} = \frac{1}{2}\rho v_S^2 A_T c_6
 \end{equation}
 
-\subsubsection*{Correlation allowance resistance}
+\subsubsection*{Correlation Allowance Resistance}
 
 The resistance term $R_A$ considers other effects that are not captured by other resistance components. 
 
@@ -865,9 +865,9 @@ The correlation allowance coefficient $C_A$ and subsequent correlation resistanc
     R_A = \frac{1}{2}\rho v_S^2 C_A (S+\sum S_{APP})
 \end{equation}
 
-\subsubsection{Added resistance due to wind}\label{sec:wind_resistance}
+\subsubsection{Added Resistance due to Wind}\label{sec:wind_resistance}
 
-The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the area of the ship superstructure and relative wind. Therefore, for a ship with large lateral areas above the water level, this added resistance due to wind can be significant. The estimation of added resistance due to wind in this thesis considers the method by \bcitet{Blendermann.1994}:
+The magnitude of added resistance caused by wind, $R_{AA}$, is determined by the area of the ship superstructure and relative wind. Therefore, for a ship with large lateral areas above the water level, the added resistance due to wind can be significant. The estimation of added resistance due to wind in this thesis considers the method by \bcitet{Blendermann.1994}:
 
 \begin{equation}
     \label{eqn:Raa_blendermann}
@@ -924,7 +924,7 @@ According to \bcitet{Schneekluth.1998}, maximum wind resistance is encountered w
 
 \pagebreak
 
-\subsubsection{Added resistance due to wave}\label{sec:wave_resistance}
+\subsubsection{Added Resistance due to Wave}\label{sec:wave_resistance}
 
 The added resistance due to wave, $R_{AW}$ is estimated using the STAWAVE-1 method recommended by \bcitet{ITTCProcedures.2014}. This method only considers waves encountered within the bow sector i.e. within $\pm 45^\circ$ off the bow and does not consider wave correction for other encounters. Also, STAWAVE-1 is valid for the following condition:
 
@@ -940,9 +940,9 @@ The added resistance due to wave, $R_{AW}$ is estimated using the STAWAVE-1 meth
 
 In which, $L_{BWL}$ is the length of the bow on the water line to $95\%$ of maximum breadth.
 
-\subsubsection{Efficiencies affecting brake power}\label{sec:Pb_efficiency}
+\subsubsection{Efficiencies Affecting Brake Power}\label{sec:Pb_efficiency}
 
-\subsubsection*{Open water efficiency}
+\subsubsection*{Open Water Efficiency}
 
 The open water efficiency \begin{math}\eta_O\end{math}, can be understood as the propeller working in open water conditions i.e. the propeller operates in a homogenous wake field with no hull in front of it. The curve of different propulsion devices with their respective efficiencies is summarised in the work of \bcitet{Breslin.1994}:
 
@@ -954,7 +954,7 @@ The open water efficiency \begin{math}\eta_O\end{math}, can be understood as the
 \end{figure}
 
 
-\subsubsection*{Hull efficiency}
+\subsubsection*{Hull Efficiency}
 
 The Hull efficiency $\eta_H$ can be calculated using the following equation:
 
@@ -982,7 +982,7 @@ where $C_V$ is the viscous resistance coefficient, which combines all friction-r
     C_V = \frac{(1+k_1)R_F+R_{APP}+R_A}{\frac{1}{2}\rho v_S^2 (S+\sum_i S_{APP_i})}
 \end{equation}
 
-\subsubsection*{Relative rotative efficiency}
+\subsubsection*{Relative Rotative Efficiency}
 
 The relative rotative efficiency \begin{math} \eta_R \end{math} can be expressed by the following ratio, with $v_A$ defined as the arriving water velocity to propeller \bcitep{Diesel.2011}:
 
@@ -998,7 +998,7 @@ According to \bcitet{Holtrop.1982}, $\eta_R$ for twin screw vessels can be estim
     \eta_R = 0.9737 + 0.111(C_P-0.0225\ell_{CB}) - 0.06325\frac{P}{D}
 \end{equation}
 
-\subsubsection*{Shaft efficiency}
+\subsubsection*{Shaft Efficiency}
 
 The shaft efficiency \begin{math}\eta_S\end{math} is defined as the ratio between the power delivered to the propeller $P_D$ and the brake power of the main engine $P_B$, with values ranging from $\eta_S = 0.95 - 0.99$ depending on shaft design and gear configuration.
 

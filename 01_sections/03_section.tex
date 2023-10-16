@@ -78,7 +78,7 @@ The data is collected from a ferry serving between ports of K{\o}ge, R{\o}nne, Y
 
 \pagebreak
 
-The resulting combined dataset maintains a temporal resolution of 1 hour. To address the disparity between the temporal resolutions of the data from CMEMS and ECMWF, the weather information is synchronised. This synchronisation ensures that the wind, waves, seawater temperature, and sea current data align with the same weather grid and possess consistent temporal resolutions. The features \textbf{wind direction},\textbf{swell direction}, and \textbf{wind wave direction} are oriented to true north. However, to reflect the actual direction of weather effects that are acting on the ship, these features are converted to true direction; where true direction is defined as the direction of weather effect with respect to the bow of the ship. The value ranges between 0° and 180°. Subsequently, through vector decomposition, the northward and eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
+The resulting combined dataset maintains a temporal resolution of 1 hour. To address the disparity between the temporal resolutions of the data from CMEMS and ECMWF, the weather information is synchronised. This synchronisation ensures that the wind, waves, seawater temperature, and sea current data align with the same weather grid and possess consistent temporal resolutions. The features \textbf{wind direction},\textbf{swell direction}, and \textbf{wind wave direction} are oriented to true north. However, to reflect the actual direction of weather effects that are acting on the ship, these features are converted to true direction; where true direction is defined as the direction of weather effect with respect to the bow of the ship which ranges between 0° and 180°. Subsequently, through vector decomposition, the northward and eastward wind velocity is converted to absolute wind speed and wind direction \emph{with respect to True North},$\varphi$:
 
 \begin{equation}\label{eqn:vwindabs}
     u_{\text{W}} = \sqrt{(u_{\text{W}_{N}})^2 + (u_{\text{W}_{E}})^2} 
@@ -190,7 +190,7 @@ In its initial state, the dataset contains 7453 data points which described the 
         \label{fig:anomalies_sog_curspeed}
 \end{figure}
 
-Preliminary analysis reveals a potential source of error in data points representing current speed. Within the range of current speeds between 0.01 and 0.03 m/s, a distinct peak in data points is evident, as depicted in Figure \Cref{fig:anomalies_sog_curspeed}. This peak can be attributed to incomplete information regarding northward and eastward current speed in certain data points within the provided dataset. Consequently, a single random error value for the current speed is generated, leading to the observed peak in the histogram.\\
+Preliminary analysis reveals a potential source of error in data points representing current speed. Within the range of current speeds between 0.01 and 0.03 m/s, a distinct peak in data points is present, as depicted in Figure \Cref{fig:anomalies_sog_curspeed}. This peak can be attributed to incomplete information regarding northward and eastward current speed in certain data points within the provided dataset. Consequently, a single random error value for the current speed is generated, leading to the observed peak in the histogram.\\
 
 \begin{figure}[h]
     \centering
@@ -199,7 +199,7 @@ Preliminary analysis reveals a potential source of error in data points represen
         \label{fig:SOG_greater_five}
 \end{figure}
 
-To address the presence of missing values, the \texttt{KNNImputer} feature from \scikit/ is utilised to impute the missing values for eastward current and northward current. This step is essential as the modelling package provided by \scikit/ cannot handle instances with missing values. During the imputation process, the missing values for each sample are filled in using the mean value of the nearest neighbours found within the training dataset \bcitep{FabianPedregosa.2011}. The k-nearest neighbour imputation strategy is selected as it aims to capture the weather conditions within the vicinity of the missing values, other strategy such as the removal of \texttt{NaN} values is not considered as this strategy will heavily compromise the quantity of the data. Once the missing values for the northward and southward currents have been imputed, the current speed for these instances will be re-calculated. This k-nearest neighbour imputation approach is also extended to other weather features that contain missing values, specifically the \texttt{NaN} values.\\
+To address the presence of missing values, the \texttt{KNNImputer} feature from \scikit/ is utilised to impute the missing values for eastward current and northward current. This step is essential as the modelling package provided by \scikit/ cannot handle instances with missing values. During the imputation process, the missing values for each sample are filled in using the mean value of the nearest neighbours found within the training dataset \bcitep{FabianPedregosa.2011}. The k-nearest neighbour imputation strategy is selected as it aims to capture the weather conditions within the vicinity of the missing values. Other strategy, such as the removal of \texttt{NaN} values is not considered as this strategy will heavily compromise the quantity of the data. Once the missing values for the northward and southward currents have been imputed, the current speed for these instances will be re-calculated. This k-nearest neighbour imputation approach is also extended to other weather features that contain missing values, specifically the \texttt{NaN} values.\\
 
 \subsection{Feature Selection}\label{sec:feature_select}
 
@@ -316,7 +316,7 @@ In a statistical sense, heading and COG are significantly correlated, yet both f
 
 \section{Black Box Modelling}\label{sec:BBM_modelling}
 
-In this section, the modelling of ship SOG using the selected features will be conducted employing a tree-based regressor model. The considered tree-based regressor models comprise the decision tree regressor (DTR), random forest regressor (RFR), and extra-tree regressor (ETR). Additionally, to establish a benchmark, the tree-based models are compared against multiple linear regressors (MLR). The dataset is divided into training and test datasets with a ratio of 75:25 for training and testing, respectively. This results in 2871 data points for training and 957 data points for testing. To facilitate robust evaluation, the training dataset is subjected to 10-fold splitting. The hyperparameters of the tree-based regressors will be systematically fine-tuned through iterative processes until no further improvement to the model's performance can be achieved.\\
+In this section, the modelling of ship SOG using the selected features will be conducted by employing a tree-based regressor model. The considered tree-based regressor models comprise of decision tree regressor (DTR), random forest regressor (RFR), and extra-tree regressor (ETR). Additionally, to establish a benchmark, the tree-based models are compared against multiple linear regressors (MLR). The dataset is divided into training and test datasets with a ratio of 75:25 for training and testing, respectively. This results in 2871 data points for training and 957 data points for testing. To ensure robust evaluation, the training dataset is subjected to 10-fold splitting. The hyperparameters of the tree-based regressors will be systematically fine-tuned through iterative processes until no further improvement to the model's performance can be achieved.\\
 
 
 \subsection{Performance Metrics for Validation}\label{sec:perf_metrics}
@@ -411,9 +411,9 @@ The subject of parameter tuning was briefly discussed in \Cref{sec:dt_theo}. In 
 
 \scikit/ offers {\tt GridSearchCV} and {\tt RandomizedSearchCV} to help search for the most optimal hyperparameter. Both solutions operate with similar principle: The selected hyperparameters to be tuned with their value range are evaluated using cross-validation to evaluate the best possible combination between the selected hyperparameters. The difference between {\tt GridSearchCV} and {\tt RandomizedSearchCV} lies in how it searches for the best value for the selected hyperparameters: {\tt GridSearchCV} involves the construction of grids containing all possible combinations of hyperparameter value in a specified range.{\tt RandomizedSearchCV} randomly samples hyperparameter values from a specified search range. The exhaustive nature of {\tt GridSearchCV} means that it is computationally costly to perform, especially when there are multiple hyperparameters to be considered and the value search space is large. {\tt RandomizedSearchCV} gives more control to computing budget by setting the number of iterations and usually produces more accurate results than {\tt GridSearchCV} approach. \bcitep{Geron.2019,J.Bergstra.2012}. \\
 
-To address this issue, the {\tt RandomizedSearchCV} technique will be applied to identify the optimal hyperparameters. However, it's important to note that a lack of \emph{a priori} knowledge regarding hyperparameter values remains a challenge. Despite the ability of {\tt RandomizedSearchCV} to manage computational resources, obtaining the best hyperparameter values can still demand a significant amount of time. This could potentially lead to spending computational resources on searches within unpromising search spaces. Therefore, an initial investigation into the impact of each hyperparameter on model performance will be conducted. This preliminary exploration aims to provide a clearer understanding of which search spaces should be considered during the subsequent hyperparameter optimization process. In the forthcoming subsections, the influence of tunable hyperparameters within the tree-based models from \scikit/ will be examined. This exploration seeks to establish baseline values for the search space. Throughout this analysis, MAE will serve as the chosen performance metric. The hyperparameter optimization pursued within this thesis is aimed towards minimising prediction errors.\\
+To address this issue, the {\tt RandomizedSearchCV} technique will be applied to identify the optimal hyperparameters. However, it's important to note that a lack of \emph{a priori} knowledge regarding hyperparameter values remains a challenge. Despite the ability of {\tt RandomizedSearchCV} to manage computational resources, obtaining the best hyperparameter values can still demand a significant amount of time. This could potentially lead to spending computational resources on searches within unpromising search spaces. Therefore, an initial investigation into the impact of each hyperparameter on model performance will be conducted. This preliminary exploration aims to provide a clearer understanding of which search spaces should be considered during the subsequent hyperparameter optimization process. In the following subsections, the influence of tunable hyperparameters within the tree-based models from \scikit/ will be examined. This exploration seeks to establish baseline values for the search space. Throughout this analysis, MAE will serve as the chosen performance metric. The hyperparameter optimization pursued within this thesis is aimed towards minimising prediction errors.\\
 
-\subsubsection*{Number of features}\label{sec:max_features}
+\subsubsection*{Number of Features}\label{sec:max_features}
 
 Defined with default value as {\tt max\_features=None} in \scikit/. This hyperparameter controls the number of features to be considered when looking for the best split, the default {\tt None} option means it will consider all features. This parameter tuning is available for Decision Tree Regressor, Random Forest Regressor and Extra-Tree Regressor. Initial exploration indicated Random Forest Regressor and Extra Tree Regressor benefit from considering more features. Decision Tree Regressor also benefits from considering all features for determining the split.\\ 
 
@@ -424,7 +424,7 @@ Defined with default value as {\tt max\_features=None} in \scikit/. This hyperpa
         \label{fig:hpo_n_features}
 \end{figure}
 
-\subsubsection*{Minimum samples to split a node}\label{sec:min_samples_split}
+\subsubsection*{Minimum Samples to Split a Node}\label{sec:min_samples_split}
 
 Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hyperparameter controls the minimum number of samples i.e. data points required to split a node. The default value of {\tt 2} is the least number of samples required to split a node i.e. 1 sample is split to the left and right branches respectively. The plot at \Cref{fig:hpo_min_samples_leaf} indicates that tuning this hyperparameter will not have any major impact on any model's performance.\\
 \begin{figure}[h]
@@ -434,9 +434,9 @@ Defined with default value as {\tt min\_samples\_split=2} in \scikit/. This hype
         \label{fig:hpo_min_samples_split}
 \end{figure}
 
-\subsubsection*{Number of sample in a leaf node}\label{sec:min_samples_leaf}
+\subsubsection*{Number of Sample in a Leaf Node}\label{sec:min_samples_leaf}
 
-Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls the number of samples required to be at the leaf node, where the split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at a certain breakeven point. But, it demonstrated degradation in performance after this breakeven point. It is also observed that tuning this parameter will negatively impact RFR and ETR model's performance. 
+Defined with default value as {\tt min\_samples\_leaf=1} in \scikit/. This parameter controls the number of samples required to be at the leaf node, where the split point will be considered if the leaf contains at least {\tt min\_samples\_leaf=n} training samples in each left and right branch. As shown in \Cref{fig:geron6_6}, tuning this hyperparameter to higher values helps to smoothen the model and avoid overfitting. However, this may lead to underfitting as the model is unable to capture the trend within the data. This is supported by the findings shown in \Cref{fig:hpo_min_samples_leaf}, the DTR benefits from regularisation at a certain breakeven point. But, it demonstrated degradation in performance after this point. It is also observed that tuning this parameter will negatively impact RFR and ETR model's performance. 
 
 \begin{figure}[h]
     \centering
@@ -486,11 +486,11 @@ The formula used to calculate total resistance $R_{TOTAL}$ in this section is pr
 
 The calculations of resistance are dynamics as the Froude number $Fr$ is based on $v_S$, and the design Froude number $Fr_{DESIGN}$ is used to check use cases for some equations.
 
-\subsubsection*{Calculation of frictional resistance $R_F$}
+\subsubsection*{Calculation of Frictional Resistance $R_F$}
 
 For the calculation of the surface area of bare hull $S$, it is assumed that the aft has a U-shaped section. Then the appropriate $C_{stern}$ can be calculated to obtain the constant $c_{14}$ \Cref{eqn:c_14}. For the calculation of the length of run $L_R$, approximation for $\ell_{CB}$ are made based on \Cref{eqn:lcb}. The constants $c_{14}$ and $L_R$ are used to calculate the form factor $1+k_1$ which will be used to calculate $R_F$.
 
-\subsubsection*{Calculation of appendage resistance $R_{APP}$}
+\subsubsection*{Calculation of Appendage Resistance $R_{APP}$}
 
 From known ship information and ship schematics shown in \Cref{fig:Hammershus_Pict}, it can be deducted that the ship consists of the following appendages:
 
@@ -537,7 +537,7 @@ The assumptions for the appendage area are made by scaling the schematics to kno
 
 Additionally, there are two bow thrusters installed with approximated diameter of $d_{TH}= 2.15 m$, from here, the constant $C_{D_TH}$ can be approximated using \Cref{eqn:R_th}. Hence, the appendage resistance $R_{APP}$ can be calculated using \Cref{eqn:R_app}.
 
-\subsubsection*{Calculation of wave resistance $R_{W}$}
+\subsubsection*{Calculation of Wave Resistance $R_{W}$}
 
 The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using equation \Cref{eqn:R_w_low}. The estimation is done by adding the constants presented between \Cref{eqn:c_7} and \Cref{eqn:m4}. The use cases for some equations are summarised in \Cref{tbl:R_w_use_case}.
 
@@ -558,7 +558,7 @@ The calculation of wave resistance is based on the case for $Fr \leq 0.4$ using 
 \caption{Use case of constants for $R_W$}\label{tbl:R_w_use_case}
 \end{table}
 
-\subsubsection*{Calculation of bulbous bow resistance $R_B$}
+\subsubsection*{Calculation of Bulbous Bow Resistance $R_B$}
 The area $A_{BT}$ used to calculate is approximated based on \bcitet{Kracht.78} with:
 
 \begin{equation}
@@ -568,7 +568,7 @@ The area $A_{BT}$ used to calculate is approximated based on \bcitet{Kracht.78} 
 
 For the height $h_B$, the upper limit of $h_B = 0.6T_{DESIGN}$ is selected, and it is assumed that $T_F = T_{DESIGN}$.
 
-\subsubsection*{Calculation of (immersed) transom resistance $R_{TR}$}
+\subsubsection*{Calculation of (Immersed) Transom Resistance $R_{TR}$}
 
 Since the immersed transom area is unknown, \bcitet{Rakke2016} approximated the immersed transom area based on the correlation of ship dimension from the literature review of \bcitet{Holtrop.1982}:
 
@@ -579,31 +579,31 @@ Since the immersed transom area is unknown, \bcitet{Rakke2016} approximated the 
 
 This approximation must be employed with caution as it relies solely on the case study of \bcitet{Holtrop.1982}. Despite potential limitations, due to the absence of alternative literature providing empirical estimation for $A_{TR}$, this estimation is chosen for this particular case study. The selection for the value of constant $c_6$ is dependent on the value of $Fr_T$, which is a function of $v_S$. From there, the transom resistance can be calculated using \Cref{eqn:R_transom}
 
-\subsubsection*{Calculation of correlation allowance resistance $R_A$}
+\subsubsection*{Calculation of Correlation Allowance Resistance $R_A$}
 
 The selection of constant $c_4$ in equation \Cref{eqn:c4} is based on the $T_F$, then the correlation resistance $R_A$ can be calculated using \Cref{eqn:R_a}.
 
-\subsubsection*{Calculation of added resistance due to wind $R_{AA}$}
+\subsubsection*{Calculation of Added Resistance due to Wind $R_{AA}$}
 
 Two assumptions are made during the calculation of $R_{AA}$, since the information of lateral area $A_L$ and $A_F$ are not readily available, these values are assumed based on the dimension of a similar ship type in the case study of \bcitet{Blendermann.1994}. It is assumed that the ferry has an $A_L$ of \textbf{2125.80} $m^2$ and $A_F$ of \textbf{325.30} $m^2$. From \Cref{tbl:BlendermannCoeff}, the case for ferry ship is taken to get the necessary constants for the calculation of $R_{AA}$. 
 
-\subsubsection*{Calculation of added resistance due to wave $R_{AW}$ }
+\subsubsection*{Calculation of Added Resistance due to Wave $R_{AW}$ }
 
 Based on schematics of the ship, $L_{BWL}$ will be approximated to about \textbf{43.75} m. The calculation of $R_{AWL}$ will be based on the data of significant wave height $H_{1/3}$ from the dataset.
 
 \pagebreak
 
-\subsection{Calculation of total efficiency $\eta_{TOT}$}\label{sec:eta_tot_method}
+\subsection{Calculation of Total Efficiency $\eta_{TOT}$}\label{sec:eta_tot_method}
 
-\subsubsection*{Calculation of open water efficiency $\eta_O$}
+\subsubsection*{Calculation of Open Water Efficiency $\eta_O$}
 
 This value is approximated based on the line of the Wageningen series in \Cref{fig:breslin_open water efficiencies} \bcitep{Breslin.1994}. The case will be for ``Passenger ships and high-speed naval vessels''. Since the value of $C_{Th}$ is not available, the value of $\eta_O$ is approximated as \textbf{0.7}.
 
-\subsubsection*{Calculation of hull efficiency $\eta_H$}
+\subsubsection*{Calculation of Hull Efficiency $\eta_H$}
 
 For the calculation of $\eta_H$, the value of the propeller diameter $D$ is approximated as \textbf{4 m}, which is based on the schematics of the ship shown in \Cref{fig:Hammershus_Pict}.
 
-\subsubsection*{Calculation of relative rotative efficiency $\eta_R$}
+\subsubsection*{Calculation of Relative Rotative Efficiency $\eta_R$}
 
 The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-diameter propeller ratio. This value will be estimated as $P/D =$ \textbf{1.135}, which is obtained from the work of \bcitet{Bertram.2000}.
 
@@ -614,7 +614,7 @@ The missing value required to compute \Cref{eqn: eta_rot_holtrop} is the pitch-d
         \label{fig:betram_wolff_propellerdimensions}
 \end{figure}
 
-\subsubsection*{Calculation of shaft efficiency $\eta_S$}
+\subsubsection*{Calculation of Shaft Efficiency $\eta_S$}
 
 The value of shaft efficiency is estimated as $\eta_S =$ \textbf{0.99} based on \bcitet{Diesel.2011} and \bcitet{Holtrop.1982}.
 
